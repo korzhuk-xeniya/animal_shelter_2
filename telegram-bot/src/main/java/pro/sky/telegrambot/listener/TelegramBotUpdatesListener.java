@@ -21,6 +21,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Autowired
     private TelegramBot telegramBot;
 
+    
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
