@@ -14,9 +14,9 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     //найти животного в базе данных
-    public Optional<Object> findAnimal(UUID id) {
-        return animalRepository.findById(id);
-    }
+//    public Optional<Object> findAnimal(UUID id) {
+//        return animalRepository.findById(id);
+//    }
 
     //добавление животного
     public Animal addAnimal(Animal animal) {
@@ -26,5 +26,6 @@ public class AnimalServiceImpl implements AnimalService {
     // удаление животного из таблицы
     public void deleteAnimal(UUID id) {
         animalRepository.deleteById(id);
-    }}
+    }
 }
+
