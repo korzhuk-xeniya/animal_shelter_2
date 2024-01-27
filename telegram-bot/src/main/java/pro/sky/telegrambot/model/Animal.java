@@ -3,6 +3,7 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.UUID;
 
 /**
  * Класс для  животных в приюте.
@@ -12,10 +13,10 @@ import javax.persistence.Id;
 public class Animal {
     @Id
     @GeneratedValue
-    private long id;
+    private UUID id;
     private Integer ageMonth;
     private String name;
-    private Gender gender;
-    private PetType petType;
+//    private Gender gender;
+//    private PetType petType;
 
 }

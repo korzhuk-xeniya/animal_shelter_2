@@ -1,21 +1,20 @@
-package pro.sky.telegrambot.services;
+package pro.sky.telegrambot.service;
 
-import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.repository.AnimalRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-@Service
-public class AnimalService {
+public class AnimalServiceImpl implements AnimalService {
     private final AnimalRepository animalRepository;
 
-    public AnimalService( AnimalRepository animalRepository) {
+    public AnimalServiceImpl( AnimalRepository animalRepository) {
         this.animalRepository = animalRepository;
     }
 
     //найти животного в базе данных
-    public Optional<Object> findAnimal(Long id) {
+    public Optional<Object> findAnimal(UUID id) {
         return animalRepository.findById(id);
     }
 
@@ -25,6 +24,7 @@ public class AnimalService {
     }
 
     // удаление животного из таблицы
-    public void deleteAnimal(Long id) {
+    public void deleteAnimal(UUID id) {
         animalRepository.deleteById(id);
     }}
+}
