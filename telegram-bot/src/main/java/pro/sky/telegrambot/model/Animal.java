@@ -13,10 +13,12 @@ import java.util.UUID;
 public class Animal {
     @Id
     @GeneratedValue
-    private UUID id;
-    private Integer ageMonth;
+    private long id;
+    private long chatId;
     private String name;
-//    private Gender gender;
-//    private PetType petType;
+    private int ageMonth;
+    private Gender gender;
+    private PetType petType;
+
 
 }
