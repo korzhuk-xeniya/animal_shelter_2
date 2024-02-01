@@ -1,26 +1,23 @@
 package pro.sky.telegrambot.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
-public class AnimalAdoptiveParents {
+public class ReportAboutAnimal {
 
-    //ID усыновителя
+    //ID репорта
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private UUID id;
 
+    @ManyToOne
+    @JoinColumn(name = "user_Id")
+    private User user;
 
-    //Имя усыновителя
-    @Column(name = "animalAdoptiveParent")
-    private String animalAdoptiveParent;
 
-    //Усыновленное животное
-    private Animal parentedAnimal;
+    //Ссылка на фото
+    private String photoLink;
 
     //Рацион
     private String diet;
@@ -31,10 +28,8 @@ public class AnimalAdoptiveParents {
     //Изменения в поведении: отказ от старых привычек, приобретение новых
     private String changesInBehaviour;
 
-    public AnimalAdoptiveParents(UUID id, String animalAdoptiveParent, Animal parentedAnimal) {
+    public ReportAboutAnimal(UUID id) {
         this.id = id;
-        this.animalAdoptiveParent = animalAdoptiveParent;
-        this.parentedAnimal = parentedAnimal;
     }
 
     public UUID getId() {
@@ -45,20 +40,20 @@ public class AnimalAdoptiveParents {
         this.id = id;
     }
 
-    public String getAnimalAdoptiveParent() {
-        return animalAdoptiveParent;
+    public User getUser() {
+        return user;
     }
 
-    public void setAnimalAdoptiveParent(String animalAdoptiveParent) {
-        this.animalAdoptiveParent = animalAdoptiveParent;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Animal getParentedAnimal() {
-        return parentedAnimal;
+    public String getPhotoLink() {
+        return photoLink;
     }
 
-    public void setParentedAnimal(Animal parentedAnimal) {
-        this.parentedAnimal = parentedAnimal;
+    public void setPhotoLink(String photoLink) {
+        this.photoLink = photoLink;
     }
 
     public String getDiet() {

@@ -1,9 +1,7 @@
 package pro.sky.telegrambot.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -12,6 +10,9 @@ public class User  {
     @Id
     @Column
     private Long chatId;
+
+    @OneToMany
+    private List<ReportAboutAnimal> reportAboutAnimals;
 
     @Column
     private String firstName;
@@ -22,17 +23,18 @@ public class User  {
     @Column
     private String phone;
 
+    @OneToMany
     @Column
-    private String PetType;
-
-    @Column
-    private String PetName;
+    private Animal animal;
 
     public User(Long chatId, String firstName, String lastName, String phone) {
         this.chatId = chatId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+    }
+
+    public User() {
     }
 
     public Long getChatId() {
@@ -67,19 +69,21 @@ public class User  {
         this.phone = phone;
     }
 
-    public String getPetType() {
-        return PetType;
+    public List<ReportAboutAnimal> getReportAboutAnimals() {
+        return reportAboutAnimals;
     }
 
-    public void setPetType(String petType) {
-        PetType = petType;
+    public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
+        this.reportAboutAnimals = reportAboutAnimals;
     }
 
-    public String getPetName() {
-        return PetName;
+    public Animal getAnimal() {
+        return animal;
     }
 
-    public void setPetName(String petName) {
-        PetName = petName;
+    public void setAnimal(Animal animal) {
+        this.animal = animal;
     }
+
+
 }
