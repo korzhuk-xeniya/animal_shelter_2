@@ -14,4 +14,5 @@ public class RecommendationFromShelter {
 
     @Column(name = "recommendationFromShelter")
     private String recommendation;
+
 }
