@@ -20,6 +20,8 @@ public class ReportAboutAnimalServiceImpl implements ReportAboutAnimalService {
         return reportAboutAnimalRepository.save(reportAboutAnimal);
     }
 
+
+
     public Optional<ReportAboutAnimal> readReportAboutAnimal(ReportAboutAnimal reportAboutAnimal) {
         return reportAboutAnimalRepository.findById(reportAboutAnimal.getId());
     }
