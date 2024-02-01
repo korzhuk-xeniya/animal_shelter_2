@@ -1,6 +1,5 @@
 package pro.sky.telegrambot.controller;
 
-import org.hibernate.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +7,7 @@ import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.service.AnimalService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/animals")
@@ -25,7 +25,7 @@ public class AnimalController {
 
     //поиск животного по id
     @GetMapping("/{id}")
-    public ResponseEntity<Animal> get(PathVariable Long id){
+    public ResponseEntity<Animal> get(@PathVariable UUID id){
         Animal animal = animalService.get(id);
         if (animal == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -42,10 +42,11 @@ public class AnimalController {
         } else {
             return ResponseEntity.ok(savedAnimal);
         }
+    }
 
     //удаление животного
         @DeleteMapping("/{id}")
-        public ResponseEntity delete( @PathVariable Long id) {
+        public ResponseEntity<Animal> delete(@PathVariable UUID id) {
             animalService.delete(id);
             return ResponseEntity.ok().build();
         }
@@ -54,4 +55,4 @@ public class AnimalController {
         @GetMapping
         public List<Animal> allAnimals() {
             return animalService.allAnimals();
-}}}
+}}

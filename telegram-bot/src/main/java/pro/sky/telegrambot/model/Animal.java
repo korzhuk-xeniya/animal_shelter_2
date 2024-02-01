@@ -45,12 +45,12 @@ public class Animal {
         this.petType = petType;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Integer getAgeMonth() {
