@@ -9,6 +9,7 @@ import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("users")
@@ -43,22 +44,23 @@ public class UserController {
 
     @GetMapping("id")
     @Operation(summary = "Получение пользователя по id")
-    public User getById(@RequestParam @Parameter(description = "Id пользователя") Long userId) {
+    public User getById(@RequestParam @Parameter(description = "Id пользователя") UUID userId) {
         return userService.getById(userId);
     }
 
     @PutMapping
     @Operation(summary = "Изменить пользователя")
-    public User update(@RequestParam @Parameter(description = "Телеграм id пользователя") Long chartId,
+    public User update(@RequestParam @Parameter(description = "Телеграм id пользователя")
+                       Long chatId,
                        @RequestParam(required = false) @Parameter(description = "Имя") String firstName,
                        @RequestParam(required = false) @Parameter(description = "Фамилия") String lastName,
                        @RequestParam(required = false) @Parameter(description = "Телефон") String phone) {
-        return userService.update(new User(chartId, firstName, lastName, phone));
+        return userService.update(new User(chatId, firstName, lastName, phone));
     }
 
     @DeleteMapping("id")
     @Operation(summary = "Удаление пользователя по id")
-    public String deleteById(@RequestParam @Parameter(description = "Id пользователя") Long userId) {
+    public String deleteById(@RequestParam @Parameter(description = "Id пользователя") UUID userId) {
         userService.deleteById(userId);
         return "Пользователь успешно удалён";
     }
