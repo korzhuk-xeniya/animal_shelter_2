@@ -2,7 +2,7 @@ package pro.sky.telegrambot.model;
 
 import javax.persistence.*;
 import java.util.UUID;
-
+@Entity
 public class ReportAboutAnimal {
 
     //ID репорта

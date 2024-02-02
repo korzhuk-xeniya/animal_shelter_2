@@ -12,6 +12,7 @@ import pro.sky.telegrambot.repository.UserRepository;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -28,8 +29,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long id) {
-        Optional<User> optionalUser = userRepository.findByTelegramId(id);
+    public User getById(UUID id) {
+        Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
             throw new NotFoundException(EXCEPTION_NOT_FOUND_USER);
         }
@@ -38,18 +39,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        User currentUser = getById(user.getChatId());
+        User currentUser = getById(user.getId());
         EntityUtils.copyNonNullFields(user, currentUser);
         return userRepository.save(currentUser);
     }
 
     @Override
     public void delete(User user) {
-        deleteById(user.getChatId());
+        deleteById(user.getId());
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(UUID id) {
         userRepository.deleteById(getById(id).getChatId());
     }
 

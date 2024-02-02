@@ -3,6 +3,7 @@ package pro.sky.telegrambot.service;
 import pro.sky.telegrambot.model.User;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
     /**
@@ -18,7 +19,9 @@ public interface UserService {
      * @param id Id пользователя
      * @return Полученный из бд пользователь
      */
-    User getById(Long id);
+
+    User getById(UUID id);
+
     /**
      * Изменение пользователя
      *
@@ -35,7 +38,7 @@ public interface UserService {
      *
      * @param id Id пользователя
      */
-    void deleteById(Long id);
+    void deleteById(UUID id);
     /**
      * @return Список всех пользователей
      */
