@@ -9,5 +9,7 @@ public interface ShelterService {
 
     void sendMenuButton(Long chatId, String messageText);
 
+    void sendMenuVolunteer(Long chatId, String messageText);
+
     void sendButtonsOfStep0(Long chatId, String messageText);
 }

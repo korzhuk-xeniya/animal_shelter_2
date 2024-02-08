@@ -132,7 +132,13 @@ public class ShelterServiceImpl implements ShelterService {
         sendMessage.replyMarkup(buttons.buttonMenu());
         telegramBot.execute(sendMessage);
     }
-
+    @Override
+    public void sendMenuVolunteer(Long chatId, String messageText) {
+        logger.info("Был вызван метод для отправки кнопок Меню волонтера", chatId, messageText);
+        SendMessage sendMessage = new SendMessage(chatId, messageText);
+        sendMessage.replyMarkup(buttons.buttonsOfVolunteer());
+        telegramBot.execute(sendMessage);
+    }
     /**
      * метод для отправки кнопок Этапа 0. Определение запроса
      */
