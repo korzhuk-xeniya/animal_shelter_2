@@ -34,7 +34,7 @@ public class AnimalController {
     }
    //обновление данных по животному
     @PutMapping("/update/{id}")
-    public ResponseEntity<Animal> update( @PathVariable Long id,
+    public ResponseEntity<Animal> update( @PathVariable UUID id,
                                        @RequestBody Animal animal) {
         Animal savedAnimal = animalService.update(id, animal);
         if (savedAnimal == null) {

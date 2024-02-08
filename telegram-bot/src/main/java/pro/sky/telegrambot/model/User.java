@@ -32,10 +32,10 @@ public class User  {
 
     @Column
     private String phone;
-//
-////    @OneToOne
-//    @Column
-//    private Animal animal;
+
+   @OneToOne
+    @Column
+   private Animal animal;
 
     public User(Long chatId, String firstName, String lastName, String phone) {
         this.chatId = chatId;
@@ -79,21 +79,24 @@ public class User  {
         this.phone = phone;
     }
 
-//    public List<ReportAboutAnimal> getReportAboutAnimals() {
-//        return reportAboutAnimals;
-//    }
-//
-//    public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
-//        this.reportAboutAnimals = reportAboutAnimals;
-//    }
+    public void setAnimal(Object o) {
+    }
 
-//    public Animal getAnimal() {
-//        return animal;
-//    }
-//
-//    public void setAnimal(Animal animal) {
-//        this.animal = animal;
-//    }
+   public List<ReportAboutAnimal> getReportAboutAnimals() {
+      return reportAboutAnimals;
+   }
+
+   public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
+       this.reportAboutAnimals = reportAboutAnimals;
+   }
+
+   public Animal getAnimal() {
+       return animal;
+    }
+
+   public void setAnimal(Animal animal) {
+       this.animal = animal;
+   }
 
 
 }
