@@ -40,12 +40,12 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-//    @Override
-//    public User update(User user) {
-//        User currentUser = getById(user.getId());
-//        EntityUtils.copyNonNullFields(user, currentUser);
-//        return userRepository.save(currentUser);
-//    }
+    @Override
+    public User update(User user) {
+        User currentUser = getById(user.getId());
+        EntityUtils.copyNonNullFields(user, currentUser);
+        return userRepository.save(currentUser);
+    }
     @Override
     //Обновить пользователя в бд
     public User updateUser(User user) {

@@ -96,6 +96,10 @@ public class ShelterServiceImpl implements ShelterService {
 
 
                     case "Как взять животное из приюта?" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
+                    case "Позвать волонтера" -> {
+                        callAVolunteer(update);
+                        changeMessage(messageId, chatId, "Волонтер скоро свяжется с Вами", buttons.buttonMenu());
+                    }
 
                 }
             }
