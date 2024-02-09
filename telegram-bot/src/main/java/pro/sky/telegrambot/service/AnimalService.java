@@ -16,5 +16,5 @@ public interface AnimalService {
 
     Animal update(UUID id, Animal animal);
 
-    void delete(UUID id);
+    String delete(UUID id);
 }

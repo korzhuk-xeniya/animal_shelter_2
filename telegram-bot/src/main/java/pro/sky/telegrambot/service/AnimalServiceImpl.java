@@ -1,7 +1,6 @@
 package pro.sky.telegrambot.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Parent;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.model.User;
@@ -62,31 +61,39 @@ public class AnimalServiceImpl implements AnimalService {
         return animalRepository.save(animal);
     }
 
+
+
+
     /**
      * Метод удаления животного
+     *
+     * @return
      */
     @Override
-    public void delete(UUID id) {
+    public String delete(java.util.UUID id) {
+        // Проверяем, что у животного есть усыновитель
         if (get(UUID).getUser() != null) {
-            long animalsUserChatId = get(UUID).getUser().getChatId();
-            Optional<User> user = UserRepository.findByChatId(animalsUserChatId);
+            // Ищем чат айди усыновителя этого животного
+            long animalsParentChatId = get(java.util.UUID.randomUUID()).getUser().getChatId();
+            // Создаем усыновителя, который соответствует этому чат айди и переносим ему все данные
+            User user = UserRepository.findByChatId(animalsParentChatId);
+            // Новому усыновителю прописываем поле с животным как null
             user.setAnimal(null);
             // Создаем новое животное, передаем все данные старого
-            Animal deletedAnimal = get(id);
+            Animal deletedAnimal = get(UUID);
             // Новому животному убираем усыновителя
-            deletedAnimal.setUser(null);
+            deletedAnimal.setParent(null);
             // Перезаписываем в БД животное уже без усыновителя
             animalRepository.save(deletedAnimal);
-         
+
             // Сохраняем нового усыновителя, перезаписываем старого
-            userRepository.save(user);
-          
+            UserRepository.save(Optional.of(user));
+
         }
         // Удаляем животное по его айди
-        animalRepository.deleteById(id);
-     
-        return "Животное удалено";
-    }
+        animalRepository.deleteById(java.util.UUID.randomUUID());
+
+        return "животное удалено";  }
 
 
         /**

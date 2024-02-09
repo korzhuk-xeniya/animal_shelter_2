@@ -108,4 +108,7 @@ public class Animal {
     public Integer getAgeMonth() {
         return ageMonth;
     }
+
+    public void setParent(Object o) {
+    }
 }
