@@ -9,6 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AnimalRepository extends JpaRepository<Animal, UUID> {
+public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
 }

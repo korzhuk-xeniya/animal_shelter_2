@@ -24,7 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.chatId = :chatId")
 //    boolean existsByChatId(int chatId);
 
-    Optional<User> findByChatId(int chatId);
+    Optional<User> findByChatId(long chatId);
+    boolean existsByChatId(long chatId);
 
 //    Optional<User> findByDateTimeToTookBefore(LocalDateTime dateTimeToTook);
 
