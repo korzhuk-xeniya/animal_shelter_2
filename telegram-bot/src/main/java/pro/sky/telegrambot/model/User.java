@@ -1,24 +1,24 @@
 package pro.sky.telegrambot.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User  {
+public class User {
 
+    @Getter
     @Id
     @Column
-    @GeneratedValue
-    private UUID id;
-    @Column
-    private Long chatId;
-    @Column
-    @OneToMany
-//            (mappedBy = "user_tg")
-
-    private List<ReportAboutAnimal> reportAboutAnimals;
+    private UUID chatId;
 
     @Column
     private String firstName;
@@ -26,74 +26,27 @@ public class User  {
     @Column
     private String lastName;
 
-    public UUID getId() {
-        return id;
-    }
-
     @Column
     private String phone;
-//
-////    @OneToOne
-//    @Column
-//    private Animal animal;
 
-    public User(Long chatId, String firstName, String lastName, String phone) {
+    @Column
+    private String shelterType;
+
+    @Column
+    private String shelterName;
+
+    public User(UUID chatId, String firstName, String lastName, String phone) {
         this.chatId = chatId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
     }
 
-    public User() {
+    public void setChatId(UUID chatId) {
+        this.chatId = chatId;
     }
 
-    public Long getChatId() {
+    public UUID getId() {
         return chatId;
     }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-//    public List<ReportAboutAnimal> getReportAboutAnimals() {
-//        return reportAboutAnimals;
-//    }
-//
-//    public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
-//        this.reportAboutAnimals = reportAboutAnimals;
-//    }
-
-//    public Animal getAnimal() {
-//        return animal;
-//    }
-//
-//    public void setAnimal(Animal animal) {
-//        this.animal = animal;
-//    }
-
-
 }

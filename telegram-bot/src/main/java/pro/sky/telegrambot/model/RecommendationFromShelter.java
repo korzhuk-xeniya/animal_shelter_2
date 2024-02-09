@@ -10,7 +10,7 @@ public class RecommendationFromShelter {
     private Integer id;
 
 
-    @Column(name = "recommendationFromShelter")
+    @Column(name = "recommendation_from_shelter")
     private String recommendation;
 
 }

@@ -11,7 +11,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "animals")
 public class Animal {
-
+    public enum PetType {
+        CAT,
+        DOG
+    }
     //ID животного
     @Id
     @GeneratedValue
@@ -32,11 +35,13 @@ public class Animal {
     @Column
     //Пол животного
     private final String gender;
-    @Column
-    //Тип животного
-    private final String petType;
 
-    public Animal(Integer ageMonth, String name, String photoLink, String gender, String petType) {
+    //Тип животного
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pet_type")
+    private PetType petType;
+
+    public Animal(Integer ageMonth, String name, String photoLink, String gender, PetType petType) {
         this.ageMonth = ageMonth;
         this.nameOfAnimal = name;
         this.photoLink = photoLink;
@@ -68,7 +73,7 @@ public class Animal {
         return gender;
     }
 
-    public String getPetType() {
+    public PetType getPetType() {
         return petType;
     }
 

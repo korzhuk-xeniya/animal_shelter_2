@@ -29,7 +29,7 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Создать пользователя")
-    public User create(@RequestParam @Parameter(description = "Телеграм id пользователя") Long chartId,
+    public User create(@RequestParam @Parameter(description = "Телеграм id пользователя") UUID chartId,
                        @RequestParam @Parameter(description = "Имя") String firstName,
                        @RequestParam @Parameter(description = "Фамилия") String lastName,
                        @RequestParam @Parameter(description = "Телефон") String phone) {
@@ -51,7 +51,7 @@ public class UserController {
     @PutMapping
     @Operation(summary = "Изменить пользователя")
     public User update(@RequestParam @Parameter(description = "Телеграм id пользователя")
-                       Long chatId,
+                       UUID chatId,
                        @RequestParam(required = false) @Parameter(description = "Имя") String firstName,
                        @RequestParam(required = false) @Parameter(description = "Фамилия") String lastName,
                        @RequestParam(required = false) @Parameter(description = "Телефон") String phone) {

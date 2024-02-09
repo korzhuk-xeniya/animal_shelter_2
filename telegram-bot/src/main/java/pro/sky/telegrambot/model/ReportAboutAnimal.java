@@ -1,92 +1,42 @@
 package pro.sky.telegrambot.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.UUID;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class ReportAboutAnimal {
 
-    //ID репорта
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn(name = "user_Id")
-    private User user;
-
-
-    //Ссылка на фото
+    @Column(name = "photo_link")
     private String photoLink;
-
-    //Рацион
+    @Column(name = "diet")
     private String diet;
-
-    //Общее самочувствие и привыкание к новому месту
+    @Column(name = "well_being_and_addiction")
     private String wellBeingAndAddiction;
-
-    //Изменения в поведении: отказ от старых привычек, приобретение новых
+    @Column(name = "changes_in_behaviour")
     private String changesInBehaviour;
+    @Column(name = "receive_date")
+    private LocalDate receiveDate;
+    @Column(name = "trial_period_Id")
+    private UUID trialPeriodId;
 
-    public ReportAboutAnimal(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getPhotoLink() {
-        return photoLink;
-    }
-
-    public void setPhotoLink(String photoLink) {
+    public ReportAboutAnimal(String photoLink, String diet, String wellBeingAndAddiction,
+                  String changesInBehaviour, LocalDate receiveDate, UUID trialPeriodId) {
         this.photoLink = photoLink;
-    }
-
-    public String getDiet() {
-        return diet;
-    }
-
-    public void setDiet(String diet) {
         this.diet = diet;
-    }
-
-    public String getWellBeingAndAddiction() {
-        return wellBeingAndAddiction;
-    }
-
-    public void setWellBeingAndAddiction(String wellBeingAndAddiction) {
         this.wellBeingAndAddiction = wellBeingAndAddiction;
-    }
-
-    public String getChangesInBehaviour() {
-        return changesInBehaviour;
-    }
-
-    public void setChangesInBehaviour(String changesInBehaviour) {
         this.changesInBehaviour = changesInBehaviour;
-    }
-
-    //Загрузка фотографии животного
-    public void loadPhotoOfAnimal() {
-        //здесь надо как-то прописать загрузку и изменение фотографии животного
-    }
-
-    //Отправка отчета (!НАДО ДОБАВИТЬ ФОТОГРАФИЮ И ТОЖЕ ОТПРАВЛЯТЬ!)
-    public void sendReport(String diet, String wellBeingAndAddiction, String changesInBehaviour) {
-        //Действия для отправки отчета, возможно отсылка к методу из Listener
+        this.receiveDate = receiveDate;
+        this.trialPeriodId = trialPeriodId;
     }
 }
