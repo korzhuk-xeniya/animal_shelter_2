@@ -1,8 +1,10 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.model.Update;
 import pro.sky.telegrambot.model.User;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserService {
@@ -12,7 +14,7 @@ public interface UserService {
      * @param user Пользователь для сохранения в бд
      * @return Сохранённый пользователь
      */
-    User create(User user);
+    User createUser(User user);
     /**
      * Получение пользователя по id
      *
@@ -20,7 +22,9 @@ public interface UserService {
      * @return Полученный из бд пользователь
      */
 
-    User getById(UUID id);
+
+
+    User getById(long id);
 
     /**
      * Изменение пользователя
@@ -28,7 +32,11 @@ public interface UserService {
      * @param user пользователь
      * @return Изменённый пользователь
      */
-    User update(User user);
+//    User update(User user);
+
+    //Обновить пользователя в бд
+    User updateUser(User user);
+
     /**
      * @param user Пользователь, который уже есть в бд
      */
@@ -38,10 +46,22 @@ public interface UserService {
      *
      * @param id Id пользователя
      */
-    void deleteById(UUID id);
+
+
+    void deleteById(long id);
+
     /**
      * @return Список всех пользователей
      */
     List<User> getAll();
 
+
+
+    //Получить юзера из бд
+    Optional<User> getUserByChatId(long chatId);
+
+    /**
+     * Поиск пользователя по chatId, если он есть то обновляем dateTimeToTook, если нет, создается новый пользователь
+     */
+    void saveUser(Update update, boolean tookAPET);
 }

@@ -1,9 +1,14 @@
 package pro.sky.telegrambot.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.service.UserService;
@@ -27,13 +32,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/save")
     @Operation(summary = "Создать пользователя")
-    public User create(@RequestParam @Parameter(description = "Телеграм id пользователя") Long chartId,
-                       @RequestParam @Parameter(description = "Имя") String firstName,
-                       @RequestParam @Parameter(description = "Фамилия") String lastName,
-                       @RequestParam @Parameter(description = "Телефон") String phone) {
-        return userService.create(new User(chartId, firstName, lastName, phone));
+    public User create(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
     @GetMapping()
@@ -44,25 +46,52 @@ public class UserController {
 
     @GetMapping("id")
     @Operation(summary = "Получение пользователя по id")
-    public User getById(@RequestParam @Parameter(description = "Id пользователя") UUID userId) {
+    public User getById(@RequestParam @Parameter(description = "Id пользователя") long userId) {
         return userService.getById(userId);
     }
 
-    @PutMapping
-    @Operation(summary = "Изменить пользователя")
-    public User update(@RequestParam @Parameter(description = "Телеграм id пользователя")
-                       Long chatId,
-                       @RequestParam(required = false) @Parameter(description = "Имя") String firstName,
-                       @RequestParam(required = false) @Parameter(description = "Фамилия") String lastName,
-                       @RequestParam(required = false) @Parameter(description = "Телефон") String phone) {
-        return userService.update(new User(chatId, firstName, lastName, phone));
+//    @PutMapping
+//    @Operation(summary = "Изменить пользователя")
+//    public User update(@RequestParam @Parameter(description = "Телеграм id пользователя")
+//                       Long chatId,
+//                       @RequestParam(required = false) @Parameter(description = "Имя") String firstName,
+//                       @RequestParam(required = false) @Parameter(description = "Фамилия") String lastName,
+//                       @RequestParam(required = false) @Parameter(description = "Телефон") String phone) {
+//        return userService.update(new User(chatId, firstName, lastName, phone));
+//    }
+    @Operation(summary = "Обновление иформации о пользователе")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь обновлен",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = User.class)))),
+            @ApiResponse(responseCode = "400", description = "Имеют некорруктный формат"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+    })
+    @PutMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        User user1 = userService.updateUser(user);
+        return ResponseEntity.ok(user1);
     }
-
-    @DeleteMapping("id")
+    @DeleteMapping("/delete/{id}")
     @Operation(summary = "Удаление пользователя по id")
-    public String deleteById(@RequestParam @Parameter(description = "Id пользователя") UUID userId) {
+    public String deleteById(@RequestParam @Parameter(description = "Id пользователя") long userId) {
         userService.deleteById(userId);
         return "Пользователь успешно удалён";
+    }
+    @Operation(summary = "Получить пользователя по chatId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь найден",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "400", description = "Посетитель не найден"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+    })
+    @GetMapping("/chatId/{chatId}")
+    public ResponseEntity<User> getUserByChatId(@PathVariable  long chatId) {
+        return ResponseEntity.of(userService.getUserByChatId(chatId));
     }
 }
 
