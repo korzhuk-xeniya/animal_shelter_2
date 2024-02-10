@@ -22,15 +22,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findUserByChatId(int chatId);
 
 //    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.chatId = :chatId")
-//    boolean existsByChatId(int chatId);
+
 
     Optional<User> findByChatId(long chatId);
     boolean existsByChatId(long chatId);
 
 //    Optional<User> findByDateTimeToTookBefore(LocalDateTime dateTimeToTook);
 
-//    @Transactional
-//    @Modifying
-//    @Query("UPDATE User u set u.number = ?2 where u.chatId = ?1")
-//    int updateNumber(int chatId, String num);
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u set u.number = ?2 where u.chatId = ?1")
+    int updateNumber(int chatId, String num);
 }
