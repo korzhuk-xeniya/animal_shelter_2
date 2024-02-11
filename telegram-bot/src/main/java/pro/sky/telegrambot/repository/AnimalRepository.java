@@ -12,3 +12,4 @@ import java.util.UUID;
 public interface AnimalRepository extends JpaRepository<Animal, UUID> {
 
 }
+
