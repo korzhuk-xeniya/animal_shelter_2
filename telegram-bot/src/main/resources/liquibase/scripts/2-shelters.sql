@@ -15,8 +15,8 @@ CREATE TABLE user_tg
     first_name        VARCHAR not null,
     took_a_pet        BOOLEAN,
     date_time_to_took TIMESTAMP,
-    chat_id           INT not null,
-    telephone_number  VARCHAR(50)
+    chat_id           BIGINT not null,
+    number            VARCHAR(50)
 );
 
 CREATE TABLE report_tg

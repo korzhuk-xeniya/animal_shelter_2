@@ -47,7 +47,7 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void process(Update update) {
         List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add("xeny_sk");
+        adminsVolunteers.add(" ");
 
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
@@ -68,20 +68,18 @@ public class ShelterServiceImpl implements ShelterService {
 
 
                 isCorrectNumber = false;
-            }
-            if
-            (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
+            } else if (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
                 logger.info("пользователь отправил  сообщение  с неопределенным содержанием");
                 sendMessage(chatId, ("Содержание не определено. Для начала работы, отправь /start." +
                         "Для записи номера телефона, введите его в формате +71112223344")
                 );
                 return;
             }
-            if (!update.message().text().equals("/start")) {
-                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
-                sendMessage(chatId, );
-                return;
-            }
+//            if (!update.message().text().equals("/start")) {
+//                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
+//                sendMessage(chatId, );
+//                return;
+//            }
             if (update.message().text().equals("/start")) {
                 logger.info("пользователь отправил /start");
                 sendMenuButton(chatId, " Добро пожаловать в PetShelterBot, "
