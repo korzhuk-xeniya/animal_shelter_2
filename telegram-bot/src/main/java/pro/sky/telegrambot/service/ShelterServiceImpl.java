@@ -3,8 +3,10 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.io.IOException;
+import java.util.Map;
+
 @Service
 public class ShelterServiceImpl implements ShelterService {
 
     private final TelegramBot telegramBot;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
+    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
@@ -32,12 +38,12 @@ public class ShelterServiceImpl implements ShelterService {
     private final VolunteerService volunteerService;
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
 
-    private boolean isCorrectNumber = false;
-
-    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons, VolunteerRepository volunteerRepository, UserRepository userRepository, UserService userService, VolunteerService volunteerService) {
+    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
+                              InfoService infoService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
+        this.infoService = infoService;
         this.volunteerRepository = volunteerRepository;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -48,6 +54,9 @@ public class ShelterServiceImpl implements ShelterService {
     public void process(Update update) {
         List<String> adminsVolunteers = new ArrayList<>();
         adminsVolunteers.add(" ");
+    public void process(Update update)  {
+        Map<String, String> infoMap = infoService.getInfo();
+
 
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
@@ -103,7 +112,7 @@ public class ShelterServiceImpl implements ShelterService {
                 int messageId = update.callbackQuery().message().messageId();
                 String receivedMessage = update.callbackQuery().data();
 
-
+//
                 switch (receivedMessage) {
                     //Cтартовый блок
                     case "Меню" -> changeMessage(messageId, chatId, "Выберите запрос, который Вам подходит. " +
@@ -114,6 +123,34 @@ public class ShelterServiceImpl implements ShelterService {
                             changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!",
                                     buttons.buttonsInformationAboutShelter());
                     case "В начало" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
+
+//                    break;
+                    case "Как взять животное из приюта?" ->
+                            changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
+
+                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+
+//                    case "Получить список животных для усыновления": {
+//                        infoService.getPets().stream()
+//                                .map(pet -> new SendPhoto(chatId, pet.getPhoto())
+//                                        .caption(String.format("%s-%s", pet.getName(), pet.getDescription())))
+//                                .forEach(telegramBot::execute);
+                    }
+
+
+                }
+            }
+        }
 
 
                     case "Как взять животное из приюта?" ->
@@ -127,11 +164,11 @@ public class ShelterServiceImpl implements ShelterService {
                                 "Введите свой номер телефона в формате +71112223344", buttons.buttonMenu());
                     }
                 }
-            }
 
-        }
 
-    }
+
+
+
 
     @Override
     public void sendMessage(Long chatId, String messageText) {
@@ -205,5 +242,11 @@ public class ShelterServiceImpl implements ShelterService {
             telegramBot.execute(sendMessage);
         }
     }
+    private void sendMessageByKey(Long chatId, Map<String, String> infoMap, String key) {
+        String message = infoMap.get(key);
+        SendMessage response = new SendMessage(chatId, message);
+        telegramBot.execute(response);
 
+
+    }
 }

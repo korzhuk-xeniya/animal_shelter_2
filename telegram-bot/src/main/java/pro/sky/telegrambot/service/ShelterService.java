@@ -3,8 +3,10 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 
+import java.io.IOException;
+
 public interface ShelterService {
-    void process(Update update);
+    void process(Update update) throws IOException;
 
     void sendMessage(Long chatId, String messageText);
 

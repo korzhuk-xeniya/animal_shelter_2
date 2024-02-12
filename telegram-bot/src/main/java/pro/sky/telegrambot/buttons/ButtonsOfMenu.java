@@ -36,33 +36,32 @@ public class ButtonsOfMenu {
         howGetPet.callbackData("Как взять животное из приюта?");
         toStart.callbackData("В начало");
 
-        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{checkInfoButton},
-                new InlineKeyboardButton[]{getReportAboutPet},
-                new InlineKeyboardButton[]{howGetPet},
-                new InlineKeyboardButton[]{callVolunteerButton},
-                new InlineKeyboardButton[]{toStart});
-    }
-
-    public InlineKeyboardMarkup buttonsInformationAboutShelter() {
-        logger.info("Был вызван метод создания кнопок Инфомация о приюте");
-        InlineKeyboardButton aboutShelterButton = new InlineKeyboardButton("О приюте");
-        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
-        InlineKeyboardButton timetableButton = new InlineKeyboardButton("График работы");
-        InlineKeyboardButton addressButton = new InlineKeyboardButton("Адрес приюта");
-        InlineKeyboardButton locationMapButton = new InlineKeyboardButton("Схема проезда");
-        InlineKeyboardButton securityButton = new InlineKeyboardButton("Телефон охраны");
-        InlineKeyboardButton safetyButton = new InlineKeyboardButton("Безопасность на территории приюта");
-        InlineKeyboardButton leavePhoneNumberButton = new InlineKeyboardButton("Оставить телефон для связи");
-        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
-        aboutShelterButton.callbackData("О приюте");
-        callVolunteerButton.callbackData("Позвать волонтера");
-        timetableButton.callbackData("График работы");
-        addressButton.callbackData("Адрес приюта");
-        locationMapButton.callbackData("Схема проезда");
-        securityButton.callbackData("Телефон охраны");
-        safetyButton.callbackData("Безопасность на территории приюта");
-        leavePhoneNumberButton.callbackData("Оставить телефон для связи");
-        toStart.callbackData("В начало");
+            return new InlineKeyboardMarkup(new InlineKeyboardButton[]{checkInfoButton},
+                    new InlineKeyboardButton[]{getReportAboutPet},
+                    new InlineKeyboardButton[]{howGetPet},
+                    new InlineKeyboardButton[]{callVolunteerButton},
+                    new InlineKeyboardButton[]{toStart});
+        }
+        public InlineKeyboardMarkup buttonsInformationAboutShelter() {
+            logger.info("Был вызван метод создания кнопок Инфомация о приюте");
+            InlineKeyboardButton aboutShelterButton = new InlineKeyboardButton("О приюте");
+            InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
+            InlineKeyboardButton timetableButton = new InlineKeyboardButton("График работы");
+            InlineKeyboardButton addressButton = new InlineKeyboardButton("Адрес приюта");
+            InlineKeyboardButton locationMapButton = new InlineKeyboardButton("Схема проезда");
+            InlineKeyboardButton securityButton = new InlineKeyboardButton("Телефон охраны");
+            InlineKeyboardButton safetyButton = new InlineKeyboardButton("Правила посещения приюта");
+            InlineKeyboardButton leavePhoneNumberButton = new InlineKeyboardButton("Оставить телефон для связи");
+            InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
+            aboutShelterButton.callbackData("О приюте");
+            callVolunteerButton.callbackData("Позвать волонтера");
+            timetableButton.callbackData("График работы");
+            addressButton.callbackData("Адрес приюта");
+            locationMapButton.callbackData("Схема проезда");
+            securityButton.callbackData("Телефон охраны");
+            safetyButton.callbackData("Правила посещения приюта");
+            leavePhoneNumberButton.callbackData("Оставить телефон для связи");
+            toStart.callbackData("В начало");
 
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{aboutShelterButton}
                 ,

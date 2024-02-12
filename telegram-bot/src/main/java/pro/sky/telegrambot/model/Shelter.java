@@ -19,7 +19,6 @@ public class Shelter {
     private String address;
     @Column(name="phone_number")
     private String phoneNumber;
-
     public Shelter() {
     }
     public Shelter(String nameOfShelter, String informationAboutShelter, String address, String phoneNumber) {
