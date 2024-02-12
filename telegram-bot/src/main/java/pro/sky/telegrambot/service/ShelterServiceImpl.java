@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.repository.ShelterRepository;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -33,7 +34,7 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public void process(Update update) {
+    public void process(Update update)  {
         Map<String, String> infoMap = infoService.getInfo();
 
 
@@ -95,10 +96,20 @@ public class ShelterServiceImpl implements ShelterService {
                     case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
                     case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
                     case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+
+//                    case "Получить список животных для усыновления": {
+//                        infoService.getPets().stream()
+//                                .map(pet -> new SendPhoto(chatId, pet.getPhoto())
+//                                        .caption(String.format("%s-%s", pet.getName(), pet.getDescription())))
+//                                .forEach(telegramBot::execute);
+                    }
+
+
                 }
             }
         }
-    }
+
+
 //                case "Позвать волонтера" -> callAVolunteer(update);
 //                case "Прислать отчет о питомце" -> petReportSelection(messageId, chatId);
 
