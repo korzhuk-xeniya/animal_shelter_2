@@ -3,13 +3,17 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.repository.ShelterRepository;
+
+import java.util.Map;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -17,16 +21,20 @@ public class ShelterServiceImpl implements ShelterService {
     private final TelegramBot telegramBot;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
+    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
 
-    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons) {
+    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
+                              InfoService infoService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
+        this.infoService = infoService;
     }
 
     @Override
     public void process(Update update) {
+        Map<String, String> infoMap = infoService.getInfo();
 
 
         if (update.message() == null && update.callbackQuery() == null) {
@@ -73,9 +81,24 @@ public class ShelterServiceImpl implements ShelterService {
                     case "В начало" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
 
 //                    break;
-                    case "Как взять животное из приюта?" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
+                    case "Как взять животное из приюта?" ->
+                            changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
 
-
+                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+                }
+            }
+        }
+    }
 //                case "Позвать волонтера" -> callAVolunteer(update);
 //                case "Прислать отчет о питомце" -> petReportSelection(messageId, chatId);
 
@@ -108,12 +131,7 @@ public class ShelterServiceImpl implements ShelterService {
 //                case "Обустройство для взрослой собаки" -> arrangementAdultSelectionDog(messageId, chatId);
 //                case "Обустройство для ограниченного" -> arrangementLimitedSelection(messageId, chatId);
 //                case "Cписок причин" -> listReasonsSelection(messageId, chatId);
-                }
-            }
 
-        }
-
-    }
 
     @Override
     public void sendMessage(Long chatId, String messageText) {
@@ -165,5 +183,11 @@ public class ShelterServiceImpl implements ShelterService {
         return update.message().text() != null && update.message().text().equals("/start");
     }
 
+    private void sendMessageByKey(Long chatId, Map<String, String> infoMap, String key) {
+        String message = infoMap.get(key);
+        SendMessage response = new SendMessage(chatId, message);
+        telegramBot.execute(response);
 
+
+    }
 }

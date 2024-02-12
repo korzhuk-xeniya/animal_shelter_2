@@ -19,13 +19,15 @@ public class Shelter {
     private String address;
     @Column(name="phoneNumber")
     private String phoneNumber;
+    private String photo;
     public Shelter() {
     }
-    public Shelter(String nameOfShelter, String informationAboutShelter, String address, String phoneNumber) {
+    public Shelter(String nameOfShelter, String informationAboutShelter, String address, String phoneNumber, String photo) {
         this.nameOfShelter = nameOfShelter;
         this.informationAboutShelter = informationAboutShelter;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.photo = photo;
     }
     public UUID getId() {
         return id;
@@ -74,12 +76,13 @@ public class Shelter {
         Shelter shelter = (Shelter) o;
         return Objects.equals(id, shelter.id) && Objects.equals(nameOfShelter, shelter.nameOfShelter)
                 && Objects.equals(informationAboutShelter, shelter.informationAboutShelter)
-                && Objects.equals(address, shelter.address) && Objects.equals(phoneNumber, shelter.phoneNumber);
+                && Objects.equals(address, shelter.address) && Objects.equals(phoneNumber, shelter.phoneNumber)
+                && Objects.equals(photo, shelter.photo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameOfShelter, informationAboutShelter, address, phoneNumber);
+        return Objects.hash(id, nameOfShelter, informationAboutShelter, address, phoneNumber, photo);
     }
 
     @Override
@@ -90,6 +93,7 @@ public class Shelter {
                 ", informationAboutShelter='" + informationAboutShelter + '\'' +
                 ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", photo='" + photo + '\'' +
                 '}';
     }
 }

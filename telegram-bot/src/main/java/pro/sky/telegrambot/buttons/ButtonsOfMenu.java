@@ -47,7 +47,7 @@ public class ButtonsOfMenu {
             InlineKeyboardButton addressButton = new InlineKeyboardButton("Адрес приюта");
             InlineKeyboardButton locationMapButton = new InlineKeyboardButton("Схема проезда");
             InlineKeyboardButton securityButton = new InlineKeyboardButton("Телефон охраны");
-            InlineKeyboardButton safetyButton = new InlineKeyboardButton("Безопасность на территории приюта");
+            InlineKeyboardButton safetyButton = new InlineKeyboardButton("Правила посещения приюта");
             InlineKeyboardButton leavePhoneNumberButton = new InlineKeyboardButton("Оставить телефон для связи");
             InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
             aboutShelterButton.callbackData("О приюте");
@@ -56,7 +56,7 @@ public class ButtonsOfMenu {
             addressButton.callbackData("Адрес приюта");
             locationMapButton.callbackData("Схема проезда");
             securityButton.callbackData("Телефон охраны");
-            safetyButton.callbackData("Безопасность на территории приюта");
+            safetyButton.callbackData("Правила посещения приюта");
             leavePhoneNumberButton.callbackData("Оставить телефон для связи");
             toStart.callbackData("В начало");
 
