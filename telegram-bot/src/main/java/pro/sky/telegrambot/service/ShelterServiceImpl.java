@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ShelterRepository;
+import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -24,16 +27,19 @@ public class ShelterServiceImpl implements ShelterService {
     private final ButtonsOfMenu buttons;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
+    private final UserRepository userRepository;
     private final UserService userService;
     private final VolunteerService volunteerService;
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
 
     private boolean isCorrectNumber = false;
 
-    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons, VolunteerRepository volunteerRepository, UserService userService, VolunteerService volunteerService) {
+    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons, VolunteerRepository volunteerRepository, UserRepository userRepository, UserService userService, VolunteerService volunteerService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
         this.volunteerRepository = volunteerRepository;
+        this.userRepository = userRepository;
         this.userService = userService;
         this.volunteerService = volunteerService;
     }
@@ -41,7 +47,7 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void process(Update update) {
         List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add("xeny_sk");
+        adminsVolunteers.add(" ");
 
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
@@ -54,11 +60,26 @@ public class ShelterServiceImpl implements ShelterService {
             Long userId = update.message().from().id();
             String userName = update.message().from().firstName();
             int messageId = update.message().messageId();
-            if (!update.message().text().equals("/start")) {
-                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
-                sendMessage(chatId, "для начала работы, отправь /start");
+            Matcher matcher = MESSAGE_PATTERN.matcher(message);
+            if (update.message() != null && matcher.find()) {
+                userRepository.updateNumber(update.message().chat().id().intValue(), update.message().text());
+                userService.saveUser(update, false);
+                sendMenuButton(chatId, "Номер записан, Вам обязательно позвонят!");
+
+
+                isCorrectNumber = false;
+            } else if (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
+                logger.info("пользователь отправил  сообщение  с неопределенным содержанием");
+                sendMessage(chatId, ("Содержание не определено. Для начала работы, отправь /start." +
+                        "Для записи номера телефона, введите его в формате +71112223344")
+                );
                 return;
             }
+//            if (!update.message().text().equals("/start")) {
+//                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
+//                sendMessage(chatId, );
+//                return;
+//            }
             if (update.message().text().equals("/start")) {
                 logger.info("пользователь отправил /start");
                 sendMenuButton(chatId, " Добро пожаловать в PetShelterBot, "
@@ -95,12 +116,16 @@ public class ShelterServiceImpl implements ShelterService {
                     case "В начало" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
 
 
-                    case "Как взять животное из приюта?" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
+                    case "Как взять животное из приюта?" ->
+                            changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
                     case "Позвать волонтера" -> {
                         callAVolunteer(update);
                         changeMessage(messageId, chatId, "Волонтер скоро свяжется с Вами", buttons.buttonMenu());
                     }
-
+                    case "Оставить телефон для связи" -> {
+                        changeMessage(messageId, chatId,
+                                "Введите свой номер телефона в формате +71112223344", buttons.buttonMenu());
+                    }
                 }
             }
 
@@ -125,6 +150,7 @@ public class ShelterServiceImpl implements ShelterService {
         sendMessage.replyMarkup(buttons.buttonMenu());
         telegramBot.execute(sendMessage);
     }
+
     @Override
     public void sendMenuVolunteer(Long chatId, String messageText) {
         logger.info("Был вызван метод для отправки кнопок Меню волонтера", chatId, messageText);
@@ -132,6 +158,7 @@ public class ShelterServiceImpl implements ShelterService {
         sendMessage.replyMarkup(buttons.buttonsOfVolunteer());
         telegramBot.execute(sendMessage);
     }
+
     /**
      * метод для отправки кнопок Этапа 0. Определение запроса
      */
@@ -142,10 +169,12 @@ public class ShelterServiceImpl implements ShelterService {
         sendMessage.replyMarkup(buttons.buttonsOfStart());
         telegramBot.execute(sendMessage);
     }
+
     @Override
     /**
      * метод для изменения сообщения
-     */ public void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup keyboardMarkup) {
+     */ public void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup
+            keyboardMarkup) {
         logger.info("Был вызван метод для изменения сообщения", messageId, chatIdInButton, messageText, keyboardMarkup);
         EditMessageText editMessageText = new EditMessageText(chatIdInButton, messageId, messageText);
 
@@ -162,6 +191,7 @@ public class ShelterServiceImpl implements ShelterService {
     private boolean isStartEntered(Update update) {
         return update.message().text() != null && update.message().text().equals("/start");
     }
+
     @Override
     /**
      * @param update Реализация кнопки "Позвать волонтера"
