@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface ShelterService {
     void process(Update update) throws IOException;
@@ -25,4 +26,6 @@ public interface ShelterService {
      * @param update Реализация кнопки "Позвать волонтера"
      */
     void callAVolunteer(Update update);
+
+    void sendMessageByKey(Long chatId, Map<String, String> infoMap, String key);
 }
