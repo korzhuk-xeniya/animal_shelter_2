@@ -5,8 +5,6 @@ import pro.sky.telegrambot.model.TrialPeriod;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public interface ReportAboutAnimalService {
         /**
@@ -26,18 +24,18 @@ public interface ReportAboutAnimalService {
          * @return Отчёт
          * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет отчёта с указанным id
          */
-        ReportAboutAnimal getById(UUID id);
+        ReportAboutAnimal getById(Long id);
 
         /**
          * Получение отчёта из базы данных по дате<br>
-         * Используется метод репозитория {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#findByReceiveDateAndTrialPeriodId(LocalDate, UUID)}
+         * Используется метод репозитория {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#findByReceiveDateAndTrialPeriodId(LocalDate, Long)}
          *
          * @param date Дата создания отчёта
          * @param id   id Испытательного срока
          * @return Отчёт
          * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет отчёта с указанным id и датой
          */
-        ReportAboutAnimal getByDateAndTrialId(LocalDate date, UUID id);
+        ReportAboutAnimal getByDateAndTrialId(LocalDate date, Long id);
 
         /**
          * Получение всех отчётов<br>
@@ -50,17 +48,17 @@ public interface ReportAboutAnimalService {
 
         /**
          * Получение всех отчётов по id испытательного срока<br>
-         * Используется метод репозитория {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#findAllByTrialPeriodId(UUID)}
+         * Используется метод репозитория {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#findAllByTrialPeriodId(Long)}
          *
          * @param id id испытательного срока из базы данных
          * @return Список отчётов по испытательному сроку
          * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет отчётов по указанному id испытательного срока
          */
-        List<ReportAboutAnimal> gelAllByTrialPeriodId(UUID id);
+        List<ReportAboutAnimal> gelAllByTrialPeriodId(Long id);
 
         /**
          * Изменение существующего отчёта<br>
-         * Используется метод этого же сервиса {@link ReportAboutAnimalServiceImpl#getById(UUID)}
+         * Используется метод этого же сервиса {@link ReportAboutAnimalServiceImpl#getById(Long)}
          *
          * @param report Отчёт
          * @return Изменённый отчёт
@@ -70,7 +68,7 @@ public interface ReportAboutAnimalService {
 
         /**
          * Удаление полученного из базы данных отчёта<br>
-         * Используется метод этого же сервиса {@link ReportAboutAnimalServiceImpl#getById(UUID)}
+         * Используется метод этого же сервиса {@link ReportAboutAnimalServiceImpl#getById(Long)}
          *
          * @param report Отчёт, который уже есть в бд
          * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет отчёта с указанным id
@@ -79,12 +77,12 @@ public interface ReportAboutAnimalService {
 
         /**
          * Удаление отчёта по id<br>
-         * Используется метод этого же сервиса {@link ReportAboutAnimalServiceImpl#getById(UUID)}
+         * Используется метод этого же сервиса {@link ReportAboutAnimalServiceImpl#getById(Long)}
          *
          * @param id id отчёта
          * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет отчёта с указанным id
          */
-        void deleteById(UUID id);
+        void deleteById(Long id);
 
         /**
          * Создание отчёта по данным из телеграма<br>
@@ -99,5 +97,5 @@ public interface ReportAboutAnimalService {
          * @throws IllegalArgumentException Если описание пустое или равно null, а так же, если формат данных не совпадает с regEx
          * @throws pro.sky.telegrambot.exceptions.AlreadyExistsException  Если отчёт уже отправляли в этот день
          */
-        ReportAboutAnimal createFromTelegram(String photoLink, String caption, UUID id);
+        ReportAboutAnimal createFromTelegram(String photoLink, String caption, Long id);
     }

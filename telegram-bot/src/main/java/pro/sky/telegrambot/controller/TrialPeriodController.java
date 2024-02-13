@@ -12,7 +12,7 @@ import pro.sky.telegrambot.service.TrialPeriodService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("trial-periods")
@@ -35,11 +35,10 @@ public class TrialPeriodController {
     @Operation(summary = "Создать испытательный срок")
     public TrialPeriod create(@RequestParam @Parameter(description = "Дата начала испытательного срока") LocalDate startDate,
                               @RequestParam @Parameter(description = "Состояние") TrialPeriod.Result result,
-                              @RequestParam @Parameter(description = "Id хозяина животного") UUID ownerId,
-                              @RequestParam @Parameter(description = "Тип взятого животного") TrialPeriod.AnimalType animalType,
-                              @RequestParam @Parameter(description = "Id животного") UUID animalId) {
+                              @RequestParam @Parameter(description = "Id хозяина животного") Long ownerId,
+                              @RequestParam @Parameter(description = "Id животного") Long animalId) {
         return trialPeriodService.create(new TrialPeriod(startDate, startDate.plusDays(30),
-                startDate.minusDays(1), new ArrayList<>(), result, ownerId, animalType, animalId));
+                startDate.minusDays(1), new ArrayList<>(), result, ownerId, animalId));
     }
 
     @GetMapping()
@@ -52,7 +51,7 @@ public class TrialPeriodController {
 
     @GetMapping("owner")
     @Operation(summary = "Получение всех испытательных сроков по id хозяина")
-    public List<TrialPeriod> getAllByOwnerId(@RequestParam @Parameter(description = "Id хозяина животного") UUID ownerId) {
+    public List<TrialPeriod> getAllByOwnerId(@RequestParam @Parameter(description = "Id хозяина животного") Long ownerId) {
         return trialPeriodService.getAllByOwnerId(ownerId);
     }
 
@@ -63,7 +62,7 @@ public class TrialPeriodController {
             description = "Id иcпытательного срока",
             example = "1"
     )
-    public TrialPeriod getById(@RequestParam UUID id) {
+    public TrialPeriod getById(@RequestParam Long id) {
         return trialPeriodService.getById(id);
     }
 
@@ -71,21 +70,20 @@ public class TrialPeriodController {
     @Operation(
             summary = "Изменить испытательный срок"
     )
-    public TrialPeriod update(@RequestParam @Parameter(description = "Id испытательного срока") UUID id,
+    public TrialPeriod update(@RequestParam @Parameter(description = "Id испытательного срока") Long id,
                               @RequestParam(required = false) @Parameter(description = "Дата начала испытательного срока") LocalDate startDate,
                               @RequestParam(required = false) @Parameter(description = "Дата окончания испытательного срока") LocalDate endDate,
                               @RequestParam(required = false) @Parameter(description = "Дата последнего отчёта") LocalDate lastReportDate,
                               @RequestParam(required = false) @Parameter(description = "Состояние") TrialPeriod.Result result,
-                              @RequestParam(required = false) @Parameter(description = "Id хозяина животного") UUID ownerId,
-                              @RequestParam(required = false) @Parameter(description = "Тип взятого животного") TrialPeriod.AnimalType animalType,
-                              @RequestParam(required = false) @Parameter(description = "Id животного") UUID animalId) {
+                              @RequestParam(required = false) @Parameter(description = "Id хозяина животного") Long ownerId,
+                              @RequestParam(required = false) @Parameter(description = "Id животного") Long animalId) {
         return trialPeriodService.update(new TrialPeriod(id, startDate, endDate,
-                lastReportDate, new ArrayList<>(), result, ownerId, animalType, animalId));
+                lastReportDate, new ArrayList<>(), result, ownerId, animalId));
     }
 
     @DeleteMapping("id")
     @Operation(summary = "Удаление испытательного срока по id")
-    public String deleteById(@RequestParam @Parameter(description = "Id испытательного срока") UUID id) {
+    public String deleteById(@RequestParam @Parameter(description = "Id испытательного срока") Long id) {
         trialPeriodService.deleteById(id);
         return "Испытательный срок успешно удалён";
     }

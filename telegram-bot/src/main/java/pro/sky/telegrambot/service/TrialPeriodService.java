@@ -20,11 +20,10 @@ public interface TrialPeriodService {
      * Используется метод репозитория {@link pro.sky.telegrambot.repository.TrialPeriodRepository#save(Object)}
      *
      * @param trialPeriod Испытательный срок для сохранения в бд
-     * @param Animal.getPetType()  Тип животного
      * @return Созданный испытательный срок
      */
 
-    TrialPeriod getById(UUID id);
+    TrialPeriod getById(Long id);
 
     /**
      * Получение всех отчётов<br>
@@ -37,17 +36,17 @@ public interface TrialPeriodService {
 
     /**
      * Получение всех отчётов конкретного пользователя<br>
-     * Используется метод репозитория {@link pro.sky.telegrambot.repository.TrialPeriodRepository#findAllByOwnerId(UUID)}
+     * Используется метод репозитория {@link pro.sky.telegrambot.repository.TrialPeriodRepository#findAllByOwnerId(Long)}
      *
      * @param ownerId id хозяина, по которому будет идти поиск
      * @return Список испытательных сроков по хозяину
      * @throws pro.sky.telegrambot.exceptions.NotFoundException Если у пользователя отсутствуют испытательные сроки
      */
-    List<TrialPeriod> getAllByOwnerId(UUID ownerId);
+    List<TrialPeriod> getAllByOwnerId(Long ownerId);
 
     /**
      * Изменение существующего испытательного срока<br>
-     * Используется метод этого же сервиса {@link TrialPeriodServiceImpl#getById(UUID)}
+     * Используется метод этого же сервиса {@link TrialPeriodServiceImpl#getById(Long)}
      *
      * @param trialPeriod Испытательный срок
      * @return Обновлённый испытательный срок
@@ -57,7 +56,7 @@ public interface TrialPeriodService {
 
     /**
      * Удаление полученного из бд испытательного срока<br>
-     * Используется метод этого же сервиса {@link TrialPeriodServiceImpl#getById(UUID)}
+     * Используется метод этого же сервиса {@link TrialPeriodServiceImpl#getById(Long)}
      *
      * @param trialPeriod Испытательный срок, который уже есть в бд
      * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет испытательного срока с указанным id
@@ -66,10 +65,10 @@ public interface TrialPeriodService {
 
     /**
      * Удаление испытательного срока по id<br>
-     * Используется метод этого же сервиса {@link TrialPeriodServiceImpl#getById(UUID)}
+     * Используется метод этого же сервиса {@link TrialPeriodServiceImpl#getById(Long)}
      *
      * @param id id испытательного срока
      * @throws pro.sky.telegrambot.exceptions.NotFoundException Если в базе нет испытательного срока с указанным id
      */
-    void deleteById(UUID id);
+    void deleteById(Long id);
 }

@@ -7,12 +7,11 @@ import pro.sky.telegrambot.model.ReportAboutAnimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface ReportAboutAnimalRepository extends JpaRepository<ReportAboutAnimal, UUID> {
-    Optional<ReportAboutAnimal> findByReceiveDateAndTrialPeriodId(LocalDate date, UUID id);
+public interface ReportAboutAnimalRepository extends JpaRepository<ReportAboutAnimal, Long> {
+    Optional<ReportAboutAnimal> findByReceiveDateAndTrialPeriodId(LocalDate date, Long id);
 
-    List<ReportAboutAnimal> findAllByTrialPeriodId(UUID trialPeriodId);
+    List<ReportAboutAnimal> findAllByTrialPeriodId(Long trialPeriodId);
 }
 

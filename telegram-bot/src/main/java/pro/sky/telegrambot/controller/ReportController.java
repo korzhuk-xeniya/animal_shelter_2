@@ -14,7 +14,6 @@ import pro.sky.telegrambot.service.ReportAboutAnimalServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("reports")
@@ -45,8 +44,8 @@ public class ReportController {
                                     @RequestParam @Parameter(description = "Рацион животного") String diet,
                                     @RequestParam @Parameter(description = "Общее самочувствие и привыкание к новому месту") String wellBeingAndAddiction,
                                     @RequestParam @Parameter(description = "Изменение в поведении") String changesInBehaviour,
-                                    @RequestParam @Parameter(description = "Id испытательного срока") UUID trialPeriodId) {
-        return reportService.create(new ReportAboutAnimal(photoLink, diet, wellBeingAndAddiction, changesInBehaviour, LocalDate.now(), trialPeriodId));
+                                    @RequestParam @Parameter(description = "Id испытательного срока") Long trialPeriodId) {
+        return reportService.create(new ReportAboutAnimal( photoLink, diet, wellBeingAndAddiction, changesInBehaviour, LocalDate.now(), trialPeriodId));
     }
 
 
@@ -62,7 +61,7 @@ public class ReportController {
     @Operation(
             summary = "Получение всех отчётов по id испытательного срока"
     )
-    public List<ReportAboutAnimal> getAllByTrialPeriodId(@RequestParam @Parameter(description = "id испытательного срока") UUID id) {
+    public List<ReportAboutAnimal> getAllByTrialPeriodId(@RequestParam @Parameter(description = "id испытательного срока") Long id) {
         return reportService.gelAllByTrialPeriodId(id);
     }
 
@@ -79,18 +78,18 @@ public class ReportController {
             @Parameter(
                     name = "id",
                     description = "Id испытательного срока",
-                    example = "00000000-0000-0000-0000-000000000000"
+                    example = "1"
             )
     }
     )
     public ReportAboutAnimal getByDateAndTrialId(@RequestParam @Parameter(description = "Дата получения отчёта") LocalDate date,
-                                                 @RequestParam @Parameter(description = "id испытательного срока") UUID id) {
+                                                 @RequestParam @Parameter(description = "id испытательного срока") Long id) {
         return reportService.getByDateAndTrialId(date, id);
     }
 
     @GetMapping("id")
     @Operation(summary = "Получение отчёта по id")
-    public ReportAboutAnimal getById(@RequestParam @Parameter(description = "Id испытательного срока") UUID reportId) {
+    public ReportAboutAnimal getById(@RequestParam @Parameter(description = "Id испытательного срока") Long reportId) {
         return reportService.getById(reportId);
     }
 
@@ -98,15 +97,25 @@ public class ReportController {
     @Operation(
             summary = "Изменить отчёт"
     )
-    public ReportAboutAnimal update(@RequestParam @Parameter(description = "Id отчёта") UUID id,
+    public ReportAboutAnimal update(@RequestParam @Parameter(description = "Id отчёта") Long id,
                                     @RequestParam(required = false) @Parameter(description = "Фотографии животного") String photoLink,
                                     @RequestParam(required = false) @Parameter(description = "Рацион животного") String diet,
                                     @RequestParam(required = false) @Parameter(description = "Общее самочувствие и привыкание к новому месту") String wellBeingAndAddiction,
                                     @RequestParam(required = false) @Parameter(description = "Изменение в поведении") String changesInBehaviour,
                                     @RequestParam(required = false) @Parameter(description = "Дата получения") LocalDate receiveDate,
-                                    @RequestParam(required = false) @Parameter(description = "Id испытательного срока") UUID trialPeriodId) {
+                                    @RequestParam(required = false) @Parameter(description = "Id испытательного срока") Long trialPeriodId) {
         return reportService.update(new ReportAboutAnimal(id, photoLink, diet, wellBeingAndAddiction, changesInBehaviour, receiveDate, trialPeriodId));
     }
+    /*  public Report update(@RequestParam @Parameter(description = "Id отчёта") Long id,
+                         @RequestParam(required = false) @Parameter(description = "Id фотографии") String photoId,
+                         @RequestParam(required = false) @Parameter(description = "Рацион животного") String foodRation,
+                         @RequestParam(required = false) @Parameter(description = "Общее самочувствие и привыкание к новому месту") String generalHealth,
+                         @RequestParam(required = false) @Parameter(description = "Изменение в поведении") String behaviorChanges,
+                         @RequestParam(required = false) @Parameter(description = "Дата получения") LocalDate receiveDate,
+                         @RequestParam(required = false) @Parameter(description = "Id испытательного срока") Long trialPeriodId) {
+        return reportService.update(new Report(id, photoId, foodRation, generalHealth, behaviorChanges, receiveDate, trialPeriodId));
+    }
+*/
 
     @DeleteMapping("id")
     @Operation(
@@ -117,15 +126,15 @@ public class ReportController {
             description = "Id отчёта",
             example = "1"
     )
-    public String deleteById(@RequestParam UUID id) {
+    public String deleteById(@RequestParam Long id) {
         reportService.deleteById(id);
         return "Отчёт успешно удалён";
     }
 
     @GetMapping("report-photo")
     @Operation(summary = "Отправить фото из отчёта волонтёру")
-    public String getReportPhoto(@RequestParam @Parameter(description = "Id отчёта") UUID reportId,
-                                 @RequestParam @Parameter(description = "Id волонтёра") UUID volunteerId) {
+    public String getReportPhoto(@RequestParam @Parameter(description = "Id отчёта") Long reportId,
+                                 @RequestParam @Parameter(description = "Id волонтёра") Long volunteerId) {
         // telegramBotUpdatesListener.sendReportPhotoToVolunteer(reportId, volunteerId);
         return "Фотография успешно отправлена";
     }

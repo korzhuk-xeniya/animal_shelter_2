@@ -9,7 +9,7 @@ import pro.sky.telegrambot.repository.TrialPeriodRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,13 +18,14 @@ public class TrialPeriodServiceImpl implements TrialPeriodService {
     private final TrialPeriodRepository trialPeriodRepository;
     private final AnimalService animalService;
 
+
+
     @Override
     public TrialPeriod create(TrialPeriod trialPeriod) {
         return trialPeriodRepository.save(trialPeriod);
     }
-/* to do : получать от животного тип
-    @Override
-    public TrialPeriod create(TrialPeriod trialPeriod, {
+    /* to do: тут будет метод create с типом animal
+  public TrialPeriod create(TrialPeriod trialPeriod, {
         if (.Animal.PetType.CAT)) {
             animalService.getById(trialPeriod.getAnimalId()).setOwnerId(trialPeriod.getOwnerId());
         } else if (.Animal.PetType.DOG)) {
@@ -34,7 +35,7 @@ public class TrialPeriodServiceImpl implements TrialPeriodService {
     }*/
 
     @Override
-    public TrialPeriod getById(UUID id) {
+    public TrialPeriod getById(Long id) {
         Optional<TrialPeriod> optionalTrialPeriod = trialPeriodRepository.findById(id);
         if (optionalTrialPeriod.isEmpty()) {
             throw new NotFoundException("Испытательный срок не найден!");
@@ -52,7 +53,7 @@ public class TrialPeriodServiceImpl implements TrialPeriodService {
     }
 
     @Override
-    public List<TrialPeriod> getAllByOwnerId(UUID ownerId) {
+    public List<TrialPeriod> getAllByOwnerId(Long ownerId) {
         List<TrialPeriod> allByOwnerId = trialPeriodRepository.findAllByOwnerId(ownerId);
         if (allByOwnerId.isEmpty()) {
             throw new NotFoundException("Испытательные сроки не найдены!");
@@ -73,7 +74,7 @@ public class TrialPeriodServiceImpl implements TrialPeriodService {
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(Long id) {
         trialPeriodRepository.deleteById(getById(id).getId());
     }
 }

@@ -6,6 +6,6 @@ import pro.sky.telegrambot.model.TrialPeriod;
 import java.util.List;
 import java.util.UUID;
 
-public interface TrialPeriodRepository extends JpaRepository<TrialPeriod, UUID> {
-    List<TrialPeriod> findAllByOwnerId(UUID ownerId);
+public interface TrialPeriodRepository extends JpaRepository<TrialPeriod, Long> {
+    List<TrialPeriod> findAllByOwnerId(Long ownerId);
 }

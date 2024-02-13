@@ -1,22 +1,23 @@
 package pro.sky.telegrambot.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.persistence.Column;
 import java.time.LocalDate;
-import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
+@Table(name = "reports")
 public class ReportAboutAnimal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
+    private Long id;
     @Column(name = "photo_link")
     private String photoLink;
     @Column(name = "diet")
@@ -28,15 +29,22 @@ public class ReportAboutAnimal {
     @Column(name = "receive_date")
     private LocalDate receiveDate;
     @Column(name = "trial_period_Id")
-    private UUID trialPeriodId;
+    private Long trialPeriodId;
 
     public ReportAboutAnimal(String photoLink, String diet, String wellBeingAndAddiction,
-                  String changesInBehaviour, LocalDate receiveDate, UUID trialPeriodId) {
+                             String changesInBehaviour, LocalDate receiveDate, Long trialPeriodId) {
         this.photoLink = photoLink;
         this.diet = diet;
         this.wellBeingAndAddiction = wellBeingAndAddiction;
         this.changesInBehaviour = changesInBehaviour;
         this.receiveDate = receiveDate;
         this.trialPeriodId = trialPeriodId;
+    }
+
+    public ReportAboutAnimal(Long id, String photoLink, String diet, String wellBeingAndAddiction, String changesInBehaviour, LocalDate receiveDate, Long trialPeriodId) {
+    }
+
+    public Long getId() {
+        return id;
     }
 }
