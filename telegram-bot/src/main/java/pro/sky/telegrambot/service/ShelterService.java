@@ -19,7 +19,13 @@ public interface ShelterService {
     /**
      * метод для изменения сообщения
      */
-    void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup keyboardMarkup);
+//    void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup keyboardMarkup);
+
+    /**
+     * метод для изменения сообщения
+     */
+    void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup
+            keyboardMarkup);
 
     /**
      * @param update Реализация кнопки "Позвать волонтера"

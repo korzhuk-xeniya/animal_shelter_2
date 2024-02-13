@@ -10,11 +10,11 @@ import java.util.UUID;
 @Service
 public class AnimalServiceImpl implements AnimalService {
     private final AnimalRepository animalRepository;
-//    private final Animal animal;
+
 
     public AnimalServiceImpl(AnimalRepository animalRepository) {
         this.animalRepository = animalRepository;
-//        this.animal = animal;
+
     }
 
     /**
