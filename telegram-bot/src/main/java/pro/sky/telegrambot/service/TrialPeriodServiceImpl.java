@@ -15,8 +15,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrialPeriodServiceImpl implements TrialPeriodService {
 
-    private final TrialPeriodRepository trialPeriodRepository;
-    private final AnimalService animalService;
+    private  TrialPeriodRepository trialPeriodRepository;
+    private  AnimalService animalService;
 
 
 
