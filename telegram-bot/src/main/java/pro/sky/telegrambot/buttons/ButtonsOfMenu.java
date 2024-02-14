@@ -12,7 +12,7 @@ import java.util.List;
  * class for creating buttons of start menu
  */
 @Component
-public class ButtonsOfMenu {
+public class  ButtonsOfMenu {
            private final Logger logger = LoggerFactory.getLogger(ButtonsOfMenu.class);
         public InlineKeyboardMarkup buttonMenu() {
             logger.info("Был вызван метод создания кнопки Меню");

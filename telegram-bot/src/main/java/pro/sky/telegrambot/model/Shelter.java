@@ -3,7 +3,9 @@ package pro.sky.telegrambot.model;
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * Модель имеет в себе информацию о приюте
+ */
 @Entity
 @Table(name = "pet_shelters")
 public class Shelter {
