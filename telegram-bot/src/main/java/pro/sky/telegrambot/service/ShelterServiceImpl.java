@@ -3,6 +3,7 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -53,7 +54,7 @@ public class ShelterServiceImpl implements ShelterService {
     public void process(Update update) {
         Map<String, String> infoMap = infoService.getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add(" ");
+        adminsVolunteers.add("");
 
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
@@ -227,7 +228,9 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void sendMessageByKey(Long chatId, Map<String, String> infoMap, String key) {
         String message = infoMap.get(key);
-        SendMessage response = new SendMessage(chatId, message);
+        SendMessage response = new SendMessage(chatId, message).replyMarkup(new ReplyKeyboardMarkup(new String[][]{
+                {"В начало"}
+        }).resizeKeyboard(true).oneTimeKeyboard(true));
         telegramBot.execute(response);
 
 
