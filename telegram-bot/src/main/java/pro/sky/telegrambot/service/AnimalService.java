@@ -14,7 +14,8 @@ public interface AnimalService {
 
     Animal update(Long id, Animal animal);
 
-    void delete(UUID id);
+
+    String delete(UUID id);
 
     List<Animal> allAnimals();
 }

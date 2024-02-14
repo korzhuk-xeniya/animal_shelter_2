@@ -3,7 +3,6 @@ package pro.sky.telegrambot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
 import org.hibernate.annotations.Parent;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import java.util.UUID;
  * Класс для животных в приюте.
  * На данный момент это кошки и собаки.
  */
-@Data
+
 @Entity(name = "Animals")
 @JsonIgnoreProperties(value = "user")
 public class Animal {
@@ -75,6 +74,8 @@ public class Animal {
         return petType;
     }
 
+
+
     @Override
     public String toString() {
         return "Animal{" +
@@ -105,10 +106,9 @@ public class Animal {
     public void setPetType(String petType) {
     }
 
-    public Integer getAgeMonth() {
-        return ageMonth;
-    }
 
     public void setParent(Object o) {
     }
+
+
 }
