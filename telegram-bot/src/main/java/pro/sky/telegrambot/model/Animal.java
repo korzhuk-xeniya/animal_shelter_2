@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Parent;
+
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -45,7 +49,8 @@ public class Animal {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Animal(Integer ageMonth, String name, String photoLink, String gender, String petType) {
+    public Animal(UUID id, Integer ageMonth, String name, String photoLink, String gender, String petType) {
+        this.id = id;
         this.ageMonth = ageMonth;
         this.nameOfAnimal = name;
         this.photoLink = photoLink;
@@ -53,13 +58,11 @@ public class Animal {
         this.petType = petType;
     }
 
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
+
+
+    public User getUser() {
+        return user;
+    }
 
     public Integer getAgeMonth() {
         return ageMonth;
@@ -81,6 +84,8 @@ public class Animal {
         return petType;
     }
 
+
+
     @Override
     public String toString() {
         return "Animal{" +
@@ -91,6 +96,28 @@ public class Animal {
                 ", gender='" + gender + '\'' +
                 ", petType='" + petType + '\'' +
                 '}';
+    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_chatId")
+    @JsonManagedReference
+    private Parent parent;
+
+
+    public void setAgeMonth(Integer ageMonth) {
+
+    }
+
+    public void setName(String name) {
+    }
+
+    public void setGender(String gender) {
+    }
+
+    public void setPetType(String petType) {
+    }
+
+
+    public void setParent(Object o) {
     }
 
 
