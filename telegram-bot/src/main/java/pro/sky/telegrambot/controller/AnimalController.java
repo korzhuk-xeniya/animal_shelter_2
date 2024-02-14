@@ -68,55 +68,55 @@ public class AnimalController {
         return ResponseEntity.ok(animal);
     }
     /**
-     * Эндпоинт для обновления данных о животном
-     * @param id
-     * @param animal
-     * @return Обновленные данные о животном.
-     * @see AnimalService#update(Long, Animal)
+//     * Эндпоинт для обновления данных о животном
+//     * @param id
+//     * @param animal
+//     * @return Обновленные данные о животном.
+//     * @see AnimalService#update(Long, Animal)
      */
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Изменение данных о животном",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Animal.class)
-                    )
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "Изменение данных о животном",
+//                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+//                            schema = @Schema(implementation = Animal.class)
+//                    )
+//
+//            )
+//    })
 
-            )
-    })
 
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Animal> update(@Parameter(description = "ID изменяемого животного") @PathVariable Long id,
-                                         @Parameter(description = "Новые параметры животного для замены") @RequestBody Animal animal) {
-        Animal savedAnimal = animalService.update(id, animal);
-        if (savedAnimal == null) {
-            return ResponseEntity.badRequest().build();
-        } else {
-            return ResponseEntity.ok(savedAnimal);
-        }
-    }
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<Animal> update(@Parameter(description = "ID изменяемого животного") @PathVariable Long id,
+//                                         @Parameter(description = "Новые параметры животного для замены") @RequestBody Animal animal) {
+//        Animal savedAnimal = animalService.update(id, animal);
+//        if (savedAnimal == null) {
+//            return ResponseEntity.badRequest().build();
+//        } else {
+//            return ResponseEntity.ok(savedAnimal);
+//        }
+//    }
     /**
      * Эндпоинт для удаления животного.
      * @param id
      * @return Информационное сообщение об удачном удалении животного.
      */
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Удаление животного",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Animal.class)
-                    )
-
-            )
-    })
-        @ResponseBody
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Animal> delete(@PathVariable long id) {
-            animalService.delete(id);
-            return ResponseEntity.ok().build();
-        }
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "Удаление животного",
+//                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+//                            schema = @Schema(implementation = Animal.class)
+//                    )
+//
+//            )
+//    })
+//        @ResponseBody
+//        @DeleteMapping("/{id}")
+//        public ResponseEntity<Animal> delete(@PathVariable long id) {
+//            animalService.delete(id);
+//            return ResponseEntity.ok().build();
+//        }
 
 
 

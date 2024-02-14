@@ -30,9 +30,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByChatId(long chatId);
     boolean existsByChatId(long chatId);
-//    static Optional<User> findByChatId(long chatId) {
+//     Optional<User> findByChatId(long chatId) {
 //        return findByChatId(chatId);
-    }
+//    }
 
 //    Optional<User> findByDateTimeToTookBefore(LocalDateTime dateTimeToTook);
 

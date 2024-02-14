@@ -49,8 +49,8 @@ public class Animal {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Animal(UUID id, Integer ageMonth, String name, String photoLink, String gender, String petType) {
-        this.id = id;
+    public Animal( Integer ageMonth, String name, String photoLink, String gender, String petType) {
+
         this.ageMonth = ageMonth;
         this.nameOfAnimal = name;
         this.photoLink = photoLink;
