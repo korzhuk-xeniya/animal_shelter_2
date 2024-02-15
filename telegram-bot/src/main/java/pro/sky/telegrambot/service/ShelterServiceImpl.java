@@ -3,7 +3,6 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -122,17 +121,17 @@ public class ShelterServiceImpl implements ShelterService {
 //                    break;
                     case "Как взять животное из приюта?" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
 
-                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
-                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
-                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
-                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                    case "О приюте" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.info", buttons.buttonsInformationAboutShelter());
+                    case "График работы" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
+                    case "Адрес приюта" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
+                    case "Телефон охраны" -> sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
                     case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
-                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
-                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
-                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
-                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
-                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
-                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
+                    case "Правила знакомства" -> sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
+                    case "Причины отказа" -> sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
+                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
+                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
 //                    case "Получить список животных для усыновления": {
 //                        infoService.getPets().stream()
@@ -225,14 +224,15 @@ public class ShelterServiceImpl implements ShelterService {
             telegramBot.execute(sendMessage);
         }
     }
+
     @Override
-    public void sendMessageByKey(Long chatId, Map<String, String> infoMap, String key) {
+    public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
+                                 InlineKeyboardMarkup keyboardMarkup) {
         String message = infoMap.get(key);
-        SendMessage response = new SendMessage(chatId, message).replyMarkup(new ReplyKeyboardMarkup(new String[][]{
-                {"В начало"}
-        }).resizeKeyboard(true).oneTimeKeyboard(true));
-        telegramBot.execute(response);
-
-
+        EditMessageText editMessageText = new EditMessageText(chatId, messageId, message);
+        editMessageText.replyMarkup(keyboardMarkup);
+                telegramBot.execute(editMessageText);
     }
 }
+
+

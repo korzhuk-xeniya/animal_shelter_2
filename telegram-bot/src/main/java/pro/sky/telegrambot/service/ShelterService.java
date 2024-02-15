@@ -27,5 +27,6 @@ public interface ShelterService {
      */
     void callAVolunteer(Update update);
 
-    void sendMessageByKey(Long chatId, Map<String, String> infoMap, String key);
+    void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
+                          InlineKeyboardMarkup keyboardMarkup);
 }
