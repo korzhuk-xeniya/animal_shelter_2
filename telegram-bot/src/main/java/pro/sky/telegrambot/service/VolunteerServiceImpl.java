@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
+import pro.sky.telegrambot.exceptions.NotFoundException;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
@@ -43,7 +43,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     public Volunteer readVolunteer(long id) {
         logger.error("Был вызван метод для выбрасывания ошибки если волонтер не найден по id", id);
         return (Volunteer) volunteerRepository.findById(id).
-                orElseThrow(() -> new VolunteerNotFoundException("Волонтер с id " + id + " не найден в базе данных"));
+                orElseThrow(() -> new NotFoundException("Волонтер с id " + id + " не найден в базе данных"));
     }
 
     /**
