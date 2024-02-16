@@ -36,7 +36,7 @@ public class Cat {
         this.age = age;
         this.gender = gender;
         this.shelterId = shelterId;
-    }
+           }
 
     @Override
     public String toString() {

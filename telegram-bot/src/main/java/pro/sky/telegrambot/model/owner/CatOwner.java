@@ -1,4 +1,5 @@
 package pro.sky.telegrambot.model.owner;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,13 +25,13 @@ public class CatOwner extends Owner {
     @OneToMany(mappedBy = "ownerId", fetch = FetchType.EAGER)
     private List<Cat> catList;
 
-    public CatOwner(Long telegramId, String firstName, String phone, List<Cat> catList, List<TrialPeriod> trialPeriodList) {
-        super(telegramId, firstName,  phone, trialPeriodList);
+    public CatOwner(Long telegramId, String firstName, List<Cat> catList, List<TrialPeriod> trialPeriodList) {
+        super(telegramId, firstName, trialPeriodList);
         this.catList = catList;
     }
 
-    public CatOwner(Long id, Long telegramId, String firstName, String phone, List<TrialPeriod> trialPeriodList, List<Cat> catList) {
-        super(id, telegramId, firstName, phone, trialPeriodList);
+    public CatOwner(Long id, Long telegramId, String firstName, List<TrialPeriod> trialPeriodList, List<Cat> catList) {
+        super(id, telegramId, firstName, trialPeriodList);
         this.catList = catList;
     }
 

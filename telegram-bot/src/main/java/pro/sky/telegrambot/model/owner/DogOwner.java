@@ -24,13 +24,13 @@ public class DogOwner extends Owner {
     @OneToMany(mappedBy = "ownerId", fetch = FetchType.EAGER)
     private List<Dog> dogList;
 
-    public DogOwner(Long telegramId, String firstName,  String phone, List<Dog> dogList, List<TrialPeriod> trialPeriodList) {
-        super(telegramId, firstName,  phone, trialPeriodList);
+    public DogOwner(Long telegramId, String firstName, List<Dog> dogList, List<TrialPeriod> trialPeriodList) {
+        super(telegramId, firstName, trialPeriodList);
         this.dogList = dogList;
     }
 
-    public DogOwner(Long id, Long telegramId, String firstName,  String phone, List<TrialPeriod> trialPeriodList, List<Dog> dogList) {
-        super(id, telegramId, firstName, phone, trialPeriodList);
+    public DogOwner(Long id, Long telegramId, String firstName, List<TrialPeriod> trialPeriodList, List<Dog> dogList) {
+        super(id, telegramId, firstName, trialPeriodList);
         this.dogList = dogList;
     }
 

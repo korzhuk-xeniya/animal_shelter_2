@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.exceptions.NotFoundException;
 import pro.sky.telegrambot.model.TrialPeriod;
 import pro.sky.telegrambot.repository.TrialPeriodRepository;
+import pro.sky.telegrambot.service.animalsService.CatService;
+import pro.sky.telegrambot.service.animalsService.DogService;
 
 import java.util.List;
 import java.util.Optional;
