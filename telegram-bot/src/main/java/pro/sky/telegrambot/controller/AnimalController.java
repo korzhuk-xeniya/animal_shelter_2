@@ -25,7 +25,7 @@ public class AnimalController {
 
     //поиск животного по id
     @GetMapping("/{id}")
-    public ResponseEntity<Animal> get(@PathVariable long id){
+    public ResponseEntity<Animal> get(@PathVariable UUID id){
         Animal animal = animalService.get(id);
         if (animal == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -46,7 +46,7 @@ public class AnimalController {
 
     //удаление животного
         @DeleteMapping("/{id}")
-        public ResponseEntity<Animal> delete(@PathVariable long id) {
+        public ResponseEntity<Animal> delete(@PathVariable UUID id) {
             animalService.delete(id);
             return ResponseEntity.ok().build();
         }

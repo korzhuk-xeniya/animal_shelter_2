@@ -1,3 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: liquibase/scripts/2-shelters.sql

@@ -1,11 +1,6 @@
 package pro.sky.telegrambot.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.UUID;
 
@@ -13,37 +8,33 @@ import java.util.UUID;
  * Класс для животных в приюте.
  * На данный момент это кошки и собаки.
  */
-@Getter
-@Setter
-@AllArgsConstructor
-//@NoArgsConstructor
 @Entity
 @Table(name = "animals")
 public class Animal {
 
     //ID животного
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_animal")
-    private long id;
-    @Column(name = "age_in_month")
+    @GeneratedValue
+    @Column
+    private UUID id;
+//    @Column
+////    @OneToOne
+//    private User user;
+    @Column
     //Возраст животного
     private final Integer ageMonth;
-    @Column(name = "name_of_animal")
+    @Column
     //Имя
     private final String nameOfAnimal;
-    @Column(name = "photo_link")
+    @Column
     //Ссылка на фото
     private final String photoLink;
-    @Column(name = "gender")
+    @Column
     //Пол животного
     private final String gender;
-    @Column(name = "pet_type")
+    @Column
     //Тип животного
     private final String petType;
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     public Animal(Integer ageMonth, String name, String photoLink, String gender, String petType) {
         this.ageMonth = ageMonth;
@@ -84,7 +75,7 @@ public class Animal {
     @Override
     public String toString() {
         return "Animal{" +
-                "user=" + user +
+//                "user=" + user +
                 ", ageMonth=" + ageMonth +
                 ", name='" + nameOfAnimal + '\'' +
                 ", photoLink='" + photoLink + '\'' +

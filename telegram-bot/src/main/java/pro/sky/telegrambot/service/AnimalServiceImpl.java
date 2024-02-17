@@ -29,7 +29,7 @@ public class AnimalServiceImpl implements AnimalService {
      * Получение информации по животному через ID
      */
     @Override
-    public Animal get(long id) {
+    public Animal get(UUID id) {
         return animalRepository.findById(id).orElse(null);
 
     }
@@ -57,7 +57,7 @@ public class AnimalServiceImpl implements AnimalService {
      * Метод удаления животного надо доработать
      */
     @Override
-    public void delete(long id) {
+    public void delete(UUID id) {
 
         // Удаляем животное по его айди
         animalRepository.deleteById(id);

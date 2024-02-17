@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface ReportAboutAnimalRepository extends JpaRepository<ReportAboutAnimal, UUID> {
 
-    Optional<ReportAboutAnimal> findById(long id);
+    Optional<ReportAboutAnimal> findById(int id);
 }
