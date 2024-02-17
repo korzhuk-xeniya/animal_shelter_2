@@ -128,5 +128,13 @@ public class ButtonsOfMenu {
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportButton},
                 new InlineKeyboardButton[]{toStart});
     }
+    public InlineKeyboardMarkup buttonOfChooseAnimal() {
+        logger.info("Был вызван метод создания кнопок Выбрать животное");
+        InlineKeyboardButton tookButton = new InlineKeyboardButton("Взять животное");
+        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
+        tookButton.callbackData("Взять животное");
+        toStart.callbackData("В начало");
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{tookButton});
+    }
 }
 

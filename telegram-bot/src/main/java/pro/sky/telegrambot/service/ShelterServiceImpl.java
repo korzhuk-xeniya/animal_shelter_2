@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
+import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ShelterRepository;
 import pro.sky.telegrambot.repository.UserRepository;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -42,10 +41,12 @@ public class ShelterServiceImpl implements ShelterService {
     private final VolunteerService volunteerService;
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
     private final ObjectMapper objectMapper;
+    private final AnimalService animalService;
 
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
                               VolunteerRepository volunteerRepository, UserRepository userRepository,
-                              UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper) {
+                              UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper,
+                              AnimalService animalService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
@@ -54,6 +55,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.userService = userService;
         this.volunteerService = volunteerService;
         this.objectMapper = objectMapper;
+        this.animalService = animalService;
     }
 
     @Override
@@ -151,6 +153,15 @@ public class ShelterServiceImpl implements ShelterService {
                     }
                     case "Оставить телефон для связи" -> changeMessage(messageId, chatId,
                             "Введите свой номер телефона в формате +71112223344", buttons.buttonMenu());
+                    case "Выбрать животное" -> {
+                        List<Animal> animalList = new ArrayList<Animal>(animalService.allAnimals());
+                        for (Animal animal2 : animalList) {
+                            sendButtonChooseAnimal(chatId, "Кличка животного:" + animal2.getNameOfAnimal() +
+                                    "; Возраст: " + animal2.getAgeMonth() + " месяцев; Тип животного: " +
+                                    animal2.getPetType() + ";Фото:" + animal2.getPhotoLink());
+
+                        }
+                    }
 
                 }
             }
@@ -251,6 +262,30 @@ public class ShelterServiceImpl implements ShelterService {
         } catch (IOException e) {
             return infoMap;
         }
+    }
+    /**
+     * @param update
+     * Отправка запроса на подтверждение выбора животного волонтером
+     */
+    public void callAVolunteerForConfirmationOfSelection(Update update) {
+        logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
+        List<Volunteer> volunteerList = volunteerRepository.findAll();
+        for (Volunteer volunteer : volunteerList) {
+            String user = update.callbackQuery().from().username();
+            SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
+                    "Пользователь: @" + user + " хочет усыновить животное.");
+            telegramBot.execute(sendMessage);
+        }
+    }
+    /**
+     * метод для отправки кнопок "Выбрать животное"
+     */
+    @Override
+    public void sendButtonChooseAnimal(Long chatId, String messageText) {
+        logger.info("Был вызван метод для отправки кнопок Выбора животного", chatId, messageText);
+        SendMessage sendMessage = new SendMessage(chatId, messageText);
+        sendMessage.replyMarkup(buttons.buttonOfChooseAnimal());
+        telegramBot.execute(sendMessage);
     }
 }
 

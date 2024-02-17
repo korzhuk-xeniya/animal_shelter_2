@@ -40,9 +40,9 @@ public class User {
     private String number;
 
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<ReportAboutAnimal> reports = new ArrayList<>();
+//    @Column(name = "reports")
+////    @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL)
+//    private List<ReportAboutAnimal> reports = new ArrayList<>();
 
     public User(String firstName, Boolean tookAPet, long chatId, LocalDateTime dateTimeToTook) {
         this.firstName = firstName;
@@ -99,25 +99,27 @@ public class User {
         this.dateTimeToTook = dateTimeToTook;
     }
 
-    public List<ReportAboutAnimal> getReports() {
-        return reports;
-    }
+//    public List<ReportAboutAnimal> getReports() {
+//        return reports;
+//    }
 
-    public void setReports(List<ReportAboutAnimal> reports) {
-        this.reports = reports;
-    }
+//    public void setReports(List<ReportAboutAnimal> reports) {
+//        this.reports = reports;
+//    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && chatId == user.chatId && Objects.equals(firstName, user.firstName) && Objects.equals(tookAPet, user.tookAPet) && Objects.equals(number, user.number) && Objects.equals(dateTimeToTook, user.dateTimeToTook) && Objects.equals(reports, user.reports);
+        return id == user.id && chatId == user.chatId && Objects.equals(firstName, user.firstName)
+                && Objects.equals(tookAPet, user.tookAPet) && Objects.equals(number, user.number) &&
+                Objects.equals(dateTimeToTook, user.dateTimeToTook);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, tookAPet, chatId, number, dateTimeToTook, reports);
+        return Objects.hash(id, firstName, tookAPet, chatId, number, dateTimeToTook);
     }
 
 //    public List<ReportAboutAnimal> getReportAboutAnimals() {

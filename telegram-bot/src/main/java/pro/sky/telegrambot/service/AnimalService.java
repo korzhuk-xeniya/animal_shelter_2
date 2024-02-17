@@ -16,5 +16,9 @@ public interface AnimalService {
 //
 //    void delete(long id);
 
+    Animal update(Long id, Animal animal);
+
+    void delete(long id);
+
     List<Animal> allAnimals();
 }

@@ -37,4 +37,6 @@ public interface ShelterService {
                           InlineKeyboardMarkup keyboardMarkup);
 
     Map<String, String> getInfo();
+
+    void sendButtonChooseAnimal(Long chatId, String messageText);
 }

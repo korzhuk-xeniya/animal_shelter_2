@@ -34,9 +34,9 @@ public class ReportAboutAnimal {
         @Column(name = "check_report")
         private boolean checkReport;
 
-//        @ManyToOne
+        @Getter
         @Column(name = "user_id")
-        private User user;
+        private long userId;
 //    //ID репорта
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,15 +72,11 @@ public class ReportAboutAnimal {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-//    public String getPhotoLink() {
+    //    public String getPhotoLink() {
 //        return photoLink;
 //    }
 //

@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
-
+    Optional<Animal> findAnimalById(long id);
 }
 
