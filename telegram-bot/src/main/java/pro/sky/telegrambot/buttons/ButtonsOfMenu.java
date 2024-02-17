@@ -81,13 +81,15 @@ public class ButtonsOfMenu {
     }
 
     public InlineKeyboardMarkup takeAnimalButton() {
+        logger.info("Был вызван метод создания кнопок Как взять животное из приюта");
         InlineKeyboardButton datingRulesButton = new InlineKeyboardButton("Правила знакомства");
         InlineKeyboardButton listOfDocumentsButton = new InlineKeyboardButton("Список документов");
         InlineKeyboardButton transportationButton = new InlineKeyboardButton("Рекомендации по транспортировке");
         InlineKeyboardButton arrangementPuppyButton = new InlineKeyboardButton("Обустройство щенка");
         InlineKeyboardButton arrangementAdultButton = new InlineKeyboardButton("Обустройство для взрослой собаки");
-        InlineKeyboardButton arrangementDisabledButton = new InlineKeyboardButton("Животное с ограниченными возможностями");
+        InlineKeyboardButton arrangementDisabledButton = new InlineKeyboardButton("Животное с ОВЗ");
         InlineKeyboardButton whyRefuseButton = new InlineKeyboardButton("Причины отказа");
+        InlineKeyboardButton chooseAnimalButton = new InlineKeyboardButton("Выбрать животное");
         InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
         InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
 
@@ -96,17 +98,19 @@ public class ButtonsOfMenu {
         datingRulesButton.callbackData("Правила знакомства");
         listOfDocumentsButton.callbackData("Список документов");
         transportationButton.callbackData("Рекомендации по транспортировке");
-        arrangementDisabledButton.callbackData("Животное ограниченными возможностями");
+        arrangementDisabledButton.callbackData("Животное с ОВЗ");
         whyRefuseButton.callbackData("Причины отказа");
+        chooseAnimalButton.callbackData("Выбрать животное");
         callVolunteerButton.callbackData("Позвать волонтера");
         toStart.callbackData("В начало");
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{datingRulesButton},
                 new InlineKeyboardButton[]{listOfDocumentsButton},
-//                new InlineKeyboardButton[]{arrangementDisabledButton},
+                new InlineKeyboardButton[]{arrangementDisabledButton},
                 new InlineKeyboardButton[]{whyRefuseButton},
                 new InlineKeyboardButton[]{arrangementPuppyButton},
                 new InlineKeyboardButton[]{arrangementAdultButton},
                 new InlineKeyboardButton[]{transportationButton},
+                new InlineKeyboardButton[]{chooseAnimalButton},
                 new InlineKeyboardButton[]{callVolunteerButton},
                 new InlineKeyboardButton[]{toStart});
     }
