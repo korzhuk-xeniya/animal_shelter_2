@@ -9,16 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface AnimalRepository extends JpaRepository<Animal, UUID> {
-//    public Animal save(Animal animal) {
-//        return animal;
-//    }
-//
-//    public void deleteById(Long id) {
-//    }
-//
-//    public Optional<Object> findById(Long id) {
-//
-//
-//    }
+public interface AnimalRepository extends JpaRepository<Animal, Long> {
+    Optional<Animal> findAnimalById(long id);
 }
+

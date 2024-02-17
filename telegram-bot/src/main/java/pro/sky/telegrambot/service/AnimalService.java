@@ -10,11 +10,15 @@ public interface AnimalService {
 
     Animal add(Animal animal);
 
-    Animal get(UUID id);
+    Animal get(long id);
+
+//    Animal update(Long id, Animal animal);
+//
+//    void delete(long id);
 
     Animal update(Long id, Animal animal);
 
-    void delete(UUID id);
+    void delete(long id);
 
     List<Animal> allAnimals();
 }

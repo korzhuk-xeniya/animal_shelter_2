@@ -1,48 +1,62 @@
 package pro.sky.telegrambot.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "users")
-public class User  {
-
+@Table(name = "user_tg")
+public class User {
     @Id
-    @Column
-    private Long chatId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
+    private long id;
 
-    @OneToMany
-    private List<ReportAboutAnimal> reportAboutAnimals;
-
-    @Column
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column
-    private String lastName;
+    @Column(name = "took_a_pet")
+    private Boolean tookAPet;
 
-    @Column
-    private String phone;
+    @Column(name = "date_time_to_took")
+    private LocalDateTime dateTimeToTook;
 
-    @OneToMany
-    @Column
-    private Animal animal;
+    @Column(name = "chat_id")
+    private long chatId;
 
-    public User(Long chatId, String firstName, String lastName, String phone) {
-        this.chatId = chatId;
+    @Column(name = "number")
+    private String number;
+
+
+//    @Column(name = "reports")
+////    @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL)
+//    private List<ReportAboutAnimal> reports = new ArrayList<>();
+
+    public User(String firstName, Boolean tookAPet, long chatId, LocalDateTime dateTimeToTook) {
         this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-    }
-
-    public User() {
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(Long chatId) {
+        this.tookAPet = tookAPet;
         this.chatId = chatId;
+        this.dateTimeToTook = dateTimeToTook;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -53,37 +67,76 @@ public class User  {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public Boolean getTookAPet() {
+        return tookAPet;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setTookAPet(Boolean tookAPet) {
+        this.tookAPet = tookAPet;
     }
 
-    public String getPhone() {
-        return phone;
+    public long getChatId() {
+        return chatId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
     }
 
-    public List<ReportAboutAnimal> getReportAboutAnimals() {
-        return reportAboutAnimals;
+    public String getNumber() {
+        return number;
     }
 
-    public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
-        this.reportAboutAnimals = reportAboutAnimals;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
-    public Animal getAnimal() {
-        return animal;
+    public LocalDateTime getDateTimeToTook() {
+        return dateTimeToTook;
     }
 
-    public void setAnimal(Animal animal) {
-        this.animal = animal;
+    public void setDateTimeToTook(LocalDateTime dateTimeToTook) {
+        this.dateTimeToTook = dateTimeToTook;
     }
+
+//    public List<ReportAboutAnimal> getReports() {
+//        return reports;
+//    }
+
+//    public void setReports(List<ReportAboutAnimal> reports) {
+//        this.reports = reports;
+//    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && chatId == user.chatId && Objects.equals(firstName, user.firstName)
+                && Objects.equals(tookAPet, user.tookAPet) && Objects.equals(number, user.number) &&
+                Objects.equals(dateTimeToTook, user.dateTimeToTook);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, tookAPet, chatId, number, dateTimeToTook);
+    }
+
+//    public List<ReportAboutAnimal> getReportAboutAnimals() {
+//        return reportAboutAnimals;
+//    }
+//
+//    public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
+//        this.reportAboutAnimals = reportAboutAnimals;
+//    }
+
+//    public Animal getAnimal() {
+//        return animal;
+//    }
+//
+//    public void setAnimal(Animal animal) {
+//        this.animal = animal;
+//    }
 
 
 }

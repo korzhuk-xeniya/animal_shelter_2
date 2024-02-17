@@ -1,64 +1,87 @@
 package pro.sky.telegrambot.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import java.util.UUID;
+import javax.persistence.*;
+import java.util.Objects;
 
-/**
- * Класс для животных в приюте.
- * На данный момент это кошки и собаки.
- */
-
+@Getter
+@Setter
+//@AllArgsConstructor
+//@NoArgsConstructor
+@Entity
+@Table(name = "animals")
 public class Animal {
 
     //ID животного
     @Id
-    @GeneratedValue
-    private UUID id;
-
-    @OneToOne
-    private User user;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_animal")
+    private long id;
+    @Column(name = "age_in_month")
     //Возраст животного
-    private final Integer ageMonth;
-
+    private final long ageMonth;
+    @Column(name = "name_of_animal")
     //Имя
-    private final String name;
-
+    private final String nameOfAnimal;
+    @Column(name = "photo_link")
     //Ссылка на фото
     private final String photoLink;
-
+    @Column(name = "gender")
     //Пол животного
     private final String gender;
-
+    @Column(name = "pet_type")
     //Тип животного
     private final String petType;
 
-    public Animal(Integer ageMonth, String name, String photoLink, String gender, String petType) {
+//    @Column(name = "user_id")
+//    private long userId;
+
+    public Animal(long ageMonth, String nameOfAnimal, String photoLink, String gender, String petType) {
         this.ageMonth = ageMonth;
-        this.name = name;
+        this.nameOfAnimal = nameOfAnimal;
         this.photoLink = photoLink;
         this.gender = gender;
         this.petType = petType;
     }
 
-    public User getUser() {
-        return user;
+    public Animal(long id, long ageMonth, String nameOfAnimal, String photoLink, String gender, String petType) {
+        this.id = id;
+        this.ageMonth = ageMonth;
+        this.nameOfAnimal = nameOfAnimal;
+        this.photoLink = photoLink;
+        this.gender = gender;
+        this.petType = petType;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public Animal() {
+
+        ageMonth = 0;
+        nameOfAnimal = null;
+        photoLink = null;
+        gender = null;
+        petType = null;
     }
 
-    public Integer getAgeMonth() {
+
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getAgeMonth() {
         return ageMonth;
     }
 
-    public String getName() {
-        return name;
+    public String getNameOfAnimal() {
+        return nameOfAnimal;
     }
 
     public String getPhotoLink() {
@@ -73,17 +96,13 @@ public class Animal {
         return petType;
     }
 
-    @Override
-    public String toString() {
-        return "Animal{" +
-                "user=" + user +
-                ", ageMonth=" + ageMonth +
-                ", name='" + name + '\'' +
-                ", photoLink='" + photoLink + '\'' +
-                ", gender='" + gender + '\'' +
-                ", petType='" + petType + '\'' +
-                '}';
-    }
+//    public long getUserId() {
+//        return userId;
+//    }
+//
+//    public void setUserId(long userId) {
+//        this.userId = userId;
+//    }
 
 
 }
