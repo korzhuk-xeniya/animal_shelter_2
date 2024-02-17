@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -15,7 +17,10 @@ import pro.sky.telegrambot.repository.ShelterRepository;
 import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,30 +33,30 @@ public class ShelterServiceImpl implements ShelterService {
     private final TelegramBot telegramBot;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
-    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
     private final UserService userService;
     private final VolunteerService volunteerService;
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
+    private final ObjectMapper objectMapper;
 
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
-                              InfoService infoService, VolunteerService volunteerService, UserService userService,
-                              VolunteerRepository volunteerRepository, UserRepository userRepository) {
+                              VolunteerService volunteerService, UserService userService,
+                              VolunteerRepository volunteerRepository, UserRepository userRepository, ObjectMapper objectMapper) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
-        this.infoService = infoService;
         this.volunteerRepository = volunteerRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.volunteerService = volunteerService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void process(Update update) {
-        Map<String, String> infoMap = infoService.getInfo();
+        Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
         adminsVolunteers.add("");
 
@@ -125,7 +130,8 @@ public class ShelterServiceImpl implements ShelterService {
                     case "График работы" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
                     case "Адрес приюта" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
                     case "Телефон охраны" -> sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
-                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions"); //TODO
+//                    case "Список документа" -> ; //TODO
                     case "Правила посещения приюта" -> sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
                     case "Правила знакомства" -> sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
                     case "Причины отказа" -> sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
@@ -221,9 +227,24 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
                                  InlineKeyboardMarkup keyboardMarkup) {
+        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup );
         String message = infoMap.get(key);
         EditMessageText editMessageText = new EditMessageText(chatId, messageId, message).replyMarkup(keyboardMarkup);
                 telegramBot.execute(editMessageText);
+    }
+    @Override
+    public Map<String, String> getInfo() {
+        Map<String, String> infoMap = new HashMap<>();
+        try (InputStream infoStream = getClass().getClassLoader().getResourceAsStream("info.json")) {
+            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+
+            };
+            return objectMapper.readValue(infoStream, typeRef);
+
+
+        } catch (IOException e) {
+            return infoMap;
+        }
     }
 }
 
