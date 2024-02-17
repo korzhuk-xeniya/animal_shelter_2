@@ -10,14 +10,14 @@ public class Shelter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private UUID id;
-    @Column(name = "nameOfShelter")
+    private long id;
+    @Column(name = "name_of_shelter")
     private String nameOfShelter;
-    @Column(name = "aboutShelter")
+    @Column(name = "about_shelter")
     private  String informationAboutShelter;
     @Column(name = "address")
     private String address;
-    @Column(name="phoneNumber")
+    @Column(name="phone_number")
     private String phoneNumber;
     public Shelter() {
     }
@@ -27,11 +27,11 @@ public class Shelter {
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -1,15 +1,31 @@
 package pro.sky.telegrambot.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
+import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ShelterRepository;
+import pro.sky.telegrambot.repository.UserRepository;
+import pro.sky.telegrambot.repository.VolunteerRepository;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import java.util.Map;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -18,37 +34,73 @@ public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
+    private final VolunteerRepository volunteerRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final VolunteerService volunteerService;
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
+    private final ObjectMapper objectMapper;
 
-    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons) {
+    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
+                              VolunteerService volunteerService, UserService userService,
+                              VolunteerRepository volunteerRepository, UserRepository userRepository, ObjectMapper objectMapper) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
+        this.volunteerRepository = volunteerRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.volunteerService = volunteerService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void process(Update update) {
-
+        Map<String, String> infoMap = getInfo();
+        List<String> adminsVolunteers = new ArrayList<>();
+        adminsVolunteers.add("");
 
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
             return;
         }
-//
+
         if (update.callbackQuery() == null) {
             Long chatId = update.message().chat().id();
             String message = update.message().text();
             Long userId = update.message().from().id();
             String userName = update.message().from().firstName();
             int messageId = update.message().messageId();
-            if (!update.message().text().equals("/start")) {
-                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
-                sendMessage(chatId, "для начала работы, отправь /start");
+            Matcher matcher = MESSAGE_PATTERN.matcher(message);
+            if (update.message() != null && matcher.find()) {
+                userRepository.updateNumber(update.message().chat().id().intValue(), update.message().text());
+                userService.saveUser(update, false);
+                sendMenuButton(chatId, "Номер записан, Вам обязательно позвонят!");
+
+            } else if (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
+                logger.info("пользователь отправил  сообщение  с неопределенным содержанием");
+                sendMessage(chatId, ("Содержание не определено. Для начала работы, отправь /start." +
+                        "Для записи номера телефона, введите его в формате +71112223344")
+                );
                 return;
             }
+//            if (!update.message().text().equals("/start")) {
+//                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
+//                sendMessage(chatId, );
+//                return;
+//            }
             if (update.message().text().equals("/start")) {
                 logger.info("пользователь отправил /start");
                 sendMenuButton(chatId, " Добро пожаловать в PetShelterBot, "
                         + update.message().from().firstName() + "! Я помогаю взаимодействовать с приютами для животных!");
+                if (adminsVolunteers.contains(update.message().from().username())) {
+                    logger.info("пользователь есть среди администраторов");
+                    volunteerService.saveVolunteer(update);
+                    sendMenuVolunteer(chatId, "Перед Вами меню волонтера");
+
+                } else {
+                    userService.saveUser(update, false);
+                }
             }
         } else {
             if (update.callbackQuery() != null) {
@@ -67,52 +119,37 @@ public class ShelterServiceImpl implements ShelterService {
                             "Если ни один из вариантов не подходит, я могу позвать Волонтера!", buttons.buttonsOfStart());
 
                     //  блок определения запроса
-                    case "Информация о приюте" ->
-                            changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!",
-                                    buttons.buttonsInformationAboutShelter());
+                    case "Информация о приюте" -> changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!",
+                            buttons.buttonsInformationAboutShelter());
                     case "В начало" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
 
 //                    break;
                     case "Как взять животное из приюта?" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
 
+                    case "О приюте" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.info", buttons.buttonsInformationAboutShelter());
+                    case "График работы" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
+                    case "Адрес приюта" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
+                    case "Телефон охраны" -> sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions"); //TODO
+//                    case "Список документа" -> ; //TODO
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
+                    case "Правила знакомства" -> sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
+                    case "Причины отказа" -> sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
+                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
+                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
-//                case "Позвать волонтера" -> callAVolunteer(update);
-//                case "Прислать отчет о питомце" -> petReportSelection(messageId, chatId);
 
-//Блок "Информация о приюте"
-//                case "Информация о приюте для кошек" -> aboutCatShelterSelection(messageId, chatId);
-//                case "Расписание работы приюта для кошек" -> catShelterWorkingHoursSelection(messageId, chatId);
-//                case "Контакты охраны приюта для кошек" -> catShelterSecurityContactSelection(messageId, chatId);
-//                case "Информация о приюте для собак" -> aboutDogShelterSelection(messageId, chatId);
-//                case "Расписание работы приюта для собак" -> dogShelterWorkingHoursSelection(messageId, chatId);
-//                case "Контакты охраны приюта для собак" -> dogShelterSecurityContactSelection(messageId, chatId);
-//                case "Общие правила поведения" -> safetyRecommendationsSelection(messageId, chatId);
-//                case "Запись ваших контактов", "Запись контактов" -> recordingContactsSelection(messageId, chatId);
-//
-//
-// блок “Прислать отчет о питомце”
-//                case "Форма ежедневного отчета" -> {
-//                    takeDailyReportFormPhoto(chatId);
-//                    photoCheckButton = true; // Устанавливаем флаг в true после нажатия кнопки
-//                }
-//
-//
-//
-//                //блок “Как взять животное из приюта”
-//                case "Правила знакомства" -> datingRulesSelection(messageId, chatId);
-//                case "Список документов" -> documentsSelection(messageId, chatId);
-//                case "Рекомендации по транспортировке" -> transportationSelection(messageId, chatId);
-//                case "Обустройство котенка" -> KittenArrangementSelection(messageId, chatId);
-//                case "Обустройство щенка" -> puppyArrangementSelection(messageId, chatId);
-//                case "Обустройство для взрослого кота" -> arrangementAdultSelectionCat(messageId, chatId);
-//                case "Обустройство для взрослой собаки" -> arrangementAdultSelectionDog(messageId, chatId);
-//                case "Обустройство для ограниченного" -> arrangementLimitedSelection(messageId, chatId);
-//                case "Cписок причин" -> listReasonsSelection(messageId, chatId);
+                    case "Позвать волонтера" -> {
+                        callAVolunteer(update);
+                        changeMessage(messageId, chatId, "Волонтер скоро свяжется с Вами", buttons.buttonMenu());
+                    }
+                    case "Оставить телефон для связи" -> changeMessage(messageId, chatId,
+                            "Введите свой номер телефона в формате +71112223344", buttons.buttonMenu());
+
                 }
             }
-
         }
-
     }
 
     @Override
@@ -133,6 +170,14 @@ public class ShelterServiceImpl implements ShelterService {
         telegramBot.execute(sendMessage);
     }
 
+    @Override
+    public void sendMenuVolunteer(Long chatId, String messageText) {
+        logger.info("Был вызван метод для отправки кнопок Меню волонтера", chatId, messageText);
+        SendMessage sendMessage = new SendMessage(chatId, messageText);
+        sendMessage.replyMarkup(buttons.buttonsOfVolunteer());
+        telegramBot.execute(sendMessage);
+    }
+
     /**
      * метод для отправки кнопок Этапа 0. Определение запроса
      */
@@ -144,10 +189,11 @@ public class ShelterServiceImpl implements ShelterService {
         telegramBot.execute(sendMessage);
     }
 
+    @Override
     /**
      * метод для изменения сообщения
-     */
-    private void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup keyboardMarkup) {
+     */ public void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup
+            keyboardMarkup) {
         logger.info("Был вызван метод для изменения сообщения", messageId, chatIdInButton, messageText, keyboardMarkup);
         EditMessageText editMessageText = new EditMessageText(chatIdInButton, messageId, messageText);
 
@@ -157,7 +203,6 @@ public class ShelterServiceImpl implements ShelterService {
 
     }
 
-
     /**
      * Провека ввода /start
      */
@@ -165,5 +210,42 @@ public class ShelterServiceImpl implements ShelterService {
         return update.message().text() != null && update.message().text().equals("/start");
     }
 
+    @Override
+    /**
+     * @param update Реализация кнопки "Позвать волонтера"
+     */
+    public void callAVolunteer(Update update) {
+        List<Volunteer> volunteerList = volunteerRepository.findAll();
+        for (Volunteer volunteer : volunteerList) {
+            String user = update.callbackQuery().from().username();
+            SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
+                    "Пользователь: @" + user + " просит с ним связаться.");
+            telegramBot.execute(sendMessage);
+        }
+    }
 
+    @Override
+    public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
+                                 InlineKeyboardMarkup keyboardMarkup) {
+        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup );
+        String message = infoMap.get(key);
+        EditMessageText editMessageText = new EditMessageText(chatId, messageId, message).replyMarkup(keyboardMarkup);
+                telegramBot.execute(editMessageText);
+    }
+    @Override
+    public Map<String, String> getInfo() {
+        Map<String, String> infoMap = new HashMap<>();
+        try (InputStream infoStream = getClass().getClassLoader().getResourceAsStream("info.json")) {
+            TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+
+            };
+            return objectMapper.readValue(infoStream, typeRef);
+
+
+        } catch (IOException e) {
+            return infoMap;
+        }
+    }
 }
+
+
