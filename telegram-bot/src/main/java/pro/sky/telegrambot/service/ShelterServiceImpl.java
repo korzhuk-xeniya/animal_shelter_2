@@ -35,7 +35,6 @@ public class ShelterServiceImpl implements ShelterService {
     private final TelegramBot telegramBot;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
-    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
@@ -45,12 +44,11 @@ public class ShelterServiceImpl implements ShelterService {
     private final ObjectMapper objectMapper;
 
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
-                              InfoService infoService, VolunteerRepository volunteerRepository, UserRepository userRepository,
+                              VolunteerRepository volunteerRepository, UserRepository userRepository,
                               UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
-        this.infoService = infoService;
         this.volunteerRepository = volunteerRepository;
         this.userRepository = userRepository;
         this.userService = userService;

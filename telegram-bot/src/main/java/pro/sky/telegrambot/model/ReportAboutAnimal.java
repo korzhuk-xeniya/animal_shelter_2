@@ -34,8 +34,8 @@ public class ReportAboutAnimal {
         @Column(name = "check_report")
         private boolean checkReport;
 
-        @ManyToOne
-        @JoinColumn(name = "user_id")
+//        @ManyToOne
+        @Column(name = "user_id")
         private User user;
 //    //ID репорта
 //    @Id

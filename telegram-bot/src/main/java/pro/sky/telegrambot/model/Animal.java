@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "animals")
 public class Animal {
@@ -45,17 +45,25 @@ public class Animal {
     @Column(name = "pet_type")
     //Тип животного
     private final String petType;
-    @OneToOne
-    @JoinColumn(name = "user_id")
+
+    @Column(name = "user_id")
     private User user;
 
-    public Animal( Integer ageMonth, String name, String photoLink, String gender, String petType) {
+    public Animal( long id, Integer ageMonth, String name, String photoLink, String gender, String petType) {
 
         this.ageMonth = ageMonth;
         this.nameOfAnimal = name;
         this.photoLink = photoLink;
         this.gender = gender;
         this.petType = petType;
+    }
+    public Animal( Integer ageMonth, String name, String photoLink, String gender, String petType) {
+
+        this.ageMonth = 0;
+        this.nameOfAnimal = null;
+        this.photoLink = null;
+        this.gender = null;
+        this.petType = null;
     }
 
 
