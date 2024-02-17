@@ -133,12 +133,6 @@ public class ShelterServiceImpl implements ShelterService {
                     case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
                     case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
-//                    case "Получить список животных для усыновления": {
-//                        infoService.getPets().stream()
-//                                .map(pet -> new SendPhoto(chatId, pet.getPhoto())
-//                                        .caption(String.format("%s-%s", pet.getName(), pet.getDescription())))
-//                                .forEach(telegramBot::execute)
-
 
                     case "Позвать волонтера" -> {
                         callAVolunteer(update);
@@ -203,7 +197,6 @@ public class ShelterServiceImpl implements ShelterService {
 
     }
 
-
     /**
      * Провека ввода /start
      */
@@ -229,8 +222,7 @@ public class ShelterServiceImpl implements ShelterService {
     public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
                                  InlineKeyboardMarkup keyboardMarkup) {
         String message = infoMap.get(key);
-        EditMessageText editMessageText = new EditMessageText(chatId, messageId, message);
-        editMessageText.replyMarkup(keyboardMarkup);
+        EditMessageText editMessageText = new EditMessageText(chatId, messageId, message).replyMarkup(keyboardMarkup);
                 telegramBot.execute(editMessageText);
     }
 }
