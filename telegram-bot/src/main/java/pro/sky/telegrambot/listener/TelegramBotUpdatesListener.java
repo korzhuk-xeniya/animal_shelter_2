@@ -60,23 +60,5 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
-    public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
-        GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
-        GetFileResponse getFileResponse = telegramBot.execute(request);
-        TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
-        if (getFileResponse.isOk()) {
-            try {
-                byte[] image = telegramBot.getFileContent(getFileResponse.file());
-                SendPhoto sendPhoto = new SendPhoto(volunteerId, image);
-                sendPhoto.caption("Id владельца: " + trialPeriod.getOwnerId() + "\n" +
-                        "Id испытательного срока: " + trialPeriod.getId() + "\n" +
-                        "Id отчёта:" + reportId);
-                telegramBot.execute(sendPhoto);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
 
 }
