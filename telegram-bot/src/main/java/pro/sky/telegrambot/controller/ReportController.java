@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.model.Report;
 import pro.sky.telegrambot.service.ReportService;
+import pro.sky.telegrambot.service.ShelterServiceImpl;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,11 +27,11 @@ import java.util.List;
 public class ReportController {
 
     private final ReportService reportService;
-    private final TelegramBotUpdatesListener telegramBotUpdatesListener;
+    private final ShelterServiceImpl shelterService;
 
-    public ReportController(ReportService reportService, TelegramBotUpdatesListener telegramBotUpdatesListener) {
+    public ReportController(ReportService reportService, ShelterServiceImpl shelterService) {
         this.reportService = reportService;
-        this.telegramBotUpdatesListener = telegramBotUpdatesListener;
+        this.shelterService = shelterService;
     }
 
     @PostMapping
@@ -122,7 +123,7 @@ public class ReportController {
     @Operation(summary = "Отправить фото из отчёта волонтёру")
     public String getReportPhoto(@RequestParam @Parameter(description = "Id отчёта") Long reportId,
                                  @RequestParam @Parameter(description = "Id волонтёра") Long volunteerId) {
-        telegramBotUpdatesListener.sendReportPhotoToVolunteer(reportId, volunteerId);
+         shelterService.sendReportPhotoToVolunteer(reportId, volunteerId);
         return "Фотография успешно отправлена";
     }
 }

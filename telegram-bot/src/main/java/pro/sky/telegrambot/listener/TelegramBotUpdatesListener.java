@@ -28,15 +28,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     private final ShelterService shelterService;
-    private final TrialPeriodService trialPeriodService;
-    private final ReportService reportService;
     private final TelegramBot telegramBot;
     public TelegramBotUpdatesListener(ShelterService shelterService, TelegramBot telegramBot,
                                       TrialPeriodService trialPeriodService,ReportService reportService) {
         this.shelterService = shelterService;
         this.telegramBot = telegramBot;
-        this.trialPeriodService=trialPeriodService;
-        this.reportService=reportService;
     }
 //    @Autowired
 //    private TelegramBot telegramBot;

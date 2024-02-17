@@ -30,6 +30,8 @@ import java.util.Map;
 public class ShelterServiceImpl implements ShelterService {
 
     private final TelegramBot telegramBot;
+    private final TrialPeriodService trialPeriodService;
+    private final ReportService reportService;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
     private final InfoService infoService;
@@ -40,7 +42,7 @@ public class ShelterServiceImpl implements ShelterService {
     private final VolunteerService volunteerService;
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
 
-    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
+    public ShelterServiceImpl(TelegramBot telegramBot,TrialPeriodService trialPeriodService,ReportService reportService, ShelterRepository repository, ButtonsOfMenu buttons,
                               InfoService infoService, VolunteerRepository volunteerRepository, UserRepository userRepository, UserService userService, VolunteerService volunteerService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
@@ -54,6 +56,9 @@ public class ShelterServiceImpl implements ShelterService {
 //        this.volunteerService = volunteerService;
         this.userService = userService;
         this.volunteerService = volunteerService;
+        this.trialPeriodService =trialPeriodService;
+        this.reportService = reportService;
+
     }
 
     @Override
@@ -254,7 +259,7 @@ public class ShelterServiceImpl implements ShelterService {
 
 
     }
-    /* public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
+     public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
         GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
         GetFileResponse getFileResponse = telegramBot.execute(request);
         TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
@@ -270,5 +275,5 @@ public class ShelterServiceImpl implements ShelterService {
                 logger.error(e.getMessage(), e);
             }
         }
-    }*/
+    }
 }
