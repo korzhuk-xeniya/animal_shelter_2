@@ -171,19 +171,19 @@ public class ShelterServiceImpl implements ShelterService {
                     case "Рекомендации по транспортировке" ->
                             sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
-                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
-                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
-                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
-                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
-                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
-                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
-                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
-                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
-                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
-                    case "Обустройство для взрослой собаки" ->
-                            sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
-                    case "Рекомендации по транспортировке" ->
-                            sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+//                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+//                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+//                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+//                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+//                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+//                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+//                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+//                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+//                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+//                    case "Обустройство для взрослой собаки" ->
+//                            sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+//                    case "Рекомендации по транспортировке" ->
+//                            sendMessageByKey(chatId, infoMap, "transportation.recommendations");
 
 //                    case "Получить список животных для усыновления": {
 //                        infoService.getPets().stream()
