@@ -291,13 +291,11 @@ public class ShelterServiceImpl implements ShelterService {
             };
             return objectMapper.readValue(infoStream, typeRef);
 
-    } catch (StreamReadException e) {
-            throw new RuntimeException(e);
-        } catch (DatabindException e) {
-            throw new RuntimeException(e);
+
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return infoMap;
         }
+    }
         public void sendReportPhotoToVolunteer(long reportId, long volunteerId) {
         GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
         GetFileResponse getFileResponse = telegramBot.execute(request);
