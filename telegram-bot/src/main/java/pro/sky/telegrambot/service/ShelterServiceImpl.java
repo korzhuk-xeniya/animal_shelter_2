@@ -1,6 +1,8 @@
 package pro.sky.telegrambot.service;
 
+import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
@@ -28,6 +30,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import java.util.Map;
+
+import pro.sky.telegrambot.model.Animal;
+
+import java.io.InputStream;
+
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -284,8 +291,14 @@ public class ShelterServiceImpl implements ShelterService {
             };
             return objectMapper.readValue(infoStream, typeRef);
 
-    }
-     public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
+    } catch (StreamReadException e) {
+            throw new RuntimeException(e);
+        } catch (DatabindException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        public void sendReportPhotoToVolunteer(long reportId, long volunteerId) {
         GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
         GetFileResponse getFileResponse = telegramBot.execute(request);
         TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
@@ -302,9 +315,10 @@ public class ShelterServiceImpl implements ShelterService {
             }
         }
 
-        } catch (IOException e) {
-            return infoMap;
         }
+//        catch (IOException e) {
+//            return infoMap;
+//        }
     }
     /**
      * @param update
