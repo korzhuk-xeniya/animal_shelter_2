@@ -21,16 +21,15 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
-@Component
-@RequiredArgsConstructor
+//@Component
+//@RequiredArgsConstructor
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     private final ShelterService shelterService;
     private final TelegramBot telegramBot;
-    public TelegramBotUpdatesListener(ShelterService shelterService, TelegramBot telegramBot,
-                                      TrialPeriodService trialPeriodService,ReportService reportService) {
+    public TelegramBotUpdatesListener(ShelterService shelterService, TelegramBot telegramBot) {
         this.shelterService = shelterService;
         this.telegramBot = telegramBot;
     }

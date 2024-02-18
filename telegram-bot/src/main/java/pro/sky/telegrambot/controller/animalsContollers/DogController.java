@@ -31,21 +31,21 @@ public class DogController {
         return dogService.getById(id);
     }
 
-    @PostMapping
-    @Operation(summary = "Добавить собаку в приют")
-    public Dog create(
-            @RequestParam @Parameter(description = "Имя песика") String name,
-            @RequestParam @Parameter(description = "Возраст") int age,
-            @RequestParam @Parameter(description = "Пол") Boolean gender,
-            @RequestParam @Parameter(description = "ID приюта") Long shelterId) {
-        return dogService.create(new Dog(name, age, gender, shelterId));
-    }
+//    @PostMapping
+//    @Operation(summary = "Добавить собаку в приют")
+//    public Dog create(
+//            @RequestParam @Parameter(description = "Имя песика") String name,
+//            @RequestParam @Parameter(description = "Возраст") int age,
+//            @RequestParam @Parameter(description = "Пол") Boolean gender,
+//            @RequestParam @Parameter(description = "ID приюта") Long shelterId) {
+//        return dogService.create(new Dog(name, age, gender, shelterId));
+//    }
 
-    @GetMapping()
-    @Operation(summary = "Получение всех собак")
-    public List<Dog> getAll() {
-        return dogService.getAll();
-    }
+//    @GetMapping()
+//    @Operation(summary = "Получение всех собак")
+//    public List<Dog> getAll() {
+//        return dogService.getAll();
+//    }
 
     @GetMapping("/ownerID")
     @Operation(summary = "Получение списка песиков по ID хозяина")
@@ -54,17 +54,17 @@ public class DogController {
     }
 
 
-    @PutMapping
-    @Operation(summary = "Изменить информацию о собаке")
-    public Dog update(
-            @RequestParam @Parameter(description = "ID песика") Long id,
-            @RequestParam(required = false) @Parameter(description = "Имя песика") String name,
-            @RequestParam(required = false) @Parameter(description = "Возраст песика") Integer age,
-            @RequestParam(required = false) @Parameter(description = "Пол") Boolean gender,
-            @RequestParam(required = false) @Parameter(description = "ID собачьего приюта") Long shelterId,
-            @RequestParam(required = false) @Parameter(description = "ID хозяина") Long ownerId) {
-        return dogService.update(new Dog(id, age, name,  gender, shelterId, ownerId));
-    }
+//    @PutMapping
+//    @Operation(summary = "Изменить информацию о собаке")
+//    public Dog update(
+//            @RequestParam @Parameter(description = "ID песика") Long id,
+//            @RequestParam(required = false) @Parameter(description = "Имя песика") String name,
+//            @RequestParam(required = false) @Parameter(description = "Возраст песика") Integer age,
+//            @RequestParam(required = false) @Parameter(description = "Пол") Boolean gender,
+//            @RequestParam(required = false) @Parameter(description = "ID собачьего приюта") Long shelterId,
+//            @RequestParam(required = false) @Parameter(description = "ID хозяина") Long ownerId) {
+//        return dogService.update(new Dog(id, age, name,  gender, shelterId, ownerId));
+//    }
 
     @DeleteMapping("/id")
     @Operation(summary = "Удаление собаки")
