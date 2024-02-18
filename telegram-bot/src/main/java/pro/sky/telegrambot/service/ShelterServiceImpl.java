@@ -44,7 +44,7 @@ public class ShelterServiceImpl implements ShelterService {
     private ReportService reportService;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
-//    private final InfoService infoService;
+    //    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
@@ -67,7 +67,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.volunteerService = volunteerService;
         this.objectMapper = objectMapper;
         this.animalService = animalService;
-        this.trialPeriodService =trialPeriodService;
+        this.trialPeriodService = trialPeriodService;
         this.reportService = reportService;
 
     }
@@ -77,7 +77,6 @@ public class ShelterServiceImpl implements ShelterService {
         Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
         adminsVolunteers.add("");
-
 
 
         if (update.message() == null && update.callbackQuery() == null) {
@@ -140,39 +139,51 @@ public class ShelterServiceImpl implements ShelterService {
                             "Если ни один из вариантов не подходит, я могу позвать Волонтера!", buttons.buttonsOfStart());
 
                     //  блок определения запроса
-                    case "Информация о приюте" -> changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!",
-                            buttons.buttonsInformationAboutShelter());
+                    case "Информация о приюте" ->
+                            changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!",
+                                    buttons.buttonsInformationAboutShelter());
                     case "В начало" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
 
 //                    break;
-                    case "Как взять животное из приюта?" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
+                    case "Как взять животное из приюта?" ->
+                            changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
 
-                    case "О приюте" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.info", buttons.buttonsInformationAboutShelter());
-                    case "График работы" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
-                    case "Адрес приюта" -> sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
-                    case "Телефон охраны" -> sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
+                    case "О приюте" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "shelter.info", buttons.buttonsInformationAboutShelter());
+                    case "График работы" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
+                    case "Адрес приюта" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
+                    case "Телефон охраны" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
                     case "Схема проезда" -> new SendPhoto(chatId, "driving.directions"); //TODO
 //                    case "Список документа" -> ; //TODO
-                    case "Правила посещения приюта" -> sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
-                    case "Правила знакомства" -> sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
-                    case "Причины отказа" -> sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
-                    case "Обустройство щенка" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
-                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
-                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
+                    case "Правила посещения приюта" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
+                    case "Правила знакомства" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
+                    case "Причины отказа" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
+                    case "Обустройство щенка" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
+                    case "Обустройство для взрослой собаки" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
+                    case "Рекомендации по транспортировке" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
-                        case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
-                        case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
-                        case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
-                        case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
-                        case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
-                        case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
-                        case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
-                        case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
-                        case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
-                        case "Обустройство для взрослой собаки" ->
-                                sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
-                        case "Рекомендации по транспортировке" ->
-                                sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+                    case "Обустройство для взрослой собаки" ->
+                            sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+                    case "Рекомендации по транспортировке" ->
+                            sendMessageByKey(chatId, infoMap, "transportation.recommendations");
 
 //                    case "Получить список животных для усыновления": {
 //                        infoService.getPets().stream()
@@ -277,11 +288,12 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
                                  InlineKeyboardMarkup keyboardMarkup) {
-        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup );
+        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup);
         String message = infoMap.get(key);
         EditMessageText editMessageText = new EditMessageText(chatId, messageId, message).replyMarkup(keyboardMarkup);
-                telegramBot.execute(editMessageText);
+        telegramBot.execute(editMessageText);
     }
+
     @Override
     public Map<String, String> getInfo() {
         Map<String, String> infoMap = new HashMap<>();
@@ -296,7 +308,8 @@ public class ShelterServiceImpl implements ShelterService {
             return infoMap;
         }
     }
-        public void sendReportPhotoToVolunteer(long reportId, long volunteerId) {
+
+    public void sendReportPhotoToVolunteer(long reportId, long volunteerId) {
         GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
         GetFileResponse getFileResponse = telegramBot.execute(request);
         TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
@@ -313,14 +326,13 @@ public class ShelterServiceImpl implements ShelterService {
             }
         }
 
-        }
+    }
 //        catch (IOException e) {
 //            return infoMap;
 //        }
-    }
+
     /**
-     * @param update
-     * Отправка запроса на подтверждение выбора животного волонтером
+     * @param update Отправка запроса на подтверждение выбора животного волонтером
      */
     public void callAVolunteerForConfirmationOfSelection(Update update) {
         logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
@@ -332,6 +344,7 @@ public class ShelterServiceImpl implements ShelterService {
             telegramBot.execute(sendMessage);
         }
     }
+
     /**
      * метод для отправки кнопок "Выбрать животное"
      */
