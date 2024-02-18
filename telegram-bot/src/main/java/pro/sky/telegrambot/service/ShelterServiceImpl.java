@@ -40,11 +40,11 @@ import java.io.InputStream;
 public class ShelterServiceImpl implements ShelterService {
 
     private final TelegramBot telegramBot;
-    private final TrialPeriodService trialPeriodService;
-    private final ReportService reportService;
+    private TrialPeriodService trialPeriodService;
+    private ReportService reportService;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
-    private final InfoService infoService;
+//    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
