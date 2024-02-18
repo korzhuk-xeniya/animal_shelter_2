@@ -104,11 +104,7 @@ public class ShelterServiceImpl implements ShelterService {
                 );
                 return;
             }
-//            if (!update.message().text().equals("/start")) {
-//                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
-//                sendMessage(chatId, );
-//                return;
-//            }
+//
             if (update.message().text().equals("/start")) {
                 logger.info("пользователь отправил /start");
                 sendMenuButton(chatId, " Добро пожаловать в PetShelterBot, "
