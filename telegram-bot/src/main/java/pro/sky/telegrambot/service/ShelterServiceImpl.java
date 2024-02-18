@@ -21,6 +21,7 @@ import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.volunteerService = volunteerService;
         this.objectMapper = objectMapper;
         this.animalService = animalService;
-        this.trialPeriodService =trialPeriodService;
+        this.trialPeriodService = trialPeriodService;
         this.reportService = reportService;
 
     }
@@ -70,7 +71,6 @@ public class ShelterServiceImpl implements ShelterService {
         Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
         adminsVolunteers.add("");
-
 
 
         if (update.message() == null && update.callbackQuery() == null) {
@@ -153,19 +153,17 @@ public class ShelterServiceImpl implements ShelterService {
                     case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
                     case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
-                        case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
-                        case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
-                        case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
-                        case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
-                        case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
-                        case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
-                        case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
-                        case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
-                        case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
-                        case "Обустройство для взрослой собаки" ->
-                                sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
-                        case "Рекомендации по транспортировке" ->
-                                sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, infoMap, "transportation.recommendations");
 
 //                    case "Получить список животных для усыновления": {
 //                        infoService.getPets().stream()
@@ -270,11 +268,12 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
                                  InlineKeyboardMarkup keyboardMarkup) {
-        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup );
+        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup);
         String message = infoMap.get(key);
         EditMessageText editMessageText = new EditMessageText(chatId, messageId, message).replyMarkup(keyboardMarkup);
-                telegramBot.execute(editMessageText);
+        telegramBot.execute(editMessageText);
     }
+
     @Override
     public Map<String, String> getInfo() {
         Map<String, String> infoMap = new HashMap<>();
@@ -284,51 +283,52 @@ public class ShelterServiceImpl implements ShelterService {
             };
             return objectMapper.readValue(infoStream, typeRef);
 
-    }
-     public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
-        GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
-        GetFileResponse getFileResponse = telegramBot.execute(request);
-        TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
-        if (getFileResponse.isOk()) {
-            try {
-                byte[] image = telegramBot.getFileContent(getFileResponse.file());
-                SendPhoto sendPhoto = new SendPhoto(volunteerId, image);
-                sendPhoto.caption("Id владельца: " + trialPeriod.getOwnerId() + "\n" +
-                        "Id испытательного срока: " + trialPeriod.getId() + "\n" +
-                        "Id отчёта:" + reportId);
-                telegramBot.execute(sendPhoto);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
         } catch (IOException e) {
             return infoMap;
+
         }
-    }
-    /**
-     * @param update
-     * Отправка запроса на подтверждение выбора животного волонтером
-     */
-    public void callAVolunteerForConfirmationOfSelection(Update update) {
-        logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
-        List<Volunteer> volunteerList = volunteerRepository.findAll();
-        for (Volunteer volunteer : volunteerList) {
-            String user = update.callbackQuery().from().username();
-            SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
-                    "Пользователь: @" + user + " хочет усыновить животное.");
+        public void sendReportPhotoToVolunteer (Long reportId, Long volunteerId){
+            GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
+            GetFileResponse getFileResponse = telegramBot.execute(request);
+            TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
+            if (getFileResponse.isOk()) {
+                try {
+                    byte[] image = telegramBot.getFileContent(getFileResponse.file());
+                    SendPhoto sendPhoto = new SendPhoto(volunteerId, image);
+                    sendPhoto.caption("Id владельца: " + trialPeriod.getOwnerId() + "\n" +
+                            "Id испытательного срока: " + trialPeriod.getId() + "\n" +
+                            "Id отчёта:" + reportId);
+                    telegramBot.execute(sendPhoto);
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+
+        }
+        /**
+         * @param update
+         * Отправка запроса на подтверждение выбора животного волонтером
+         */
+        public void callAVolunteerForConfirmationOfSelection (Update update){
+            logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
+            List<Volunteer> volunteerList = volunteerRepository.findAll();
+            for (Volunteer volunteer : volunteerList) {
+                String user = update.callbackQuery().from().username();
+                SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
+                        "Пользователь: @" + user + " хочет усыновить животное.");
+                telegramBot.execute(sendMessage);
+            }
+        }
+        /**
+         * метод для отправки кнопок "Выбрать животное"
+         */
+        @Override
+        public void sendButtonChooseAnimal (Long chatId, String messageText){
+            logger.info("Был вызван метод для отправки кнопок Выбора животного", chatId, messageText);
+            SendMessage sendMessage = new SendMessage(chatId, messageText);
+            sendMessage.replyMarkup(buttons.buttonOfChooseAnimal());
             telegramBot.execute(sendMessage);
         }
-    }
-    /**
-     * метод для отправки кнопок "Выбрать животное"
-     */
-    @Override
-    public void sendButtonChooseAnimal(Long chatId, String messageText) {
-        logger.info("Был вызван метод для отправки кнопок Выбора животного", chatId, messageText);
-        SendMessage sendMessage = new SendMessage(chatId, messageText);
-        sendMessage.replyMarkup(buttons.buttonOfChooseAnimal());
-        telegramBot.execute(sendMessage);
     }
 }
 

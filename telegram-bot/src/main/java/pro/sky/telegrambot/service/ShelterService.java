@@ -36,7 +36,7 @@ public interface ShelterService {
     void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
                           InlineKeyboardMarkup keyboardMarkup);
 
-    Map<String, String> getInfo();
+    Map<String, String> getInfo() throws IOException;
 
     void sendButtonChooseAnimal(Long chatId, String messageText);
 }
