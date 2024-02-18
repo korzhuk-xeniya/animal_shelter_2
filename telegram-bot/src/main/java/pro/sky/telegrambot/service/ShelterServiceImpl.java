@@ -6,20 +6,21 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
-import pro.sky.telegrambot.model.Animal;
+import pro.sky.telegrambot.model.TrialPeriod;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ShelterRepository;
 import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +33,11 @@ import java.util.Map;
 public class ShelterServiceImpl implements ShelterService {
 
     private final TelegramBot telegramBot;
+    private final TrialPeriodService trialPeriodService;
+    private final ReportService reportService;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
+    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
@@ -56,6 +60,9 @@ public class ShelterServiceImpl implements ShelterService {
         this.volunteerService = volunteerService;
         this.objectMapper = objectMapper;
         this.animalService = animalService;
+        this.trialPeriodService =trialPeriodService;
+        this.reportService = reportService;
+
     }
 
     @Override
@@ -146,6 +153,25 @@ public class ShelterServiceImpl implements ShelterService {
                     case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
                     case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
+                        case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+                        case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+                        case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+                        case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                        case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                        case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+                        case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+                        case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+                        case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+                        case "Обустройство для взрослой собаки" ->
+                                sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+                        case "Рекомендации по транспортировке" ->
+                                sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+
+//                    case "Получить список животных для усыновления": {
+//                        infoService.getPets().stream()
+//                                .map(pet -> new SendPhoto(chatId, pet.getPhoto())
+//                                        .caption(String.format("%s-%s", pet.getName(), pet.getDescription())))
+//                                .forEach(telegramBot::execute);
 
                     case "Позвать волонтера" -> {
                         callAVolunteer(update);
@@ -258,6 +284,23 @@ public class ShelterServiceImpl implements ShelterService {
             };
             return objectMapper.readValue(infoStream, typeRef);
 
+    }
+     public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
+        GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
+        GetFileResponse getFileResponse = telegramBot.execute(request);
+        TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
+        if (getFileResponse.isOk()) {
+            try {
+                byte[] image = telegramBot.getFileContent(getFileResponse.file());
+                SendPhoto sendPhoto = new SendPhoto(volunteerId, image);
+                sendPhoto.caption("Id владельца: " + trialPeriod.getOwnerId() + "\n" +
+                        "Id испытательного срока: " + trialPeriod.getId() + "\n" +
+                        "Id отчёта:" + reportId);
+                telegramBot.execute(sendPhoto);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
 
         } catch (IOException e) {
             return infoMap;
