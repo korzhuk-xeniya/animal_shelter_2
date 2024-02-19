@@ -3,31 +3,39 @@ package pro.sky.telegrambot.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.GetFile;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.request.SendPhoto;
+import com.pengrad.telegrambot.request.*;
 import com.pengrad.telegrambot.response.GetFileResponse;
+import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.model.TrialPeriod;
+import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
+import pro.sky.telegrambot.other.Information;
 import pro.sky.telegrambot.repository.ShelterRepository;
 import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.util.Map;
+import static liquibase.repackaged.net.sf.jsqlparser.parser.feature.Feature.update;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -50,7 +58,7 @@ public class ShelterServiceImpl implements ShelterService {
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
                               VolunteerRepository volunteerRepository, UserRepository userRepository,
                               UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper,
-                              AnimalService animalService) {
+                              AnimalService animalService, TrialPeriodService trialPeriodService, ReportService reportService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
@@ -60,7 +68,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.volunteerService = volunteerService;
         this.objectMapper = objectMapper;
         this.animalService = animalService;
-        this.trialPeriodService =trialPeriodService;
+        this.trialPeriodService = trialPeriodService;
         this.reportService = reportService;
 
     }
@@ -70,7 +78,6 @@ public class ShelterServiceImpl implements ShelterService {
         Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
         adminsVolunteers.add("");
-
 
 
         if (update.message() == null && update.callbackQuery() == null) {
@@ -153,19 +160,17 @@ public class ShelterServiceImpl implements ShelterService {
                     case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
                     case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
 
-                        case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
-                        case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
-                        case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
-                        case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
-                        case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
-                        case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
-                        case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
-                        case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
-                        case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
-                        case "Обустройство для взрослой собаки" ->
-                                sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
-                        case "Рекомендации по транспортировке" ->
-                                sendMessageByKey(chatId, infoMap, "transportation.recommendations");
+                    case "О приюте" -> sendMessageByKey(chatId, infoMap, "shelter.info");
+                    case "График работы" -> sendMessageByKey(chatId, infoMap, "shelter.work.schedule");
+                    case "Адрес приюта" -> sendMessageByKey(chatId, infoMap, "shelter.address");
+                    case "Телефон охраны" -> sendMessageByKey(chatId, infoMap, "security.phone");
+                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions");
+                    case "Правила посещения приюта" -> sendMessageByKey(chatId, infoMap, "visiting.rules");
+                    case "Правила знакомства" -> sendMessageByKey(chatId, infoMap, "dating.rules");
+                    case "Причины отказа" -> sendMessageByKey(chatId, infoMap, "reasons.for.refusal");
+                    case "Обустройство щенка" -> sendMessageByKey(chatId, infoMap, "conditions.for.puppy");
+                    case "Обустройство для взрослой собаки" -> sendMessageByKey(chatId, infoMap, "conditions.for.adult.dog");
+                    case "Рекомендации по транспортировке" -> sendMessageByKey(chatId, infoMap, "transportation.recommendations");
 
 //                    case "Получить список животных для усыновления": {
 //                        infoService.getPets().stream()
@@ -194,12 +199,12 @@ public class ShelterServiceImpl implements ShelterService {
         }
     }
 
-    @Override
+   /* @Override
     public void sendMessage(Long chatId, String messageText) {
         logger.info("Был вызван метод для отправки сообщения", chatId, messageText);
         SendMessage sendMessage = new SendMessage(chatId, messageText);
         telegramBot.execute(sendMessage);
-    }
+    }*/
 
     /**
      * метод для отправки кнопки "Меню"
@@ -270,11 +275,12 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public void sendMessageByKey(long chatId, int messageId, Map<String, String> infoMap, String key,
                                  InlineKeyboardMarkup keyboardMarkup) {
-        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup );
+        logger.info("Был вызван метод получения информации по ключу", chatId, infoMap, key, keyboardMarkup);
         String message = infoMap.get(key);
         EditMessageText editMessageText = new EditMessageText(chatId, messageId, message).replyMarkup(keyboardMarkup);
-                telegramBot.execute(editMessageText);
+        telegramBot.execute(editMessageText);
     }
+
     @Override
     public Map<String, String> getInfo() {
         Map<String, String> infoMap = new HashMap<>();
@@ -284,8 +290,8 @@ public class ShelterServiceImpl implements ShelterService {
             };
             return objectMapper.readValue(infoStream, typeRef);
 
-    }
-     public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
+        }
+/*     public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
         GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
         GetFileResponse getFileResponse = telegramBot.execute(request);
         TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
@@ -305,31 +311,155 @@ public class ShelterServiceImpl implements ShelterService {
         } catch (IOException e) {
             return infoMap;
         }
-    }
-    /**
-     * @param update
-     * Отправка запроса на подтверждение выбора животного волонтером
-     */
-    public void callAVolunteerForConfirmationOfSelection(Update update) {
-        logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
-        List<Volunteer> volunteerList = volunteerRepository.findAll();
-        for (Volunteer volunteer : volunteerList) {
-            String user = update.callbackQuery().from().username();
-            SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
-                    "Пользователь: @" + user + " хочет усыновить животное.");
+    }*/
+        /**
+         * @param update
+         * Отправка запроса на подтверждение выбора животного волонтером
+         */
+        public void callAVolunteerForConfirmationOfSelection (Update update){
+            logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
+            List<Volunteer> volunteerList = volunteerRepository.findAll();
+            for (Volunteer volunteer : volunteerList) {
+                String user = update.callbackQuery().from().username();
+                SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
+                        "Пользователь: @" + user + " хочет усыновить животное.");
+                telegramBot.execute(sendMessage);
+            }
+        }
+        /**
+         * метод для отправки кнопок "Выбрать животное"
+         */
+        @Override
+        public void sendButtonChooseAnimal (Long chatId, String messageText){
+            logger.info("Был вызван метод для отправки кнопок Выбора животного", chatId, messageText);
+            SendMessage sendMessage = new SendMessage(chatId, messageText);
+            sendMessage.replyMarkup(buttons.buttonOfChooseAnimal());
             telegramBot.execute(sendMessage);
         }
     }
-    /**
-     * метод для отправки кнопок "Выбрать животное"
-     */
-    @Override
-    public void sendButtonChooseAnimal(Long chatId, String messageText) {
-        logger.info("Был вызван метод для отправки кнопок Выбора животного", chatId, messageText);
-        SendMessage sendMessage = new SendMessage(chatId, messageText);
-        sendMessage.replyMarkup(buttons.buttonOfChooseAnimal());
-        telegramBot.execute(sendMessage);
+
+    // ----------------------------------------------------------------------------------------------------------
+    public void sendReportPhotoToVolunteer(Long reportId, Long volunteerId) {
+        GetFile request = new GetFile(reportService.getById(reportId).getPhotoId());
+        GetFileResponse getFileResponse = telegramBot.execute(request);
+        TrialPeriod trialPeriod = trialPeriodService.getById(reportService.getById(reportId).getTrialPeriodId());
+        if (getFileResponse.isOk()) {
+            try {
+                byte[] image = telegramBot.getFileContent(getFileResponse.file());
+                SendPhoto sendPhoto = new SendPhoto(volunteerId, image);
+                sendPhoto.caption("Id владельца: " + trialPeriod.getOwnerId() + "\n" +
+                        "Id испытательного срока: " + trialPeriod.getId() + "\n" +
+                        "Id отчёта:" + reportId);
+                telegramBot.execute(sendPhoto);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+
+    public void sendMessage(Long chatId, String message) {
+        SendResponse sendResponse = telegramBot.execute(new SendMessage(chatId, message));
+        if (!sendResponse.isOk()) {
+            logger.error(sendResponse.description());
+        }
+    }
+
+    private void getContact(Long chatId, String text) {
+        String okString = "Телефон принят";
+        String faulseString = "Неверно ввел ";
+        Pattern pattern = Pattern.compile("^(\\d{11})$");
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.find()) {
+            User byId = userService.getById(chatId);
+            byId.setNumber(matcher.group(1));
+            userService.update(byId);
+            sendMessage(chatId, okString);
+        } else {
+            sendMessage(chatId, faulseString);
+        }
+        logger.info("Прилетел телефон - ID:{} тел:{} ", chatId, text);
+    }
+
+    private void sendMessageToVolunteers(Message message) {
+        Long chatId = message.chat().id();
+        Integer integer = message.messageId();
+        for (Volunteer volunteer : volunteerService.findAllVolunteers()) {
+            telegramBot.execute(new ForwardMessage(volunteer.getChatId(), chatId, integer));
+        }
+    }
+
+    private void sendMessageToVolunteers(Long chatId) {
+        for (Volunteer volunteer : volunteerService.findAllVolunteers()) {
+            telegramBot.execute(new SendMessage(volunteer.getChatId(), "Владелец животного с id " + chatId + " не отправлял отчёты более двух дней!"));
+        }
+    }
+
+    private void sendReportExample(Long chatId) {
+        try {
+            byte[] photo = Files.readAllBytes(
+                    Paths.get(Objects.requireNonNull(UpdatesListener.class.getResource("/static/img/Cat.jpg")).toURI())
+            );
+            SendPhoto sendPhoto = new SendPhoto(chatId, photo);
+            sendPhoto.caption("""
+                    Рацион: ваш текст;
+                    Самочувствие: ваш текст;
+                    Поведение: ваш текст;
+                    """);
+            telegramBot.execute(sendPhoto);
+        } catch (IOException | URISyntaxException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void getReport(Message message) {
+        PhotoSize photoSize = message.photo()[message.photo().length - 1];
+        String caption = message.caption();
+        Long chatId = message.chat().id();
+        try {
+            reportService.createFromTelegram(photoSize.fileId(), caption, chatId);
+            sendMessage(chatId, "Ваш отчёт принят.");
+        } catch (Exception e) {
+            sendMessage(chatId, e.getMessage());
+        }
+    }
+
+    private String getStringFromList(List<?> list) {
+        StringBuilder sb = new StringBuilder();
+        list.forEach(o -> sb.append(o)
+                .append("\n")
+                .append("============").append("\n"));
+        return sb.toString();
+    }
+
+    @Scheduled(cron = "@daily")
+    private void sendWarning() {
+        for (User user : userService.getAll()) {
+            for (TrialPeriod trialPeriod : trialPeriodService.getAllByOwnerId(user.getChatId())) {
+                if ((trialPeriod.getReports().size() < 45 && !trialPeriod.getLastReportDate().isEqual(trialPeriod.getEndDate())) &&
+                        trialPeriod.getLastReportDate().isBefore(LocalDate.now().minusDays(2))) {
+                    sendMessage( user.getChatId(),"Вы не отправляли отчёты уже более двух дней. " +
+                            "Пожалуйста, отправьте отчёт или выйдите на связь с волонтёрами.");
+                    sendMessageToVolunteers(user.getChatId());
+                }
+            }
+
+        }
+    }
+
+    @Scheduled(cron = "@daily")
+    private void sendTrialPeriodStatus() {
+        for (User user : userService.getAll()) {
+            for (TrialPeriod trialPeriod : trialPeriodService.getAllByOwnerId(user.getChatId())) {
+                if (trialPeriod.getResult().equals(TrialPeriod.Result.NOT_SUCCESSFUL)) {
+                    sendMessage(user.getChatId(), Information.TRIAL_NOT_SUCCESSFUL);
+                } else if (trialPeriod.getResult().equals(TrialPeriod.Result.EXTENDED)) {
+                    sendMessage(user.getChatId(), Information.TRIAL_EXTENDED);
+                } else if (trialPeriod.getResult().equals(TrialPeriod.Result.SUCCESSFUL)) {
+                    sendMessage(user.getChatId(), Information.SUCCESSFUL);
+                }
+            }
+        }
     }
 }
-
 

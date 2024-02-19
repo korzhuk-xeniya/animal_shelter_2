@@ -5,12 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    private long id;
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -44,55 +43,31 @@ public class User {
 ////    @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL)
 //    private List<ReportAboutAnimal> reports = new ArrayList<>();
 
-    public User(String firstName, Boolean tookAPet, long chatId, LocalDateTime dateTimeToTook) {
+    public User(String firstName, Boolean tookAPet, Long chatId, LocalDateTime dateTimeToTook) {
         this.firstName = firstName;
         this.tookAPet = tookAPet;
         this.chatId = chatId;
         this.dateTimeToTook = dateTimeToTook;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public Boolean getTookAPet() {
-        return tookAPet;
-    }
-
     public void setTookAPet(Boolean tookAPet) {
         this.tookAPet = tookAPet;
     }
 
-    public long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(long chatId) {
+    public void setChatId(Long chatId) {
         this.chatId = chatId;
-    }
-
-    public String getNumber() {
-        return number;
     }
 
     public void setNumber(String number) {
         this.number = number;
-    }
-
-    public LocalDateTime getDateTimeToTook() {
-        return dateTimeToTook;
     }
 
     public void setDateTimeToTook(LocalDateTime dateTimeToTook) {

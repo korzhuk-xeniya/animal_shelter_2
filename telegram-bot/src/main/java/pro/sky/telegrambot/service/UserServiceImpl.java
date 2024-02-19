@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(long id) {
+    public User getById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
             throw new NotFoundException(EXCEPTION_NOT_FOUND_USER);
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(Long id) {
         userRepository.deleteById(getById(id).getChatId());
     }
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     //Получить юзера из бд
-    public Optional<User> getUserByChatId(long chatId) {
+    public Optional<User> getUserByChatId(Long chatId) {
         logger.info("Был вызван метод для получения пользователя из базы данных", chatId);
         return userRepository.findByChatId(chatId);
     }
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
      * Поиск пользователя по chatId, если он есть то обновляем dateTimeToTook, если нет, создается новый пользователь
      */
     public void saveUser(Update update, boolean tookAPET) {
-        int chatId = update.message().chat().id().intValue();
+        Long chatId = (long) update.message().chat().id().intValue();
         Optional<User> userOptional = getUserByChatId(chatId);
 
         if (userOptional.isPresent()) {

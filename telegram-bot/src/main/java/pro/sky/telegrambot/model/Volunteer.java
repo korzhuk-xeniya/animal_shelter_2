@@ -1,7 +1,10 @@
 package pro.sky.telegrambot.model;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.Objects;
+@Getter
 @Entity
 @Table(name = "volunteers")
 public class Volunteer {
@@ -35,35 +38,20 @@ public class Volunteer {
             this.lastName = lastName;
             this.chatId = chatId;
         }
-        public long getId() {
-            return id;
-        }
 
-        public void setId(long id) {
+    public void setId(long id) {
             this.id = id;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
+    public void setName(String name) {
             this.name = name;
         }
 
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
+    public void setLastName(String lastName) {
             this.lastName = lastName;
         }
 
-        public long getChatId() {
-            return chatId;
-        }
-
-        public void setChatId(long chatId) {
+    public void setChatId(long chatId) {
             this.chatId = chatId;
         }
 

@@ -24,7 +24,7 @@ public interface UserService {
 
 
 
-    User getById(long id);
+    User getById(Long id);
 
     User update(User user);
 
@@ -50,7 +50,7 @@ public interface UserService {
      */
 
 
-    void deleteById(long id);
+    void deleteById(Long id);
 
     /**
      * @return Список всех пользователей
@@ -60,7 +60,7 @@ public interface UserService {
 
 
     //Получить юзера из бд
-    Optional<User> getUserByChatId(long chatId);
+    Optional<User> getUserByChatId(Long chatId);
 
     /**
      * Поиск пользователя по chatId, если он есть то обновляем dateTimeToTook, если нет, создается новый пользователь
