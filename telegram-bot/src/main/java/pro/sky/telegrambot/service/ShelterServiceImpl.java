@@ -38,7 +38,6 @@ public class ShelterServiceImpl implements ShelterService {
     private final ReportService reportService;
     private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
-    private final InfoService infoService;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
