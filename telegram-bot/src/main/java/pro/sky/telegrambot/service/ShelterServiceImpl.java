@@ -95,6 +95,7 @@ public class ShelterServiceImpl implements ShelterService {
 //                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
 //                sendMessage(chatId, );
 //                return;
+
 //            }
             if (update.message().text().equals("/start")) {
                 logger.info("пользователь отправил /start");
