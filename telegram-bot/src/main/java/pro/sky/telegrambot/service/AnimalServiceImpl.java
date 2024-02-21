@@ -1,11 +1,15 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.model.Update;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.repository.AnimalRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AnimalServiceImpl implements AnimalService {
@@ -13,11 +17,14 @@ public class AnimalServiceImpl implements AnimalService {
 
 
         private final AnimalRepository animalRepository;
+    private final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
+    private final UserService userService;
 //        private final User user;
 
-        public AnimalServiceImpl(AnimalRepository animalRepository) {
+        public AnimalServiceImpl(AnimalRepository animalRepository, UserService userService) {
             this.animalRepository = animalRepository;
 //            this.user = user;
+            this.userService = userService;
         }
 
 
@@ -52,7 +59,7 @@ public class AnimalServiceImpl implements AnimalService {
         }
 
         /**
-         * Метод удаления животного надо доработать
+         * Метод удаления животного
          */
         @Override
         public void delete(long id) {
@@ -69,6 +76,21 @@ public class AnimalServiceImpl implements AnimalService {
         public List<Animal> allAnimals() {
             return animalRepository.findAll();
         }
+    @Override
+    /**
+     * Поиск пользователя по chatId, если он есть то добавляем к животному
+     */
+    public void saveUserIdInAnimal(Update update, Animal animal) {
+        logger.info("Был вызван метод для усыновителя животного в базе данных",update, animal);
+        int chatId = update.message().chat().id().intValue();
+        Optional<User> userOptional = userService.getUserByChatId(chatId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            Animal pet = new Animal(animal.getId(), animal.getAgeMonth(), animal.getNameOfAnimal(),
+                    animal.getPhotoLink(), animal.getGender(), animal.getPetType(),user);
+            animalRepository.save(pet);
+        }
+    }
 
 //        @Override
 //        public void updateUserId(User user, long animalId) {

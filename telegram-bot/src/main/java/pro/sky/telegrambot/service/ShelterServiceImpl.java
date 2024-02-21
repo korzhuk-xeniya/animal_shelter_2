@@ -62,7 +62,7 @@ public class ShelterServiceImpl implements ShelterService {
     public void process(Update update) {
         Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add("");
+        adminsVolunteers.add("xeny_sk");
 
 
 
@@ -84,13 +84,14 @@ public class ShelterServiceImpl implements ShelterService {
                 sendMenuButton(chatId, "Номер записан, Вам обязательно позвонят!");
 
 
-            } else if (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
-                logger.info("пользователь отправил  сообщение  с неопределенным содержанием");
-                sendMessage(chatId, ("Содержание не определено. Для начала работы, отправь /start." +
-                        "Для записи номера телефона, введите его в формате +71112223344")
-                );
-                return;
             }
+//            else if (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
+//                logger.info("пользователь отправил  сообщение  с неопределенным содержанием");
+//                sendMessage(chatId, ("Содержание не определено. Для начала работы, отправь /start." +
+//                        "Для записи номера телефона, введите его в формате +71112223344")
+//                );
+//                return;
+//            }
 //            if (!update.message().text().equals("/start")) {
 //                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
 //                sendMessage(chatId, );
@@ -108,6 +109,16 @@ public class ShelterServiceImpl implements ShelterService {
 
                 } else {
                     userService.saveUser(update, false);
+                }
+            }
+            List<Animal> animalList1 = new ArrayList<Animal>(animalService.allAnimals());
+            for (Animal pet : animalList1) {
+                if (update.message().text().equals(pet.getNameOfAnimal().toString())) {
+                    sendMessage(chatId,
+                            "Волонтер скоро свяжется с Вами, чтобы подтвердить Ваш выбор");
+                    callAVolunteerForConfirmationOfSelection(update, pet);
+                    userService.saveUser(update, true);
+                    animalService.saveUserIdInAnimal(update, pet);
                 }
             }
         } else {
@@ -163,6 +174,8 @@ public class ShelterServiceImpl implements ShelterService {
 
                         }
                     }
+                    case "Взять животное" ->
+                            changeMessage(messageId, chatId, "Отправьте кличку животного.", buttons.buttonMenu());
 
                 }
             }
@@ -268,13 +281,14 @@ public class ShelterServiceImpl implements ShelterService {
      * @param update
      * Отправка запроса на подтверждение выбора животного волонтером
      */
-    public void callAVolunteerForConfirmationOfSelection(Update update) {
+    public void callAVolunteerForConfirmationOfSelection(Update update, Animal pet) {
         logger.info("Был вызван метод для отправки запроса волонтеру на подтверждение выбора животного", update);
         List<Volunteer> volunteerList = volunteerRepository.findAll();
         for (Volunteer volunteer : volunteerList) {
-            String user = update.callbackQuery().from().username();
+            String user = update.message().from().username();
             SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
-                    "Пользователь: @" + user + " хочет усыновить животное.");
+                    "Пользователь: @" + user + " хочет усыновить животное " + pet.getNameOfAnimal() + " id: " +
+                            pet.getId());
             telegramBot.execute(sendMessage);
         }
     }
