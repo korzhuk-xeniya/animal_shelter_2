@@ -1,18 +1,23 @@
 package pro.sky.telegrambot.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.util.*;
 
+import static java.util.Optional.empty;
 import static java.util.OptionalInt.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class VolunteerServiceImplTest {
     @Mock
     VolunteerRepository repository;
@@ -31,43 +36,40 @@ class VolunteerServiceImplTest {
 
     @Test
     void readVolunteer_shouldThrowExceptionWhenVolunteerWithIdNotFound() {
-        when(repository.findAllById(Collections.singleton(volunteer1.getId()))).thenReturn(empty());
+
+        when(repository.findById(volunteer1.getId())).thenReturn(empty());
 
         assertThrows(VolunteerNotFoundException.class, () -> service.readVolunteer(volunteer1.getId()));
     }
 
     @Test
     void updateVolunteerById_ShouldUpdateAndReturnUpdateVolunteer() {
-        when(repository.findAllById(Collections.singleton(volunteer1.getId()))).thenReturn(Optional.of(volunteer1));
+        when(repository.findById(volunteer1.getId())).thenReturn(Optional.of(volunteer1));
         when(repository.save(volunteer1)).thenReturn(volunteer1);
         Volunteer result = service.updateVolunteerById(volunteer1);
+
 
         assertEquals(volunteer1, result);
     }
 
     @Test
     void deleteById() {
-        long id = 3;
-        when(repository.deleteById()(Collections.singleton(volunteer1.getId()))).thenReturn((List<Volunteer>) volunteer1);
-        service.saveVolunteerInBd(volunteer1);
-        service.saveVolunteerInBd(volunteer2);
-        Collection<Volunteer> volunteerCollection = new ArrayList<>(Arrays.asList(volunteer1, volunteer2));
-        Collection<Volunteer> volunteerCollection = new ArrayList<>(Arrays.asList(volunteer1, volunteer2));
+        doNothing().when(repository).deleteById(anyLong());
 
-        Volunteer result = service.deleteById(volunteer3.getId());
+        service.deleteById(volunteer1.getId());
+
+        verify(repository, only()).deleteById(anyLong());
+    }
+
+
+    @Test
+    void getVolunteerByChatId() {
+        when(repository.findByChatId(volunteer1.getChatId())).thenReturn(Optional.of(volunteer1));
+        Volunteer result =  service.getVolunteerByChatId(volunteer1.getChatId()).get();
+
 
         assertEquals(volunteer1, result);
     }
 
-    @Test
-    void findAllVolunteers() {
-    }
 
-    @Test
-    void getVolunteerByChatId() {
-    }
-
-    @Test
-    void saveVolunteer() {
-    }
 }
