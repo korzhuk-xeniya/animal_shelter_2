@@ -53,7 +53,7 @@ class VolunteerServiceImplTest {
     }
 
     @Test
-    void deleteById() {
+    void deleteById_ShouldDeleteVolunteerById() {
         doNothing().when(repository).deleteById(anyLong());
 
         service.deleteById(volunteer1.getId());
@@ -63,7 +63,7 @@ class VolunteerServiceImplTest {
 
 
     @Test
-    void getVolunteerByChatId() {
+    void getVolunteerByChatId_ShouldFindVolunteerByChatId() {
         when(repository.findByChatId(volunteer1.getChatId())).thenReturn(Optional.of(volunteer1));
         Volunteer result =  service.getVolunteerByChatId(volunteer1.getChatId()).get();
 
