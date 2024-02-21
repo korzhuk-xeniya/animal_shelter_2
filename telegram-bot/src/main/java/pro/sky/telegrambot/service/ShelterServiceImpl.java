@@ -42,11 +42,12 @@ public class ShelterServiceImpl implements ShelterService {
     private static final Pattern MESSAGE_PATTERN = Pattern.compile("^(\\+7)([0-9]{10})$");
     private final ObjectMapper objectMapper;
     private final AnimalService animalService;
+    private final ReportAboutAnimalService reportAboutAnimalService;
 
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
                               VolunteerRepository volunteerRepository, UserRepository userRepository,
                               UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper,
-                              AnimalService animalService) {
+                              AnimalService animalService, ReportAboutAnimalService reportAboutAnimalService) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
@@ -56,6 +57,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.volunteerService = volunteerService;
         this.objectMapper = objectMapper;
         this.animalService = animalService;
+        this.reportAboutAnimalService = reportAboutAnimalService;
     }
 
     @Override
@@ -85,19 +87,7 @@ public class ShelterServiceImpl implements ShelterService {
 
 
             }
-//            else if (update.message() != null && !update.message().text().equals("/start") && !matcher.find()) {
-//                logger.info("пользователь отправил  сообщение  с неопределенным содержанием");
-//                sendMessage(chatId, ("Содержание не определено. Для начала работы, отправь /start." +
-//                        "Для записи номера телефона, введите его в формате +71112223344")
-//                );
-//                return;
-//            }
-//            if (!update.message().text().equals("/start")) {
-//                logger.info("пользователь отправил  сообщение с неопределенным содержанием");
-//                sendMessage(chatId, );
-//                return;
-
-//            }
+//
             if (update.message().text().equals("/start")) {
                 logger.info("пользователь отправил /start");
                 sendMenuButton(chatId, " Добро пожаловать в PetShelterBot, "
@@ -110,6 +100,11 @@ public class ShelterServiceImpl implements ShelterService {
                 } else {
                     userService.saveUser(update, false);
                 }
+            }
+
+            if (update.message().photo() != null&& update.message().caption() != null) {
+                logger.info("пользователь отправил фото с заголовком");
+//                reportAboutAnimalService.savePhoto(update, update.message()); TODO
             }
             List<Animal> animalList1 = new ArrayList<Animal>(animalService.allAnimals());
             for (Animal pet : animalList1) {
