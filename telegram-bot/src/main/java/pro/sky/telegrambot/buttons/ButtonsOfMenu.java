@@ -3,9 +3,11 @@ package pro.sky.telegrambot.buttons;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
+import liquibase.pro.packaged.B;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import pro.sky.telegrambot.model.Buttons;
 
 import java.util.List;
 
@@ -18,126 +20,109 @@ public class ButtonsOfMenu {
 
     public InlineKeyboardMarkup buttonMenu() {
         logger.info("Был вызван метод создания кнопки Меню");
-        InlineKeyboardButton menuButton = new InlineKeyboardButton("Меню");
-        menuButton.callbackData("Меню");
+
+        InlineKeyboardButton menuButton = new InlineKeyboardButton(Buttons.MENU.getButtonName());
+        menuButton.callbackData(Buttons.MENU.getButtonName());
+
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{menuButton});
     }
 
     public InlineKeyboardMarkup buttonsOfStart() {
         logger.info("Был вызван метод создания кнопок 0 этапа");
-        InlineKeyboardButton checkInfoButton = new InlineKeyboardButton("Информация о приюте");
-        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
-        InlineKeyboardButton getReportAboutPet = new InlineKeyboardButton("Прислать отчет о питомце");
-        InlineKeyboardButton howGetPet = new InlineKeyboardButton("Как взять животное из приюта?");
-        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
-        checkInfoButton.callbackData("Информация о приюте");
-        callVolunteerButton.callbackData("Позвать волонтера");
-        getReportAboutPet.callbackData("Прислать отчет о питомце");
-        howGetPet.callbackData("Как взять животное из приюта?");
-        toStart.callbackData("В начало");
 
-            return new InlineKeyboardMarkup(new InlineKeyboardButton[]{checkInfoButton},
-                    new InlineKeyboardButton[]{getReportAboutPet},
-                    new InlineKeyboardButton[]{howGetPet},
-                    new InlineKeyboardButton[]{callVolunteerButton},
-                    new InlineKeyboardButton[]{toStart});
-        }
-        public InlineKeyboardMarkup buttonsInformationAboutShelter() {
-            logger.info("Был вызван метод создания кнопок Инфомация о приюте");
-            InlineKeyboardButton aboutShelterButton = new InlineKeyboardButton("О приюте");
-            InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
-            InlineKeyboardButton timetableButton = new InlineKeyboardButton("График работы");
-            InlineKeyboardButton addressButton = new InlineKeyboardButton("Адрес приюта");
-            InlineKeyboardButton locationMapButton = new InlineKeyboardButton("Схема проезда");
-            InlineKeyboardButton securityButton = new InlineKeyboardButton("Телефон охраны");
-            InlineKeyboardButton safetyButton = new InlineKeyboardButton("Правила посещения приюта");
-            InlineKeyboardButton leavePhoneNumberButton = new InlineKeyboardButton("Оставить телефон для связи");
-            InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
-            aboutShelterButton.callbackData("О приюте");
-            callVolunteerButton.callbackData("Позвать волонтера");
-            timetableButton.callbackData("График работы");
-            addressButton.callbackData("Адрес приюта");
-            locationMapButton.callbackData("Схема проезда");
-            securityButton.callbackData("Телефон охраны");
-            safetyButton.callbackData("Правила посещения приюта");
-            leavePhoneNumberButton.callbackData("Оставить телефон для связи");
-            toStart.callbackData("В начало");
+        InlineKeyboardButton checkInfoButton = new InlineKeyboardButton(Buttons.CHECK_INFO.getButtonName());
+        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton(Buttons.CALL_VOLUNTEER.getButtonName());
+        InlineKeyboardButton getReportAboutPetButton = new InlineKeyboardButton(Buttons.GET_REPORT_ABOUT_PET.getButtonName());
+        InlineKeyboardButton howGetPetButton = new InlineKeyboardButton(Buttons.HOW_GET_PET.getButtonName());
+        InlineKeyboardButton toStartButton = new InlineKeyboardButton(Buttons.TO_START.getButtonName());
 
-        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{aboutShelterButton}
-                ,
-                new InlineKeyboardButton[]{timetableButton}
-                ,
-                new InlineKeyboardButton[]{addressButton}
-                ,
-                new InlineKeyboardButton[]{locationMapButton}
-                ,
-                new InlineKeyboardButton[]{securityButton}
-                ,
-                new InlineKeyboardButton[]{safetyButton},
-                new InlineKeyboardButton[]{leavePhoneNumberButton},
-                new InlineKeyboardButton[]{callVolunteerButton},
-                new InlineKeyboardButton[]{toStart}
-        );
+        checkInfoButton.callbackData(Buttons.CHECK_INFO.getButtonName());
+        callVolunteerButton.callbackData(Buttons.CALL_VOLUNTEER.getButtonName());
+        getReportAboutPetButton.callbackData(Buttons.GET_REPORT_ABOUT_PET.getButtonName());
+        howGetPetButton.callbackData(Buttons.HOW_GET_PET.getButtonName());
+        toStartButton.callbackData(Buttons.TO_START.getButtonName());
+
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{checkInfoButton}, new InlineKeyboardButton[]{getReportAboutPetButton}, new InlineKeyboardButton[]{howGetPetButton}, new InlineKeyboardButton[]{callVolunteerButton}, new InlineKeyboardButton[]{toStartButton});
+    }
+
+    public InlineKeyboardMarkup buttonsInformationAboutShelter() {
+        logger.info("Был вызван метод создания кнопок Инфомация о приюте");
+
+        InlineKeyboardButton aboutShelterButton = new InlineKeyboardButton(Buttons.ABOUT_SHELTER.getButtonName());
+        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton(Buttons.CALL_VOLUNTEER.getButtonName());
+        InlineKeyboardButton timetableButton = new InlineKeyboardButton(Buttons.TIMETABLE.getButtonName());
+        InlineKeyboardButton addressButton = new InlineKeyboardButton(Buttons.ADDRESS.getButtonName());
+        InlineKeyboardButton locationMapButton = new InlineKeyboardButton(Buttons.LOCATION_MAP.getButtonName());
+        InlineKeyboardButton securityButton = new InlineKeyboardButton(Buttons.SECURITY_PHONE.getButtonName());
+        InlineKeyboardButton safetyButton = new InlineKeyboardButton(Buttons.SAFETY_RULES.getButtonName());
+        InlineKeyboardButton leavePhoneNumberButton = new InlineKeyboardButton(Buttons.LEAVE_PHONE_NUMBER.getButtonName());
+        InlineKeyboardButton toStartButton = new InlineKeyboardButton(Buttons.TO_START.getButtonName());
+
+        aboutShelterButton.callbackData(Buttons.ABOUT_SHELTER.getButtonName());
+        callVolunteerButton.callbackData(Buttons.CALL_VOLUNTEER.getButtonName());
+        timetableButton.callbackData(Buttons.TIMETABLE.getButtonName());
+        addressButton.callbackData(Buttons.ADDRESS.getButtonName());
+        locationMapButton.callbackData(Buttons.LOCATION_MAP.getButtonName());
+        securityButton.callbackData(Buttons.SECURITY_PHONE.getButtonName());
+        safetyButton.callbackData(Buttons.SAFETY_RULES.getButtonName());
+        leavePhoneNumberButton.callbackData(Buttons.LEAVE_PHONE_NUMBER.getButtonName());
+        toStartButton.callbackData(Buttons.TO_START.getButtonName());
+
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{aboutShelterButton}, new InlineKeyboardButton[]{timetableButton}, new InlineKeyboardButton[]{addressButton}, new InlineKeyboardButton[]{locationMapButton}, new InlineKeyboardButton[]{securityButton}, new InlineKeyboardButton[]{safetyButton}, new InlineKeyboardButton[]{leavePhoneNumberButton}, new InlineKeyboardButton[]{callVolunteerButton}, new InlineKeyboardButton[]{toStartButton});
     }
 
     public InlineKeyboardMarkup takeAnimalButton() {
         logger.info("Был вызван метод создания кнопок Как взять животное из приюта");
-        InlineKeyboardButton datingRulesButton = new InlineKeyboardButton("Правила знакомства");
-        InlineKeyboardButton listOfDocumentsButton = new InlineKeyboardButton("Список документов");
-        InlineKeyboardButton transportationButton = new InlineKeyboardButton("Рекомендации по транспортировке");
-        InlineKeyboardButton arrangementPuppyButton = new InlineKeyboardButton("Обустройство щенка");
-        InlineKeyboardButton arrangementAdultButton = new InlineKeyboardButton("Обустройство для взрослой собаки");
-        InlineKeyboardButton arrangementDisabledButton = new InlineKeyboardButton("Животное с ОВЗ");
-        InlineKeyboardButton whyRefuseButton = new InlineKeyboardButton("Причины отказа");
-        InlineKeyboardButton chooseAnimalButton = new InlineKeyboardButton("Выбрать животное");
-        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
-        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
 
-        arrangementAdultButton.callbackData("Обустройство для взрослой собаки");
-        arrangementPuppyButton.callbackData("Обустройство щенка");
-        datingRulesButton.callbackData("Правила знакомства");
-        listOfDocumentsButton.callbackData("Список документов");
-        transportationButton.callbackData("Рекомендации по транспортировке");
-        arrangementDisabledButton.callbackData("Животное с ОВЗ");
-        whyRefuseButton.callbackData("Причины отказа");
-        chooseAnimalButton.callbackData("Выбрать животное");
-        callVolunteerButton.callbackData("Позвать волонтера");
-        toStart.callbackData("В начало");
-        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{datingRulesButton},
-                new InlineKeyboardButton[]{listOfDocumentsButton},
-                new InlineKeyboardButton[]{arrangementDisabledButton},
-                new InlineKeyboardButton[]{whyRefuseButton},
-                new InlineKeyboardButton[]{arrangementPuppyButton},
-                new InlineKeyboardButton[]{arrangementAdultButton},
-                new InlineKeyboardButton[]{transportationButton},
-                new InlineKeyboardButton[]{chooseAnimalButton},
-                new InlineKeyboardButton[]{callVolunteerButton},
-                new InlineKeyboardButton[]{toStart});
+        InlineKeyboardButton datingRulesButton = new InlineKeyboardButton(Buttons.DATING_RULES.getButtonName());
+        InlineKeyboardButton listOfDocumentsButton = new InlineKeyboardButton(Buttons.LIST_OF_DOCUMENTS.getButtonName());
+        InlineKeyboardButton transportationButton = new InlineKeyboardButton(Buttons.TRANSPORTATION.getButtonName());
+        InlineKeyboardButton arrangementPuppyButton = new InlineKeyboardButton(Buttons.ARRANGEMENT_PUPPY.getButtonName());
+        InlineKeyboardButton arrangementAdultButton = new InlineKeyboardButton(Buttons.ARRANGEMENT_ADULT.getButtonName());
+        InlineKeyboardButton arrangementDisabledButton = new InlineKeyboardButton(Buttons.ARRANGEMENT_DISABLED.getButtonName());
+        InlineKeyboardButton whyRefuseButton = new InlineKeyboardButton(Buttons.WHY_REFUSE.getButtonName());
+        InlineKeyboardButton chooseAnimalButton = new InlineKeyboardButton(Buttons.CHOOSE_ANIMAL.getButtonName());
+        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton(Buttons.CALL_VOLUNTEER.getButtonName());
+        InlineKeyboardButton toStartButton = new InlineKeyboardButton(Buttons.TO_START.getButtonName());
+
+        datingRulesButton.callbackData(Buttons.DATING_RULES.getButtonName());
+        listOfDocumentsButton.callbackData(Buttons.LIST_OF_DOCUMENTS.getButtonName());
+        transportationButton.callbackData(Buttons.TRANSPORTATION.getButtonName());
+        arrangementPuppyButton.callbackData(Buttons.ARRANGEMENT_PUPPY.getButtonName());
+        arrangementAdultButton.callbackData(Buttons.ARRANGEMENT_ADULT.getButtonName());
+        arrangementDisabledButton.callbackData(Buttons.ARRANGEMENT_DISABLED.getButtonName());
+        whyRefuseButton.callbackData(Buttons.WHY_REFUSE.getButtonName());
+        chooseAnimalButton.callbackData(Buttons.CHOOSE_ANIMAL.getButtonName());
+        callVolunteerButton.callbackData(Buttons.CALL_VOLUNTEER.getButtonName());
+        toStartButton.callbackData(Buttons.TO_START.getButtonName());
+
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{datingRulesButton}, new InlineKeyboardButton[]{listOfDocumentsButton}, new InlineKeyboardButton[]{arrangementDisabledButton}, new InlineKeyboardButton[]{whyRefuseButton}, new InlineKeyboardButton[]{arrangementPuppyButton}, new InlineKeyboardButton[]{arrangementAdultButton}, new InlineKeyboardButton[]{transportationButton}, new InlineKeyboardButton[]{chooseAnimalButton}, new InlineKeyboardButton[]{callVolunteerButton}, new InlineKeyboardButton[]{toStartButton});
     }
-
 
     /**
      * Кнопки  волонтерской панели
      */
     public InlineKeyboardMarkup buttonsOfVolunteer() {
         logger.info("Был вызван метод создания кнопок Волонтера");
-        InlineKeyboardButton reportButton = new InlineKeyboardButton("Просмотр отчетов");
 
-        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
+        InlineKeyboardButton reportButton = new InlineKeyboardButton(Buttons.REPORT.getButtonName());
+        InlineKeyboardButton toStartButton = new InlineKeyboardButton(Buttons.TO_START.getButtonName());
 
+        reportButton.callbackData(Buttons.REPORT.getButtonName());
+        toStartButton.callbackData(Buttons.TO_START.getButtonName());
 
-        reportButton.callbackData("Просмотр отчетов");
-
-        toStart.callbackData("В начало");
-        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportButton},
-                new InlineKeyboardButton[]{toStart});
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportButton}, new InlineKeyboardButton[]{toStartButton});
     }
+
     public InlineKeyboardMarkup buttonOfChooseAnimal() {
         logger.info("Был вызван метод создания кнопок Выбрать животное");
-        InlineKeyboardButton tookButton = new InlineKeyboardButton("Взять животное");
-        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
-        tookButton.callbackData("Взять животное");
-        toStart.callbackData("В начало");
+
+        InlineKeyboardButton tookButton = new InlineKeyboardButton(Buttons.TOOK_ANIMAL.getButtonName());
+        InlineKeyboardButton toStartButton = new InlineKeyboardButton(Buttons.TO_START.getButtonName());
+
+        tookButton.callbackData(Buttons.TOOK_ANIMAL.getButtonName());
+        toStartButton.callbackData(Buttons.TO_START.getButtonName());
+
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{tookButton});
     }
 }
