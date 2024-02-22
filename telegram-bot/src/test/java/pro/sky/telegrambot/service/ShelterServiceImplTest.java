@@ -47,7 +47,6 @@ class ShelterServiceImplTest {
     @Test
     @DisplayName("")
     void process() {
-
     }
 //тут будут остальные тесты на process
 //    @Test
