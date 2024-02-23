@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.model.Report;
+import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.repository.ShelterRepository;
@@ -342,6 +343,22 @@ public class ShelterServiceImpl implements ShelterService {
             telegramBot.execute(sendMessage);
         }
     }
+
+    /**
+     * @param chatIdOfUser
+     * отправка запроса волонтеру связь с пользователнм, который 2 дня не присылал отчеты
+     */
+    @Override
+    public void callAVolunteerForBadReports(Long chatIdOfUser) {
+        logger.info("Был вызван метод для отправки запроса волонтеру связь с пользователнм, который 2 дня не присылал отчеты", chatIdOfUser);
+        List<Volunteer> volunteerList = volunteerRepository.findAll();
+        for (Volunteer volunteer : volunteerList) {
+            User user = userRepository.findUserByChatId(chatIdOfUser);
+            SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
+                    "Пользователь: @" + user.getFirstName() +" id: " +user.getId()+ " 2 дня не присылал отчет. Свяжитесь с ним. ");
+            telegramBot.execute(sendMessage);
+        }
+    }
     /**
      * метод для отправки кнопок "Выбрать животное"
      */
@@ -366,7 +383,8 @@ public class ShelterServiceImpl implements ShelterService {
      */
     private void takeDailyReportFormPhoto(Long chatId) {
         logger.info("Был вызван метод для отправки сообщения Пришлите фото питомца", chatId);
-        sendMessage(chatId, "Пришлите фото питомца");
+        sendMessage(chatId, "Пришлите фото питомца, его рацион," +
+                " опишите его самочувствие и привыкание к новому месту, изменения в поведении");
 
     }
     /**

@@ -40,6 +40,10 @@ public interface ShelterService {
 
     Map<String, String> getInfo();
 
+
+
+    void callAVolunteerForBadReports(Long chatIdOfUser);
+
     void sendButtonChooseAnimal(Long chatId, String messageText);
 
     void sendButtonOfVolunteerForReports(Long chatId, String messageText);
