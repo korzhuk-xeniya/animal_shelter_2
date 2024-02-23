@@ -3,6 +3,7 @@ package pro.sky.telegrambot.model;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 
 public enum Buttons {
+    START("/start"),
     MENU("Меню"),
     CHECK_INFO("Информация о приюте"),
     CALL_VOLUNTEER("Позвать волонтера"),
@@ -19,20 +20,20 @@ public enum Buttons {
     DATING_RULES("Правила знакомства"),
     LIST_OF_DOCUMENTS("Список документов"),
     TRANSPORTATION("Рекомендации по транспортировке"),
-    ARRANGEMENT_PUPPY("Обустройство щенка"),
-    ARRANGEMENT_ADULT("Обустройство для взрослой собаки"),
+    ARRANGEMENT_PUPPY("Обустройство щенка/котенка"),
+    ARRANGEMENT_ADULT("Обустройство для взрослой собаки/кошки"),
     ARRANGEMENT_DISABLED("Животное с ОВЗ"),
     WHY_REFUSE("Причины отказа"),
     CHOOSE_ANIMAL("Выбрать животное"),
     REPORT("Просмотр отчетов"),
     TOOK_ANIMAL("Взять животное");
-    private String buttonName;
+    private final String code;
 
-    Buttons(String buttonName) {
-        this.buttonName = buttonName;
+    Buttons(String code) {
+        this.code = code;
     }
 
-    public String getButtonName() {
-        return buttonName;
+    public String getCode() {
+        return code;
     }
 }
