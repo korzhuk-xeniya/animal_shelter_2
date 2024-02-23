@@ -38,7 +38,7 @@ public class NotificationTaskTimer {
     /**
      * Проверяет юзеров на отчеты, если отчета нет > 1 дня, то отправляет пользователю сообщение
      */
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
     public void task() {
         LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1);
         String message = " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
@@ -53,7 +53,7 @@ public class NotificationTaskTimer {
                 });
     }
 
-    @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.DAYS)
     public void task2() {
         LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
         userRepository.findByDateTimeToTookBefore(twoDaysAgo)
@@ -64,7 +64,7 @@ public class NotificationTaskTimer {
                 });
     }
 
-    @Scheduled(fixedDelay = 30, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedDelay = 30, timeUnit = TimeUnit.DAYS)
     public void task3() {
         LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
         userRepository.findByDateTimeToTookBefore(monthAgo)

@@ -89,7 +89,7 @@ public class ReportServiceImpl implements ReportService {
          * Проверяем, что пользователь прислал текст для отчета.
          */
         public SendMessage dailyReportCheckMessage(long chatId, Update update, String namePhotoId) {
-            if (update.message().text() != null) {
+            if (update.message().caption() != null) {
                 saveReportMessage(update, namePhotoId);
                 return new SendMessage(chatId, "Отчет сохранен");
             } else {
@@ -104,7 +104,7 @@ public class ReportServiceImpl implements ReportService {
          */
         void saveReportMessage(Update update, String namePhotoId) {
             Report report = reportRepository.findReportByPhotoNameId(namePhotoId).orElseThrow();
-            report.setGeneralWellBeing(update.message().text());
+            report.setGeneralWellBeing(update.message().caption());
             updateReport(report);
         }
 

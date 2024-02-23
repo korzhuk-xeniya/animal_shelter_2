@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,7 +84,7 @@ public class ShelterServiceImpl implements ShelterService {
             return;
         }
 
-        if (update.callbackQuery() == null) {
+        if (update.callbackQuery() == null && update.message().photo() == null) {
             Long chatId = update.message().chat().id();
             String message = update.message().text();
             Long userId = update.message().from().id();
@@ -207,13 +208,52 @@ public class ShelterServiceImpl implements ShelterService {
                         reviewListOfReports(update.callbackQuery().message().chat().id());
                     }
                     case "Отчет не сдан" -> reportNotSubmitted(update);
+                    case "Испытательный срок пройден" -> {
+                        List<User> users = new ArrayList<User>(userService.getAll());
+                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                        for (User user : users) {
+                            if (user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
+                                sendMessage(user.getChatId(), "Поздравляем! Испытательный срок пройден");
+                            }
+                        }
+                    }
+                    case "Продлить на 14 дней" -> {
+                        List<User> users = new ArrayList<User>(userService.getAll());
+                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                        for (User user : users) {
+                            if (user.getTookAPet() == false && user.getDateTimeToTook().isBefore(monthAgo)) {
+                                sendMessage(user.getChatId(), "Вам назначено дополнительно 14 дней" +
+                                        " испытательного срока. Свяжитесь с волонтером.");
+                            }
+                        }
+                    }
+                    case "Продлить на 30 дней" -> {
+                        List<User> users = new ArrayList<User>(userService.getAll());
+                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                        for (User user : users) {
+                            if (user.getTookAPet() == false && user.getDateTimeToTook().isBefore(monthAgo)) {
+                                sendMessage(user.getChatId(), "Вам назначено дополнительно 30 дней" +
+                                        " испытательного срока. Свяжитесь с волонтером.");
+                            }
+                        }
+                    }
+                    case "Испытательный срок не пройден" -> {
+                        List<User> users = new ArrayList<User>(userService.getAll());
+                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                        for (User user : users) {
+                            if (user.getTookAPet() == false && user.getDateTimeToTook().isBefore(monthAgo)) {
+                                sendMessage(user.getChatId(), "Испытательный срок не пройден. " +
+                                        "Свяжитесь с волонтером.");
+                            }
+                        }
+                    }
 
                 }
 
             }
         }
-//        if (photoCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update) и проверяеем, что пользователь прислал фото
-            if (!(update.message().photo() == null)) {
+        if (photoCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update) и проверяеем, что пользователь прислал фото
+            if (update.message() != null && !(update.message().photo() == null)) {
                 PhotoSize photoSize = getPhoto(update);
                 File file = downloadPhoto(photoSize.fileId());
 
@@ -222,12 +262,13 @@ public class ShelterServiceImpl implements ShelterService {
                 photoCheckButton = false;
                 reportCheckButton = true;
 //            }
-        }
-        if (reportCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update)
-            // и проверяеем, что пользователь прислал текст отчета
-            if (!(update.message().text() == null)) {
-                checkDailyReportMessage(update);
-                reportCheckButton = false;
+            }
+            if (reportCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update)
+                // и проверяеем, что пользователь прислал текст отчета
+                if (!(update.message().caption() == null)) {
+                    checkDailyReportMessage(update);
+                    reportCheckButton = false;
+                }
             }
         }
     }
@@ -482,7 +523,7 @@ public class ShelterServiceImpl implements ShelterService {
                 " перемещения в директорию и возвращения пути к нему", file, update);
         PhotoSize photoSize = getPhoto(update);
         File photo = telegramBot.execute(new GetFile(photoSize.fileId())).file();
-        String filePath = photo.filePath();
+        String filePath = file.filePath();
 
         // Генерируем уникальное имя файла с сохранением расширения
         namePhotoId = photoSize.fileId() + "." + "jpg";
@@ -492,7 +533,7 @@ public class ShelterServiceImpl implements ShelterService {
 
         userService.saveUser(update, true);
         reportService.saveReportPhotoId(update, namePhotoId);
-        Files.move(Path.of(filePath), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        Files.move(Path.of(filePath), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
         return targetPath;
     }
 
