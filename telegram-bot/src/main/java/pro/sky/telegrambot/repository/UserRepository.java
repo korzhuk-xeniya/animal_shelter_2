@@ -21,21 +21,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     }
 
     Optional<User> findById(UUID telegramId);
+
     Optional<User> getUserByChatId(long chatId);
 
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.chatId = :chatId")
     User findUserByChatId(long chatId);
 
-//    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.chatId = :chatId")
 
     Optional<User> findByDateTimeToTookBefore(LocalDateTime dateTimeToTook);
 
     Optional<User> findByChatId(long chatId);
-    boolean existsByChatId(long chatId);
-//     Optional<User> findByChatId(long chatId) {
-//        return findByChatId(chatId);
-//    }
 
-//    Optional<User> findByDateTimeToTookBefore(LocalDateTime dateTimeToTook);
+    boolean existsByChatId(long chatId);
+
 
     @Transactional
     @Modifying
