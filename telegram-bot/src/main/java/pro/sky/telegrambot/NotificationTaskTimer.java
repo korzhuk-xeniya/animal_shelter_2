@@ -53,23 +53,20 @@ public class NotificationTaskTimer {
                 });
     }
 
-    @Scheduled(fixedDelay = 2 , timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.HOURS)
     public void task2() {
         LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
         userRepository.findByDateTimeToTookBefore(twoDaysAgo)
                 .ifPresent(user -> {
                     if (user.getDateTimeToTook().isBefore(twoDaysAgo)) {
                         shelterService.callAVolunteerForBadReports(user.getChatId());
-                        }
-                    });
-                }
-    @Scheduled(fixedDelay = 30 , timeUnit = TimeUnit.HOURS)
+                    }
+                });
+    }
+
+    @Scheduled(fixedDelay = 30, timeUnit = TimeUnit.HOURS)
     public void task3() {
         LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
-//        String message = " «Дорогой усыновитель, мы заметили, что ты заполняешь " +
-//                "отчет не так подробно, как необходимо. Пожалуйста, подойди ответственнее" +
-//                " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
-//                "самолично проверять условия содержания животного»";
         userRepository.findByDateTimeToTookBefore(monthAgo)
                 .ifPresent(user -> {
                     if (user.getDateTimeToTook().isBefore(monthAgo)) {
@@ -78,6 +75,6 @@ public class NotificationTaskTimer {
                 });
     }
 
-    }
+}
 
 
