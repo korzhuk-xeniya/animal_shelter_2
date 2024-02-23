@@ -44,7 +44,11 @@ public interface ShelterService {
 
     void callAVolunteerForBadReports(Long chatIdOfUser);
 
+    void callAVolunteerForEndPeriod(Long chatIdOfUser);
+
     void sendButtonChooseAnimal(Long chatId, String messageText);
+
+    void sendButtonOfVolunteerForEnd30DaysPeriod(Long chatId, String messageText);
 
     void sendButtonOfVolunteerForReports(Long chatId, String messageText);
 

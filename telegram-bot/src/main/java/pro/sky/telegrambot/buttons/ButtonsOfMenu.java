@@ -153,6 +153,28 @@ public class ButtonsOfMenu {
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportButtonOk, reportButtonNotOk},
                 new InlineKeyboardButton[]{toStart});
     }
+    public InlineKeyboardMarkup buttonsOfVolunteerForEnd30DaysPeriod() {
+        logger.info("Был вызван метод создания кнопок Волонтера для принятия решения спустя 30 дней");
+        InlineKeyboardButton probationPeriodCompletedButton = new InlineKeyboardButton("Испытательный срок пройден");
+        InlineKeyboardButton probationPeriodExtended14Button = new InlineKeyboardButton("Продлить на 14 дней");
+        InlineKeyboardButton probationPeriodExtended30Button = new InlineKeyboardButton("Продлить на 30 дней");
+        InlineKeyboardButton probationPeriodNotCompletedButton = new InlineKeyboardButton("Испытательный срок не пройден");
+
+
+        probationPeriodCompletedButton.callbackData("Испытательный срок пройден");
+        probationPeriodExtended14Button.callbackData("Продлить на 14 дней");
+        probationPeriodExtended30Button.callbackData("Продлить на 30 дней");
+        probationPeriodNotCompletedButton.callbackData("Испытательный срок не пройден");
+
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{probationPeriodCompletedButton}
+                ,
+                new InlineKeyboardButton[]{probationPeriodExtended14Button}
+                ,
+                new InlineKeyboardButton[]{probationPeriodExtended30Button}
+                ,
+                new InlineKeyboardButton[]{probationPeriodNotCompletedButton}
+        );
+    }
     public InlineKeyboardMarkup buttonsOfOwner() {
         logger.info("Был вызван метод создания кнопок Владельца животного");
         InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
