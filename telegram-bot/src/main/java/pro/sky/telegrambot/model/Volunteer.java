@@ -89,6 +89,7 @@ public class Volunteer {
         public int hashCode() {
             return Objects.hash(id, name, lastName, chatId);
         }
+
     }
 
 

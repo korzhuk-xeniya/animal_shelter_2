@@ -28,6 +28,8 @@ public interface ShelterService {
     void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup
             keyboardMarkup);
 
+    void changeMessage(long chatIdInButton, String messageText);
+
     /**
      * @param update Реализация кнопки "Позвать волонтера"
      */
@@ -39,4 +41,13 @@ public interface ShelterService {
     Map<String, String> getInfo();
 
     void sendButtonChooseAnimal(Long chatId, String messageText);
+
+    void sendButtonOfVolunteerForReports(Long chatId, String messageText);
+
+    /**
+     * Получаем непроверенный отчет из всех отчетов
+     *
+     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
+     */
+    void reviewListOfReports(Long chatIdOfVolunteer);
 }

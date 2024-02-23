@@ -122,14 +122,13 @@ public class ButtonsOfMenu {
     public InlineKeyboardMarkup buttonsOfVolunteer() {
         logger.info("Был вызван метод создания кнопок Волонтера");
         InlineKeyboardButton reportButton = new InlineKeyboardButton("Просмотр отчетов");
-
+        InlineKeyboardButton reportsButton = new InlineKeyboardButton("Отчеты");
         InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
-
-
         reportButton.callbackData("Просмотр отчетов");
+        reportsButton.callbackData("Отчеты");
 
         toStart.callbackData("В начало");
-        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportButton},
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportsButton},
                 new InlineKeyboardButton[]{toStart});
     }
     public InlineKeyboardMarkup buttonOfChooseAnimal() {
@@ -139,6 +138,32 @@ public class ButtonsOfMenu {
         tookButton.callbackData("Взять животное");
         toStart.callbackData("В начало");
         return new InlineKeyboardMarkup(new InlineKeyboardButton[]{tookButton});
+    }
+    public InlineKeyboardMarkup buttonsOfVolunteerForReports() {
+        logger.info("Был вызван метод создания кнопок Волонтера для работы с отчетами");
+        InlineKeyboardButton reportButtonOk = new InlineKeyboardButton("Отчет сдан");
+        InlineKeyboardButton reportButtonNotOk = new InlineKeyboardButton("Отчет не сдан");
+        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
+
+
+        reportButtonOk.callbackData("Отчет сдан");
+        reportButtonNotOk.callbackData("Отчет не сдан");
+
+        toStart.callbackData("В начало");
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{reportButtonOk, reportButtonNotOk},
+                new InlineKeyboardButton[]{toStart});
+    }
+    public InlineKeyboardMarkup buttonsOfOwner() {
+        logger.info("Был вызван метод создания кнопок Владельца животного");
+        InlineKeyboardButton toStart = new InlineKeyboardButton("В начало");
+        InlineKeyboardButton dailyRepotrButton = new InlineKeyboardButton("Форма ежедневного отчета");
+        InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton("Позвать волонтера");
+        callVolunteerButton.callbackData("Позвать волонтера");
+        dailyRepotrButton.callbackData("Форма ежедневного отчета");
+        toStart.callbackData("В начало");
+        return new InlineKeyboardMarkup(new InlineKeyboardButton[]{dailyRepotrButton},
+                new InlineKeyboardButton[]{callVolunteerButton},
+                new InlineKeyboardButton[]{toStart});
     }
 }
 

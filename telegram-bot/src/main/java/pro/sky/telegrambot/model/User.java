@@ -42,7 +42,7 @@ public class User {
 
 //    @Column(name = "reports")
 ////    @OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL)
-//    private List<ReportAboutAnimal> reports = new ArrayList<>();
+//    private List<Report> reports = new ArrayList<>();
 
     public User(String firstName, Boolean tookAPet, long chatId, LocalDateTime dateTimeToTook) {
         this.firstName = firstName;
@@ -99,11 +99,11 @@ public class User {
         this.dateTimeToTook = dateTimeToTook;
     }
 
-//    public List<ReportAboutAnimal> getReports() {
+//    public List<Report> getReports() {
 //        return reports;
 //    }
 
-//    public void setReports(List<ReportAboutAnimal> reports) {
+//    public void setReports(List<Report> reports) {
 //        this.reports = reports;
 //    }
 
@@ -122,11 +122,11 @@ public class User {
         return Objects.hash(id, firstName, tookAPet, chatId, number, dateTimeToTook);
     }
 
-//    public List<ReportAboutAnimal> getReportAboutAnimals() {
+//    public List<Report> getReportAboutAnimals() {
 //        return reportAboutAnimals;
 //    }
 //
-//    public void setReportAboutAnimals(List<ReportAboutAnimal> reportAboutAnimals) {
+//    public void setReportAboutAnimals(List<Report> reportAboutAnimals) {
 //        this.reportAboutAnimals = reportAboutAnimals;
 //    }
 

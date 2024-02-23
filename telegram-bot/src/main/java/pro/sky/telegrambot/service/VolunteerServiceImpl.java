@@ -5,11 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
+import pro.sky.telegrambot.model.Report;
 import pro.sky.telegrambot.model.Volunteer;
+import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class VolunteerServiceImpl implements VolunteerService {
@@ -17,9 +21,13 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final ReportRepository reportRepository;
+    private final ReportService reportService;
 
-    public VolunteerServiceImpl(VolunteerRepository volunteerRepository) {
+    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository, ReportService reportService) {
         this.volunteerRepository = volunteerRepository;
+        this.reportRepository = reportRepository;
+        this.reportService = reportService;
     }
 
     /**
@@ -109,6 +117,34 @@ public class VolunteerServiceImpl implements VolunteerService {
                     chatId);
             saveVolunteerInBd(newVolunteer);
         }
+    }
+    @Override
+    /**
+     * Обновляем в БД отчет и ставим, что отчет сдан
+     */
+    public void reportSubmitted(Long idReport) {
+        Report report = reportRepository.findReportById(idReport);
+        report.setCheckReport(true);
+        reportService.updateReport(report);
+    }
+
+    @Override
+    /**
+     * Позволяет распарсить SendMessage из метода reviewListOfReports что-бы достать ID репорта
+     * с которым будем работать.
+     *
+     * @param reportString получаем строку SendMessage
+     * @return вовзращает ID отчета
+     */
+    public int parseReportNumber(String reportString) {
+        Pattern pattern = Pattern.compile("Отчет #(\\d+)");
+        Matcher matcher = pattern.matcher(reportString);
+
+        if (matcher.find()) {
+            String numberStr = matcher.group(1);
+            return Integer.parseInt(numberStr);
+        }
+        return -1; // В случае, если не удалось извлечь номер отчета
     }
 }
 

@@ -10,6 +10,7 @@ import pro.sky.telegrambot.model.User;
 
 
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 //    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.chatId = :chatId")
 
-
+    Optional<User> findByDateTimeToTookBefore(LocalDateTime dateTimeToTook);
 
     Optional<User> findByChatId(long chatId);
     boolean existsByChatId(long chatId);

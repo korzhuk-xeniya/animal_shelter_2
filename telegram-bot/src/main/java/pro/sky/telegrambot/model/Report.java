@@ -7,14 +7,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "report_tg")
-public class ReportAboutAnimal {
+public class Report {
 
 
         @Id
@@ -34,12 +34,13 @@ public class ReportAboutAnimal {
         @Column(name = "check_report")
         private boolean checkReport;
 
-        @Getter
-        @Column(name = "user_id")
-        private long userId;
+
+        @ManyToOne
+        @JoinColumn(name = "user_id")
+        private User user;
 
 
-    public ReportAboutAnimal(long id) {
+    public Report(long id) {
         this.id = id;
     }
 
@@ -51,9 +52,7 @@ public class ReportAboutAnimal {
         this.id = id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+
 
 
 }
