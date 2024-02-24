@@ -13,11 +13,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.model.Animal;
-import pro.sky.telegrambot.model.Report;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
@@ -33,8 +31,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -61,8 +57,10 @@ public class ShelterServiceImpl implements ShelterService {
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
                               VolunteerRepository volunteerRepository, UserRepository userRepository,
                               UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper,
-                              AnimalService animalService, ReportService reportService, ReportRepository reportRepository,
-                              @Value("${path.to.photos.folder}") String photosDir) {
+                              AnimalService animalService, ReportService reportService,
+                              ReportRepository reportRepository
+//
+    ) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
@@ -74,7 +72,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.animalService = animalService;
         this.reportService = reportService;
         this.reportRepository = reportRepository;
-        this.photosDir = photosDir;
+//        this.photosDir = photosDir;
     }
 
     @Override
@@ -206,7 +204,8 @@ public class ShelterServiceImpl implements ShelterService {
                     //блок Волонтера
                     case "Отчеты" -> {
                         reviewListOfReports(update.callbackQuery().message().chat().id());
-                        sendImageFromFileId(String.valueOf(update.callbackQuery().message().chat().id()));
+//                        SendPhoto sendRequrstPhoto = new SendPhoto(update.callbackQuery().message().chat().id(),);
+//                        sendImageFromFileId(String.valueOf(update.callbackQuery().message().chat().id()));
                     }
                     case "Отчет сдан" -> {
                         reportSubmitted(update);
@@ -226,7 +225,7 @@ public class ShelterServiceImpl implements ShelterService {
                         List<User> users = new ArrayList<User>(userService.getAll());
                         LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
                         for (User user : users) {
-                            if (user.getTookAPet() == false && user.getDateTimeToTook().isBefore(monthAgo)) {
+                            if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
                                 sendMessage(user.getChatId(), "Вам назначено дополнительно 14 дней" +
                                         " испытательного срока. Свяжитесь с волонтером.");
                             }
@@ -236,7 +235,7 @@ public class ShelterServiceImpl implements ShelterService {
                         List<User> users = new ArrayList<User>(userService.getAll());
                         LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
                         for (User user : users) {
-                            if (user.getTookAPet() == false && user.getDateTimeToTook().isBefore(monthAgo)) {
+                            if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
                                 sendMessage(user.getChatId(), "Вам назначено дополнительно 30 дней" +
                                         " испытательного срока. Свяжитесь с волонтером.");
                             }
@@ -246,7 +245,7 @@ public class ShelterServiceImpl implements ShelterService {
                         List<User> users = new ArrayList<User>(userService.getAll());
                         LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
                         for (User user : users) {
-                            if (user.getTookAPet() == false && user.getDateTimeToTook().isBefore(monthAgo)) {
+                            if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
                                 sendMessage(user.getChatId(), "Испытательный срок не пройден. " +
                                         "Свяжитесь с волонтером.");
                             }
@@ -485,14 +484,14 @@ public class ShelterServiceImpl implements ShelterService {
      * @param chatId
      * @param messageText метод для отправки кнопок Волонтера для работы с отчетами
      */
-    @Override
+
     public void sendButtonOfVolunteerForReports(Long chatId, String messageText) {
         logger.info("Был вызван метод для отправки кнопок Выбора животного", chatId, messageText);
         SendMessage sendMessage = new SendMessage(chatId, messageText);
         sendMessage.replyMarkup(buttons.buttonsOfVolunteerForReports());
         telegramBot.execute(sendMessage);
     }
-
+    @Override
     /**
      * Извлекает из update список объектов PhotoSize, которые представляют разный размер фотографий
      * Через стрим ищет самую большую фотографию и возвращает её.
@@ -531,14 +530,14 @@ public class ShelterServiceImpl implements ShelterService {
         String filePath = file.filePath();
         byte[] fileContent = telegramBot.getFileContent(photo);
         java.io.File downloadedFile;
-        downloadedFile = new java.io.File(file.fileId());
+        downloadedFile = new java.io.File(telegramBot.getFullFilePath(file));
         // Генерируем уникальное имя файла с сохранением расширения
-        namePhotoId = photoSize.fileId() + "." + "jpg";
-        Path targetPath = Path.of("src/main/resources/pictures", namePhotoId);
-
-        Path targetPath2 = Path.of("./pictures",photosDir, namePhotoId);
-        Files.createDirectories(targetPath2.getParent());
-        Files.deleteIfExists(targetPath2);
+        namePhotoId = photoSize.fileUniqueId() + "." + "jpg";
+        Path targetPath = Path.of("src/main/resources/photos", namePhotoId);
+//        Files.copy(file.filePath(),targetPath, StandardCopyOption.REPLACE_EXISTING)
+//        Path targetPath2 = Path.of("src/main/resources/photos",photosDir, namePhotoId);
+//        Files.createDirectories(targetPath2.getParent());
+//        Files.deleteIfExists(targetPath2);
 
 //        Path targetPath2 = Path.of(photosDir, update.message().from().username() + "." + getExtensions(String.valueOf(targetPath)));
 //        try (InputStream is = new FileInputStream(String.valueOf(targetPath2));
@@ -552,8 +551,8 @@ public class ShelterServiceImpl implements ShelterService {
         userService.saveUser(update, true);
         reportService.saveReportPhotoId(update, namePhotoId);
 
-        Files.move(downloadedFile.toPath(), targetPath2, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
-        return targetPath2;
+        Files.move(downloadedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
+        return targetPath;
     }
 
     private String getExtensions(String fileName) {
@@ -587,39 +586,23 @@ public class ShelterServiceImpl implements ShelterService {
         logger.info("Был вызван метод для отправки кнопок Прислать отчет о питомце", messageId, chatId);
         changeMessage(messageId, chatId, "Выберите одну из кнопок", buttons.buttonsOfOwner());
     }
-
     @Override
-    /**
-     * Получаем непроверенный отчет из всех отчетов
-     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
-     */
-    public void reviewListOfReports(Long chatIdOfVolunteer) {
-        logger.info("Был вызван метод для получения непроверенных отчетов", chatIdOfVolunteer);
-        List<Report> reportList = reportRepository.findReportByCheckReportIsFalse();
-        if (reportList.isEmpty()) {
-            sendMessage(chatIdOfVolunteer, "Нет непроверенных отчетов.");
-
-
-        } else {
-            for (Report report : reportList) {
-                sendMessage(chatIdOfVolunteer, "Отчет #" + report.getId() + "\n" +
-                        "Текстовая часть отчета: " + report.getGeneralWellBeing());
-                sendButtonOfVolunteerForReports(chatIdOfVolunteer, "Необходимо проверить отчет!");
-
-
-            }
+    //просмотр отчетов питомцев
+    public void reviewListOfReports(long chatId) {
+        System.out.println(sendMessageReport);
+        sendMessageReport =volunteerService.parseReportNumber(volunteerService.reviewListOfReports(chatId).toString()); //Сохроняем ID отчета
+        telegramBot.execute(volunteerService.reviewListOfReports(chatId));
         }
 
-    }
 
-    public void sendImageFromFileId(String chatId) throws FileNotFoundException {
-
-        SendPhoto sendPhotoRequest = new SendPhoto(chatId,
-                String.valueOf(new FileInputStream("AgACAgIAAxkBAAIFfGTgeJPke7lK6kcjJVQutOAjH4S6AAIPzDEb0UQAAUtYMYlzKbeYagEAAwIAA3gAAzAE")));
-
-        telegramBot.execute(sendPhotoRequest);
-
-    }
+//    public void sendImageFromFileId(String chatId) throws FileNotFoundException {
+//
+//        SendPhoto sendPhotoRequest = new SendPhoto(chatId,
+//                String.valueOf(new FileInputStream(savePhotoToLocalFolder(getPhoto(up)));
+//
+//        telegramBot.execute(sendPhotoRequest);
+//
+//    }
 }
 
 

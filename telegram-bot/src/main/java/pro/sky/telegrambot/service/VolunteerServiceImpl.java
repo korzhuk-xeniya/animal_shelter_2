@@ -1,9 +1,13 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
 import pro.sky.telegrambot.model.Report;
 import pro.sky.telegrambot.model.Volunteer;
@@ -23,11 +27,15 @@ public class VolunteerServiceImpl implements VolunteerService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final ReportRepository reportRepository;
     private final ReportService reportService;
+    private final ButtonsOfMenu buttons;
+    private final TelegramBot telegramBot;
 
-    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository, ReportService reportService) {
+    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository, ReportService reportService, ButtonsOfMenu buttons, TelegramBot telegramBot) {
         this.volunteerRepository = volunteerRepository;
         this.reportRepository = reportRepository;
         this.reportService = reportService;
+        this.buttons = buttons;
+        this.telegramBot = telegramBot;
     }
 
     /**
@@ -146,5 +154,30 @@ public class VolunteerServiceImpl implements VolunteerService {
         }
         return -1; // В случае, если не удалось извлечь номер отчета
     }
-}
+    @Override
+    /**
+     * Получаем непроверенный отчет из всех отчетов
+     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
+     */
+    public SendMessage reviewListOfReports(Long chatId) {
+        List<Report> reportList = reportRepository.findReportByCheckReportIsFalse();
+        if (reportList.isEmpty()) {
+            SendMessage noReportsMessage = new SendMessage(chatId,"Нет непроверенных отчетов.");
+            return noReportsMessage;
+        } else {
+            for (Report report : reportList) {
+                String reportInfo = "Отчет #" + report.getId() + "\n" +
+                    "Текстовая часть отчета: " + report.getGeneralWellBeing();
+                SendMessage reportMessage = new SendMessage(chatId,reportInfo);
+                SendPhoto sendPhoto = new SendPhoto(chatId,report.getPhotoNameId());
+                telegramBot.execute(sendPhoto);
+                reportMessage.replyMarkup(buttons.buttonsOfVolunteerForReports());
+                telegramBot.execute(reportMessage);
 
+                return reportMessage;
+            }
+        }
+        return null;
+    }
+
+}

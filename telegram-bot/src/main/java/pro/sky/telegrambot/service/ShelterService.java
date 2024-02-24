@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 
@@ -17,10 +18,7 @@ public interface ShelterService {
 
     void sendButtonsOfStep0(Long chatId, String messageText);
 
-    /**
-     * метод для изменения сообщения
-     */
-//    void changeMessage(int messageId, long chatIdInButton, String messageText, InlineKeyboardMarkup keyboardMarkup);
+
 
     /**
      * метод для изменения сообщения
@@ -50,12 +48,21 @@ public interface ShelterService {
 
     void sendButtonOfVolunteerForEnd30DaysPeriod(Long chatId, String messageText);
 
-    void sendButtonOfVolunteerForReports(Long chatId, String messageText);
+//    void sendButtonOfVolunteerForReports(Long chatId, String messageText);
+
+//    /**
+//     * Получаем непроверенный отчет из всех отчетов
+//     *
+//     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
+//     */
+//    void reviewListOfReports(Long chatIdOfVolunteer);
 
     /**
-     * Получаем непроверенный отчет из всех отчетов
-     *
-     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
+     * Извлекает из update список объектов PhotoSize, которые представляют разный размер фотографий
+     * Через стрим ищет самую большую фотографию и возвращает её.
      */
-    void reviewListOfReports(Long chatIdOfVolunteer);
+    PhotoSize getPhoto(Update update);
+
+    //просмотр отчетов питомцев
+    void reviewListOfReports(long chatId);
 }

@@ -46,10 +46,10 @@ public class ReportServiceImpl implements ReportService {
         }
 
 
-        private String getExtensions(String fileName) {
-            logger.info("Был вызван метод для получения расширения файла фотографии", fileName);
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
-        }
+//        private String getExtensions(String fileName) {
+//            logger.info("Был вызван метод для получения расширения файла фотографии", fileName);
+//            return fileName.substring(fileName.lastIndexOf(".") + 1);
+//        }
 
 
         @Override
@@ -74,7 +74,7 @@ public class ReportServiceImpl implements ReportService {
          * Проверяем, что пользователь прислал фото для отчета.
          */
         public SendMessage dailyReportCheckPhoto(long chatId, Update update) {
-
+            logger.info("Был вызван метод для проверки что пользователь прислал фото для отчета");
 
             if (update.message().photo() != null) {
                 return new SendMessage(chatId, "Фото сохранено, пришлите текстовую часть отчета.");
@@ -89,6 +89,7 @@ public class ReportServiceImpl implements ReportService {
          * Проверяем, что пользователь прислал текст для отчета.
          */
         public SendMessage dailyReportCheckMessage(long chatId, Update update, String namePhotoId) {
+            logger.info("Был вызван метод для проверки что пользователь прислал текстовую часть отчета");
             if (update.message().caption() != null) {
                 saveReportMessage(update, namePhotoId);
                 return new SendMessage(chatId, "Отчет сохранен");
@@ -103,6 +104,7 @@ public class ReportServiceImpl implements ReportService {
          * Сохранение текствого отчет о питомце в БД
          */
         void saveReportMessage(Update update, String namePhotoId) {
+            logger.info("Был вызван метод сохранения текстовой части отчета");
             Report report = reportRepository.findReportByPhotoNameId(namePhotoId).orElseThrow();
             report.setGeneralWellBeing(update.message().caption());
             updateReport(report);
@@ -113,6 +115,7 @@ public class ReportServiceImpl implements ReportService {
          * Сохранение отчета в БД
          */
         public void saveReportPhotoId(Update update, String namePhotoId) {
+            logger.info("Был вызван метод для сохранения фото в бд без текста ");
             int chatId = update.message().chat().id().intValue();
             Report report = new Report();
             report.setDateAdded(LocalDateTime.now());

@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.service;
 
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import pro.sky.telegrambot.model.Volunteer;
 
 import java.util.List;
@@ -37,4 +38,11 @@ public interface VolunteerService {
      * @return вовзращает ID отчета
      */
     int parseReportNumber(String reportString);
+
+    /**
+     * Получаем непроверенный отчет из всех отчетов
+     *
+     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
+     */
+    SendMessage reviewListOfReports(Long chatIdOfVolunteer);
 }
