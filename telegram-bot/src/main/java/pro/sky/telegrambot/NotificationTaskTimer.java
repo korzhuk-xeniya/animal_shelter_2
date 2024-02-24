@@ -9,6 +9,7 @@ import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.service.ShelterService;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +41,7 @@ public class NotificationTaskTimer {
      */
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
     public void task() {
-        LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1);
+        LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES);
         String message = " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
                 " Пожалуйста, подойди ответственнее" +
                 " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
@@ -55,7 +56,7 @@ public class NotificationTaskTimer {
 
     @Scheduled(fixedDelay = 2, timeUnit = TimeUnit.DAYS)
     public void task2() {
-        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2).truncatedTo(ChronoUnit.MINUTES);
         userRepository.findByDateTimeToTookBefore(twoDaysAgo)
                 .ifPresent(user -> {
                     if (user.getDateTimeToTook().isBefore(twoDaysAgo)) {
@@ -66,7 +67,7 @@ public class NotificationTaskTimer {
 
     @Scheduled(fixedDelay = 30, timeUnit = TimeUnit.DAYS)
     public void task3() {
-        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30).truncatedTo(ChronoUnit.MINUTES);
         userRepository.findByDateTimeToTookBefore(monthAgo)
                 .ifPresent(user -> {
                     if (user.getDateTimeToTook().isBefore(monthAgo)) {

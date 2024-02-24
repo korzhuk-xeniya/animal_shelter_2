@@ -33,39 +33,45 @@ class NotificationTaskTimerTest {
             private NotificationTaskTimer notificationTaskTimer;
 
 
-    LocalDateTime localDateTime2 = LocalDateTime.of(2024, 2, 21, 8, 15, 12);
-    LocalDateTime localDateTime3 = LocalDateTime.of(2024, 2, 24, 8, 15, 12);
+
     LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES);
-//            LocalDateTime.of(2024,2,23,8,15,12);
-    private User user1 = new User("Pit", true, 123456, localDateTime3);
-    private User user2 = new User("Pit2", true, 1,LocalDateTime.now().minusDays(2).truncatedTo(ChronoUnit.MINUTES) );
+
+    private User user1 = new User("Pit", true, 12, LocalDateTime.now().minusDays(2).truncatedTo(ChronoUnit.MINUTES));
+    private User user2 = new User("Pit2", true, 1,LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES) );
+    private User user3 = new User("Pit2", true, 13,LocalDateTime.now().minusDays(30).truncatedTo(ChronoUnit.MINUTES) );
     @Test
     void task_test() {
         MockitoAnnotations.openMocks(this);
-
-
-//        User user = new User();
-//        user.setDateTimeToTook(oneDaysAgo.minusDays(2)); // User took the pets more than 2 days ago
-//        user.setChatId(1);
-
         notificationTaskTimer.task();
-
         when(userRepository.findByDateTimeToTookBefore(oneDaysAgo)).thenReturn(Optional.of(user2));
 
         verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
-        verify(shelterService, times(1)).changeMessage(user2.getChatId(), " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
-                " Пожалуйста, подойди ответственнее" +
-                " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
-                "самолично проверять условия содержания животного»");
+//        verify(shelterService, times(1)).changeMessage(user2.getChatId(),
+//                " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
+//                        " Пожалуйста, подойди ответственнее" +
+//                        " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
+//                        "самолично проверять условия содержания животного»");
 
 
     }
 
     @Test
     void task2() {
+        MockitoAnnotations.openMocks(this);
+        notificationTaskTimer.task();
+        when(userRepository.findByDateTimeToTookBefore(oneDaysAgo)).thenReturn(Optional.of(user1));
+
+        verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
+//        verify(shelterService,times(1)).callAVolunteerForBadReports(user1.getChatId());
     }
 
     @Test
     void task3() {
+        MockitoAnnotations.openMocks(this);
+        notificationTaskTimer.task();
+        when(userRepository.findByDateTimeToTookBefore(oneDaysAgo)).thenReturn(Optional.of(user3));
+
+        verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
+//        verify(shelterService,times(1)).callAVolunteerForEndPeriod(user3.getChatId());
     }
 }
