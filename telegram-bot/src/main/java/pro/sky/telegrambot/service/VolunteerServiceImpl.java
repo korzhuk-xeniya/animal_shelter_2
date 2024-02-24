@@ -159,13 +159,18 @@ public class VolunteerServiceImpl implements VolunteerService {
      * Получаем непроверенный отчет из всех отчетов
      * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
      */
-    public SendMessage reviewListOfReports(Long chatId) {
+    public long reviewListOfReports(Long chatId) {
         List<Report> reportList = reportRepository.findReportByCheckReportIsFalse();
+
         if (reportList.isEmpty()) {
             SendMessage noReportsMessage = new SendMessage(chatId,"Нет непроверенных отчетов.");
-            return noReportsMessage;
+            telegramBot.execute(noReportsMessage);
+
+
         } else {
-            for (Report report : reportList) {
+            long reportId = reportList.get(0).getId();
+            Report report = reportList.get(0);
+
                 String reportInfo = "Отчет #" + report.getId() + "\n" +
                     "Текстовая часть отчета: " + report.getGeneralWellBeing();
                 SendMessage reportMessage = new SendMessage(chatId,reportInfo);
@@ -173,11 +178,12 @@ public class VolunteerServiceImpl implements VolunteerService {
                 telegramBot.execute(sendPhoto);
                 reportMessage.replyMarkup(buttons.buttonsOfVolunteerForReports());
                 telegramBot.execute(reportMessage);
+                return reportId;
 
-                return reportMessage;
-            }
+
         }
-        return null;
+        return -1;
     }
-
 }
+
+

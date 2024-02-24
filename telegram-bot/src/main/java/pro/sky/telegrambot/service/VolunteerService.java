@@ -44,5 +44,5 @@ public interface VolunteerService {
      *
      * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
      */
-    SendMessage reviewListOfReports(Long chatIdOfVolunteer);
+    long reviewListOfReports(Long chatIdOfVolunteer);
 }

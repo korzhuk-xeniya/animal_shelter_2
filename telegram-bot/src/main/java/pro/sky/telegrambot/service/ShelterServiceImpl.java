@@ -51,7 +51,7 @@ public class ShelterServiceImpl implements ShelterService {
     private boolean photoCheckButton = false; // флаг на проверку нажатия кнопки
     private boolean reportCheckButton = false; // флаг на проверку нажатия кнопки
     private String namePhotoId;
-    int sendMessageReport;
+    long sendMessageReport;
     private String photosDir;
 
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
@@ -211,7 +211,11 @@ public class ShelterServiceImpl implements ShelterService {
                         reportSubmitted(update);
                         reviewListOfReports(update.callbackQuery().message().chat().id());
                     }
-                    case "Отчет не сдан" -> reportNotSubmitted(update);
+                    case "Отчет не сдан" -> {
+                        reportNotSubmitted(update);
+                        reviewListOfReports(update.callbackQuery().message().chat().id());
+                    }
+
                     case "Испытательный срок пройден" -> {
                         List<User> users = new ArrayList<User>(userService.getAll());
                         LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
@@ -450,24 +454,9 @@ public class ShelterServiceImpl implements ShelterService {
         telegramBot.execute(sendMessage);
     }
 
-    //Если отчет сдан
-    private void reportSubmitted(Update update) {
-        logger.info("Был вызван метод для отправки сообщения Отчет сдан", update);
-        changeMessage(update.callbackQuery().message().chat().id(), "Отчет сдан");
-        System.out.println(sendMessageReport);
-        volunteerService.reportSubmitted((long) sendMessageReport);
-    }
 
-    //Если отчет не сдан
-    private void reportNotSubmitted(Update update) {
-        logger.info("Был вызван метод для отправки сообщения Отчет не сдан", update);
-        changeMessage(update.callbackQuery().message().chat().id(), "Отчет не сдан. Дорогой усыновитель, " +
-                "мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди" +
-                " ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять" +
-                " условия содержания животного");
-        System.out.println(sendMessageReport);
-        volunteerService.reportSubmitted((long) sendMessageReport);
-    }
+
+
 
 
     /**
@@ -551,7 +540,7 @@ public class ShelterServiceImpl implements ShelterService {
         userService.saveUser(update, true);
         reportService.saveReportPhotoId(update, namePhotoId);
 
-        Files.move(downloadedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
+        Files.move(Path.of(file.filePath()), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
         return targetPath;
     }
 
@@ -586,13 +575,31 @@ public class ShelterServiceImpl implements ShelterService {
         logger.info("Был вызван метод для отправки кнопок Прислать отчет о питомце", messageId, chatId);
         changeMessage(messageId, chatId, "Выберите одну из кнопок", buttons.buttonsOfOwner());
     }
-    @Override
+//    @Override
     //просмотр отчетов питомцев
     public void reviewListOfReports(long chatId) {
-        System.out.println(sendMessageReport);
-        sendMessageReport =volunteerService.parseReportNumber(volunteerService.reviewListOfReports(chatId).toString()); //Сохроняем ID отчета
-        telegramBot.execute(volunteerService.reviewListOfReports(chatId));
+
+//        System.out.println(sendMessageReport);
+        sendMessageReport =volunteerService.reviewListOfReports(chatId); //Сохроняем ID отчета
+//        telegramBot.execute(volunteerService.reviewListOfReports(chatId));
         }
+    //Если отчет сдан
+    private void reportSubmitted(Update update) {
+        logger.info("Был вызван метод для отправки сообщения Отчет сдан", update);
+        changeMessage(update.callbackQuery().message().chat().id(), "Отчет сдан");
+//        System.out.println(sendMessageReport);
+        volunteerService.reportSubmitted(sendMessageReport);
+    }
+    //Если отчет не сдан
+    private void reportNotSubmitted(Update update) {
+        logger.info("Был вызван метод для отправки сообщения Отчет не сдан", update);
+        changeMessage(update.callbackQuery().message().chat().id(), "Отчет не сдан. Дорогой усыновитель, " +
+                "мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди" +
+                " ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять" +
+                " условия содержания животного");
+//        System.out.println(sendMessageReport);
+        volunteerService.reportSubmitted(sendMessageReport);
+    }
 
 
 //    public void sendImageFromFileId(String chatId) throws FileNotFoundException {
