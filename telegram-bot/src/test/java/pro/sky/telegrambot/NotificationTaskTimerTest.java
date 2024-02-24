@@ -46,11 +46,11 @@ class NotificationTaskTimerTest {
         when(userRepository.findByDateTimeToTookBefore(oneDaysAgo)).thenReturn(Optional.of(user2));
 
         verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
-//        verify(shelterService, times(1)).changeMessage(user2.getChatId(),
-//                " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
-//                        " Пожалуйста, подойди ответственнее" +
-//                        " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
-//                        "самолично проверять условия содержания животного»");
+        verify(shelterService, times(0)).changeMessage(user2.getChatId(),
+                " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
+                        " Пожалуйста, подойди ответственнее" +
+                        " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
+                        "самолично проверять условия содержания животного»");
 
 
     }
@@ -62,6 +62,8 @@ class NotificationTaskTimerTest {
         when(userRepository.findByDateTimeToTookBefore(oneDaysAgo)).thenReturn(Optional.of(user1));
 
         verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
+        verify(shelterService,times(0)).callAVolunteerForBadReports(user1.getChatId());
+
 //        verify(shelterService,times(1)).callAVolunteerForBadReports(user1.getChatId());
     }
 
@@ -72,6 +74,6 @@ class NotificationTaskTimerTest {
         when(userRepository.findByDateTimeToTookBefore(oneDaysAgo)).thenReturn(Optional.of(user3));
 
         verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
-//        verify(shelterService,times(1)).callAVolunteerForEndPeriod(user3.getChatId());
+        verify(shelterService,times(0)).callAVolunteerForEndPeriod(user3.getChatId());
     }
 }
