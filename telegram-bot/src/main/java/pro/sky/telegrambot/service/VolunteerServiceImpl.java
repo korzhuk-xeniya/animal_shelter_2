@@ -43,7 +43,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     public Volunteer readVolunteer(long id) {
         logger.error("Был вызван метод для выбрасывания ошибки если волонтер не найден по id", id);
         return (Volunteer) volunteerRepository.findById(id).
-                orElseThrow(() -> new VolunteerNotFoundException("Волонтер с id " + id + " не найден в базе данных"));
+                orElseThrow(() -> new VolunteerNotFoundException(id));
     }
 
     /**

@@ -19,7 +19,6 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
     public UserRepository userRepository;
-    private static final String EXCEPTION_NOT_FOUND_USER = "Пользователь не найден!";
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -35,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public User getById(long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new NotFoundException(EXCEPTION_NOT_FOUND_USER);
+            throw new NotFoundException();
         }
         return optionalUser.get();
     }
