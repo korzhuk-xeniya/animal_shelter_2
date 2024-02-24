@@ -540,7 +540,7 @@ public class ShelterServiceImpl implements ShelterService {
         userService.saveUser(update, true);
         reportService.saveReportPhotoId(update, namePhotoId);
 
-        Files.move(Path.of(file.filePath()), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
+        Files.move(downloadedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
         return targetPath;
     }
 
