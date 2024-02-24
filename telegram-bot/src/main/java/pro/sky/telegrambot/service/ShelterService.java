@@ -64,5 +64,5 @@ public interface ShelterService {
     PhotoSize getPhoto(Update update);
 
     //просмотр отчетов питомцев
-//    void reviewListOfReports(long chatId);
+    void reviewListOfReports(long chatId);
 }

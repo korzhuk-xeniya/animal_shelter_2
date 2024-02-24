@@ -575,13 +575,10 @@ public class ShelterServiceImpl implements ShelterService {
         logger.info("Был вызван метод для отправки кнопок Прислать отчет о питомце", messageId, chatId);
         changeMessage(messageId, chatId, "Выберите одну из кнопок", buttons.buttonsOfOwner());
     }
-//    @Override
+    @Override
     //просмотр отчетов питомцев
     public void reviewListOfReports(long chatId) {
-
-//        System.out.println(sendMessageReport);
         sendMessageReport =volunteerService.reviewListOfReports(chatId); //Сохроняем ID отчета
-//        telegramBot.execute(volunteerService.reviewListOfReports(chatId));
         }
     //Если отчет сдан
     private void reportSubmitted(Update update) {
@@ -601,15 +598,6 @@ public class ShelterServiceImpl implements ShelterService {
         volunteerService.reportSubmitted(sendMessageReport);
     }
 
-
-//    public void sendImageFromFileId(String chatId) throws FileNotFoundException {
-//
-//        SendPhoto sendPhotoRequest = new SendPhoto(chatId,
-//                String.valueOf(new FileInputStream(savePhotoToLocalFolder(getPhoto(up)));
-//
-//        telegramBot.execute(sendPhotoRequest);
-//
-//    }
 }
 
 
