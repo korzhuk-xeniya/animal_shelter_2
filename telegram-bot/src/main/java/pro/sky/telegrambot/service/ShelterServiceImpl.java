@@ -13,6 +13,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.model.Animal;
@@ -24,8 +25,7 @@ import pro.sky.telegrambot.repository.ShelterRepository;
 import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -33,6 +33,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
@@ -54,11 +56,13 @@ public class ShelterServiceImpl implements ShelterService {
     private boolean reportCheckButton = false; // флаг на проверку нажатия кнопки
     private String namePhotoId;
     int sendMessageReport;
+    private String photosDir;
 
     public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
                               VolunteerRepository volunteerRepository, UserRepository userRepository,
                               UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper,
-                              AnimalService animalService, ReportService reportService, ReportRepository reportRepository) {
+                              AnimalService animalService, ReportService reportService, ReportRepository reportRepository,
+                              @Value("${path.to.photos.folder}") String photosDir) {
         this.telegramBot = telegramBot;
         this.repository = repository;
         this.buttons = buttons;
@@ -70,6 +74,7 @@ public class ShelterServiceImpl implements ShelterService {
         this.animalService = animalService;
         this.reportService = reportService;
         this.reportRepository = reportRepository;
+        this.photosDir = photosDir;
     }
 
     @Override
@@ -201,7 +206,7 @@ public class ShelterServiceImpl implements ShelterService {
                     //блок Волонтера
                     case "Отчеты" -> {
                         reviewListOfReports(update.callbackQuery().message().chat().id());
-//                        sendImageFromFileId(String.valueOf(update.callbackQuery().message().chat().id()));
+                        sendImageFromFileId(String.valueOf(update.callbackQuery().message().chat().id()));
                     }
                     case "Отчет сдан" -> {
                         reportSubmitted(update);
@@ -522,19 +527,38 @@ public class ShelterServiceImpl implements ShelterService {
         logger.info("Был вызван метод для скачивания файла, присвоения ему имени," +
                 " перемещения в директорию и возвращения пути к нему", file, update);
         PhotoSize photoSize = getPhoto(update);
-        File photo = telegramBot.execute(new GetFile(photoSize.fileId())).file();
+        File photo = downloadPhoto(photoSize.fileId());
         String filePath = file.filePath();
-
+        byte[] fileContent = telegramBot.getFileContent(photo);
+        java.io.File downloadedFile;
+        downloadedFile = new java.io.File(file.fileId());
         // Генерируем уникальное имя файла с сохранением расширения
         namePhotoId = photoSize.fileId() + "." + "jpg";
         Path targetPath = Path.of("src/main/resources/pictures", namePhotoId);
-//     Files.getFileStore(file.filePath());
 
+        Path targetPath2 = Path.of("./pictures",photosDir, namePhotoId);
+        Files.createDirectories(targetPath2.getParent());
+        Files.deleteIfExists(targetPath2);
+
+//        Path targetPath2 = Path.of(photosDir, update.message().from().username() + "." + getExtensions(String.valueOf(targetPath)));
+//        try (InputStream is = new FileInputStream(String.valueOf(targetPath2));
+//             OutputStream os = Files.newOutputStream(targetPath2, CREATE_NEW);
+//             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+//             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+//        ) {
+//            bis.transferTo(bos);
+//        }
 
         userService.saveUser(update, true);
         reportService.saveReportPhotoId(update, namePhotoId);
-        Files.move(Path.of(filePath), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
-        return targetPath;
+
+        Files.move(downloadedFile.toPath(), targetPath2, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
+        return targetPath2;
+    }
+
+    private String getExtensions(String fileName) {
+        logger.info("Был вызван метод для получения расширения файла отчета", fileName);
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     /**
@@ -585,6 +609,15 @@ public class ShelterServiceImpl implements ShelterService {
 
             }
         }
+
+    }
+
+    public void sendImageFromFileId(String chatId) throws FileNotFoundException {
+
+        SendPhoto sendPhotoRequest = new SendPhoto(chatId,
+                String.valueOf(new FileInputStream("AgACAgIAAxkBAAIFfGTgeJPke7lK6kcjJVQutOAjH4S6AAIPzDEb0UQAAUtYMYlzKbeYagEAAwIAA3gAAzAE")));
+
+        telegramBot.execute(sendPhotoRequest);
 
     }
 }
