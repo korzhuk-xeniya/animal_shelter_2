@@ -64,7 +64,6 @@ class NotificationTaskTimerTest {
         verify(userRepository, times(1)).findByDateTimeToTookBefore(oneDaysAgo);
         verify(shelterService,times(0)).callAVolunteerForBadReports(user1.getChatId());
 
-//        verify(shelterService,times(1)).callAVolunteerForBadReports(user1.getChatId());
     }
 
     @Test
