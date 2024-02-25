@@ -5,22 +5,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
+import pro.sky.telegrambot.model.Animal;
+import pro.sky.telegrambot.model.ReportAboutAnimal;
+import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
+import pro.sky.telegrambot.repository.ReportAboutAnimalRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class VolunteerServiceImpl implements VolunteerService {
-
-
     private final VolunteerRepository volunteerRepository;
+
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    public VolunteerServiceImpl(VolunteerRepository volunteerRepository) {
+    private final ReportAboutAnimalRepository animalReportRepository;
+
+
+    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportAboutAnimalRepository animalReportRepository) {
         this.volunteerRepository = volunteerRepository;
-    }
+        this.animalReportRepository = animalReportRepository;
+
+     }
+
+
 
     /**
      * @param volunteer
@@ -110,5 +121,47 @@ public class VolunteerServiceImpl implements VolunteerService {
             saveVolunteerInBd(newVolunteer);
         }
     }
-}
+
+        @Override
+        public void uploadAnimalReport(
+                String photo
+                , String wellBeing
+                , LocalDateTime dateAdded
+                , Animal animal
+                , User user) {
+            ReportAboutAnimal animalReport = new ReportAboutAnimal();
+            animalReport.setPhoto(photo);
+            animalReport.setWellBeing(wellBeing);
+            animalReport.setDateAdded(dateAdded);
+            animalReport.setAnimal(animal);
+            animalReport.setUser(user);
+            this.animalReportRepository.save(animalReport);
+        }
+        @Override
+        public ReportAboutAnimal findById(Integer id) {
+            return this.animalReportRepository
+                    .findById(id).orElseThrow();
+        }
+
+        @Override
+        public ReportAboutAnimal save(ReportAboutAnimal report) {
+            if (report != null) {
+                this.animalReportRepository.save(report);
+            }
+            return report;
+        }
+
+        @Override
+        public void remove(long id) {
+            Optional<ReportAboutAnimal> byId = animalReportRepository.findById(id);
+            if (byId.isPresent()) {
+                this.animalReportRepository.deleteById(id);
+            }
+        }
+        @Override
+        public List<ReportAboutAnimal> getAll() {
+            return this.animalReportRepository.findAll();
+        }
+    }
+
 

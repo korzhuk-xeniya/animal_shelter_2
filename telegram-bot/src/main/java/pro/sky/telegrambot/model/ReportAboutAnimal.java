@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -39,7 +39,7 @@ public class ReportAboutAnimal {
         private long userId;
 
 
-    public ReportAboutAnimal(long id) {
+    public ReportAboutAnimal() {
         this.id = id;
     }
 
@@ -56,4 +56,19 @@ public class ReportAboutAnimal {
     }
 
 
+    public void setPhoto(String photo) {
+    }
+
+    public void setWellBeing(String wellBeing) {
+    }
+    
+
+    public void setAnimal(Animal animal) {
+    }
+
+    public void setDateAdded(LocalDateTime dateAdded) {
+    }
+
+    public void setUser(User user) {
+    }
 }

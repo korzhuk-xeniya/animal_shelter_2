@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ReportAboutAnimalRepository extends JpaRepository<ReportAboutAnimal, UUID> {
+public interface ReportAboutAnimalRepository extends JpaRepository<ReportAboutAnimal,Long> {
 
     Optional<ReportAboutAnimal> findById(long id);
 }

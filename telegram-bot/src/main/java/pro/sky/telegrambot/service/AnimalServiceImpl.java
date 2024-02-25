@@ -15,80 +15,81 @@ import java.util.Optional;
 public class AnimalServiceImpl implements AnimalService {
 
 
-
-        private final AnimalRepository animalRepository;
+    private final AnimalRepository animalRepository;
     private final Logger logger = LoggerFactory.getLogger(AnimalServiceImpl.class);
     private final UserService userService;
 //        private final User user;
 
-        public AnimalServiceImpl(AnimalRepository animalRepository, UserService userService) {
-            this.animalRepository = animalRepository;
+    public AnimalServiceImpl(AnimalRepository animalRepository, UserService userService) {
+        this.animalRepository = animalRepository;
 //            this.user = user;
-            this.userService = userService;
-        }
+        this.userService = userService;
+    }
 
 
-        /**
-         * Добавление нового животного.
-         */
-        @Override
-        public Animal add(Animal animal) {
-            return animalRepository.save(animal);
-        }
+    /**
+     * Добавление нового животного.
+     */
+    @Override
+    public Animal add(Animal animal) {
+        return animalRepository.save(animal);
+    }
 
-        /**
-         * Получение информации по животному через ID
-         */
-        @Override
-        public Animal get(long id) {
-            return animalRepository.findById(id).orElse(null);
+    /**
+     * Получение информации по животному через ID
+     */
+    @Override
+    public Animal get(long id) {
+        return (Animal) animalRepository.findById(id).orElse(null);
 
-        }
+    }
 
-        /**
-         * Метод обновления ифнормации о животном.
-         */
-        @Override
-        public Animal update(Long id, Animal animal) {
+    /**
+     * Метод обновления ифнормации о животном.
+     */
+  @Override
+    public Animal update(Long id, Animal animal) {
 //             создается новый объект животного.
 //             передаётся ему ID существующего животного, которого необходимо отредактировать
 //             передаются новые параметры для животного
-            Animal savedAnimal = new Animal(id, animal.getAgeMonth(), animal.getNameOfAnimal(), animal.getPhotoLink(),
-                    animal.getGender(), animal.getPetType());
-            return animalRepository.save(savedAnimal);
-        }
+//            Animal savedAnimal = new Animal(id, animal.getAgeMonth(), animal.getNameOfAnimal(), animal.getPhotoLink(),
+  //                        animal.getGender(), animal.getPetType());
+ //            return animalRepository.save(savedAnimal);
+    return animal ;
 
-        /**
-         * Метод удаления животного
-         */
-        @Override
-        public void delete(long id) {
+  }
+    /**
+     * Метод удаления животного
+     */
+    @Override
+    public void delete(long id) {
 
-            // Удаляем животное по его айди
-            animalRepository.deleteById(id);
+        // Удаляем животное по его айди
+        animalRepository.deleteById(id);
 //        return "Животное удалено";
-        }
+    }
 
-        /**
-         * Метод выведения списка всех животных.
-         */
-        @Override
-        public List<Animal> allAnimals() {
-            return animalRepository.findAll();
-        }
+    /**
+     * Метод выведения списка всех животных.
+     */
+    @Override
+    public List<Animal> allAnimals() {
+        return animalRepository.findAll();
+    }
+
     @Override
     /**
      * Поиск пользователя по chatId, если он есть то добавляем к животному
      */
     public void saveUserIdInAnimal(Update update, Animal animal) {
-        logger.info("Был вызван метод для усыновителя животного в базе данных",update, animal);
+        logger.info("Был вызван метод для усыновителя животного в базе данных", update, animal);
         int chatId = update.message().chat().id().intValue();
         Optional<User> userOptional = userService.getUserByChatId(chatId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            Animal pet = new Animal(animal.getId(), animal.getAgeMonth(), animal.getNameOfAnimal(),
-                    animal.getPhotoLink(), animal.getGender(), animal.getPetType(),user);
-            animalRepository.save(pet);
+            //          Animal pet = new Animal(animal.getId(), animal.getAgeMonth(), animal.getNameOfAnimal(),
+            //                 animal.getPhotoLink(), animal.getGender(), animal.getPetType(),user);
+            //          animalRepository.save(pet);
         }
     }
 
@@ -184,6 +185,4 @@ public class AnimalServiceImpl implements AnimalService {
 //        return animalRepository.findAll();
 //    }
 
-    }
-
-
+}
