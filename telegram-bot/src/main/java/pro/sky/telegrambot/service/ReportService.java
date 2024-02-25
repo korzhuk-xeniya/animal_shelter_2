@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.data.domain.Page;
 import pro.sky.telegrambot.model.Report;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public interface ReportService {
@@ -34,5 +35,5 @@ public interface ReportService {
     /**
      * Сохранение отчета в БД
      */
-    void saveReportPhotoId(Update update, String namePhotoId);
+    void saveReportPhotoId(Update update, String namePhotoId) throws IOException;
 }

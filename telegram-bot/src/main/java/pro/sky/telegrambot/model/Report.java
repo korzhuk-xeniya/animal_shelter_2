@@ -31,6 +31,9 @@ public class Report {
         @Column(name = "photo_name")
         private String photoNameId;
 
+        @Column(name = "photo")
+        private byte[] photo;
+
         @Column(name = "check_report")
         private boolean checkReport;
 

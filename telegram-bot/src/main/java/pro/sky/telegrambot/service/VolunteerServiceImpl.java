@@ -14,6 +14,9 @@ import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -126,6 +129,7 @@ public class VolunteerServiceImpl implements VolunteerService {
             saveVolunteerInBd(newVolunteer);
         }
     }
+
     @Override
     /**
      * Обновляем в БД отчет и ставим, что отчет сдан
@@ -154,6 +158,7 @@ public class VolunteerServiceImpl implements VolunteerService {
         }
         return -1; // В случае, если не удалось извлечь номер отчета
     }
+
     @Override
     /**
      * Получаем непроверенный отчет из всех отчетов
@@ -163,7 +168,7 @@ public class VolunteerServiceImpl implements VolunteerService {
         List<Report> reportList = reportRepository.findReportByCheckReportIsFalse();
 
         if (reportList.isEmpty()) {
-            SendMessage noReportsMessage = new SendMessage(chatId,"Нет непроверенных отчетов.");
+            SendMessage noReportsMessage = new SendMessage(chatId, "Нет непроверенных отчетов.");
             telegramBot.execute(noReportsMessage);
 
 
@@ -171,21 +176,22 @@ public class VolunteerServiceImpl implements VolunteerService {
             long reportId = reportList.get(0).getId();
             Report report = reportList.get(0);
 
-                String reportInfo = "Отчет #" + report.getId() + "\n" +
+            String reportInfo = "Отчет #" + report.getId() + "\n" +
                     "Текстовая часть отчета: " + report.getGeneralWellBeing();
-                SendMessage reportMessage = new SendMessage(chatId,reportInfo);
-                SendPhoto sendPhoto = new SendPhoto(chatId,report.getPhotoNameId());
+            SendMessage reportMessage = new SendMessage(chatId, reportInfo);
+            SendPhoto sendPhoto = new SendPhoto(chatId,report.getPhoto() );
 
-
-                telegramBot.execute(sendPhoto);
-                reportMessage.replyMarkup(buttons.buttonsOfVolunteerForReports());
-                telegramBot.execute(reportMessage);
-                return reportId;
+            telegramBot.execute(sendPhoto);
+            reportMessage.replyMarkup(buttons.buttonsOfVolunteerForReports());
+            telegramBot.execute(reportMessage);
+            return reportId;
 
 
         }
         return -1;
     }
+
+
 }
 
 
