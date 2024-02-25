@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
@@ -17,33 +18,35 @@ import java.time.LocalDateTime;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-        private final UserService userService;
-        private final UserRepository userRepository;
-        private final ReportRepository reportRepository;
-        private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ReportServiceImpl.class);
+    private final UserService userService;
+    private final UserRepository userRepository;
+    private final ReportRepository reportRepository;
+    private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ReportServiceImpl.class);
+    private final TelegramBot telegramBot;
 
-        public ReportServiceImpl(UserService userService, UserRepository userRepository, ReportRepository reportRepository) {
-            this.userService = userService;
-            this.userRepository = userRepository;
-            this.reportRepository = reportRepository;
-        }
+    public ReportServiceImpl(UserService userService, UserRepository userRepository, ReportRepository reportRepository, TelegramBot telegramBot) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.reportRepository = reportRepository;
+        this.telegramBot = telegramBot;
+    }
 
 
-        public Report reportAdd(Report report) {
-            return reportRepository.save(report);
-        }
+    public Report reportAdd(Report report) {
+        return reportRepository.save(report);
+    }
 
-        @Override
-        public void updateReport(Report report) {
-            reportRepository.save(report);
-        }
+    @Override
+    public void updateReport(Report report) {
+        reportRepository.save(report);
+    }
 
-        @Override
-        public Report findReport(long userId) {
-            logger.info("Был вызван метод для поиска отчета по id пользователя", userId);
-            return reportRepository.findById(userId)
-                    .orElse(new Report());
-        }
+    @Override
+    public Report findReport(long userId) {
+        logger.info("Был вызван метод для поиска отчета по id пользователя", userId);
+        return reportRepository.findById(userId)
+                .orElse(new Report());
+    }
 
 
 //        private String getExtensions(String fileName) {
@@ -52,78 +55,74 @@ public class ReportServiceImpl implements ReportService {
 //        }
 
 
-        @Override
-        public Page<Report> getAllReports(Integer pageNo, Integer pageSize) {
-            logger.info("Был вызван метод для получения всех отчетов");
-            Pageable paging = PageRequest.of(pageNo, pageSize);
-            return reportRepository.findAll(paging);
-        }
+    @Override
+    public Page<Report> getAllReports(Integer pageNo, Integer pageSize) {
+        logger.info("Был вызван метод для получения всех отчетов");
+        Pageable paging = PageRequest.of(pageNo, pageSize);
+        return reportRepository.findAll(paging);
+    }
 
-        @Override
-        /**
-         * Запрашива у пользователя фото
-         */
-        public SendMessage sendMessageDailyReportPhoto(long chatId) {
-            SendMessage sendMessage = new SendMessage(chatId, "Пришлите фото питомца");
+    @Override
+    /**
+     * Запрашива у пользователя фото
+     */
+    public SendMessage sendMessageDailyReportPhoto(long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "Пришлите фото питомца");
 
+        return sendMessage;
+    }
+
+    @Override
+    /**
+     * Проверяем, что пользователь прислал фото для отчета.
+     */
+    public SendMessage dailyReportCheckPhoto(long chatId, Update update) {
+        logger.info("Был вызван метод для отправки подтверждющего сообщения пользователю Фото сохранено");
+            SendMessage sendMessage = new SendMessage(chatId, "Фото сохранено.");
+            telegramBot.execute(sendMessage);
             return sendMessage;
-        }
+    }
 
-        @Override
-        /**
-         * Проверяем, что пользователь прислал фото для отчета.
-         */
-        public SendMessage dailyReportCheckPhoto(long chatId, Update update) {
-            logger.info("Был вызван метод для проверки что пользователь прислал фото для отчета");
+    @Override
+    /**
+     * Проверяем, что пользователь прислал текст для отчета.
+     */
+    public SendMessage dailyReportCheckMessage(long chatId, Update update, String namePhotoId) {
+        logger.info("Был вызван метод для сохранения текстовой части отчета и " +
+                "отправки подтверждющего сообщения пользователю Отчет сохранен");
 
-            if (update.message().photo() != null) {
-                return new SendMessage(chatId, "Фото сохранено, пришлите текстовую часть отчета.");
-            } else {
-                return new SendMessage(chatId, "Вы прислали не фото!");
-            }
-
-        }
-
-        @Override
-        /**
-         * Проверяем, что пользователь прислал текст для отчета.
-         */
-        public SendMessage dailyReportCheckMessage(long chatId, Update update, String namePhotoId) {
-            logger.info("Был вызван метод для проверки что пользователь прислал текстовую часть отчета");
-            if (update.message().caption() != null) {
-                saveReportMessage(update, namePhotoId);
-                return new SendMessage(chatId, "Отчет сохранен");
-            } else {
-                return new SendMessage(chatId, "Вы не прислали текстовую часть отчета!");
-            }
-        }
+        saveReportMessage(update, namePhotoId);
+        SendMessage sendMessage = new SendMessage(chatId, "Отчет сохранен");
+        telegramBot.execute(sendMessage);
+        return sendMessage;
+    }
 
 //
 
-        /**
-         * Сохранение текствого отчет о питомце в БД
-         */
-        void saveReportMessage(Update update, String namePhotoId) {
-            logger.info("Был вызван метод сохранения текстовой части отчета");
-            Report report = reportRepository.findReportByPhotoNameId(namePhotoId).orElseThrow();
-            report.setGeneralWellBeing(update.message().caption());
-            updateReport(report);
-        }
+    /**
+     * Сохранение текствого отчет о питомце в БД
+     */
+    void saveReportMessage(Update update, String namePhotoId) {
+        logger.info("Был вызван метод сохранения текстовой части отчета");
+        Report report = reportRepository.findReportByPhotoNameId(namePhotoId).orElseThrow();
+        report.setGeneralWellBeing(update.message().caption());
+        updateReport(report);
+    }
 
 
-        @Override
-        /**
-         * Сохранение отчета в БД
-         */
-        public void saveReportPhotoId(Update update, String namePhotoId) {
-            logger.info("Был вызван метод для сохранения фото в бд без текста ");
-            int chatId = update.message().chat().id().intValue();
-            Report report = new Report();
-            report.setDateAdded(LocalDateTime.now());
-            report.setPhotoNameId(namePhotoId);
-            report.setGeneralWellBeing("No text provided");
-            report.setCheckReport(false);
-            report.setUser(userRepository.findUserByChatId(chatId));
-            reportAdd(report);
-        }
+    @Override
+    /**
+     * Сохранение отчета в БД
+     */
+    public void saveReportPhotoId(Update update, String namePhotoId) {
+        logger.info("Был вызван метод для сохранения фото в бд без текста ");
+        int chatId = update.message().chat().id().intValue();
+        Report report = new Report();
+        report.setDateAdded(LocalDateTime.now());
+        report.setPhotoNameId(namePhotoId);
+        report.setGeneralWellBeing("No text provided");
+        report.setCheckReport(false);
+        report.setUser(userRepository.findUserByChatId(chatId));
+        reportAdd(report);
+    }
 }

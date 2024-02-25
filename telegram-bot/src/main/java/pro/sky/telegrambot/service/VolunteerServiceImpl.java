@@ -175,6 +175,8 @@ public class VolunteerServiceImpl implements VolunteerService {
                     "Текстовая часть отчета: " + report.getGeneralWellBeing();
                 SendMessage reportMessage = new SendMessage(chatId,reportInfo);
                 SendPhoto sendPhoto = new SendPhoto(chatId,report.getPhotoNameId());
+
+
                 telegramBot.execute(sendPhoto);
                 reportMessage.replyMarkup(buttons.buttonsOfVolunteerForReports());
                 telegramBot.execute(reportMessage);
