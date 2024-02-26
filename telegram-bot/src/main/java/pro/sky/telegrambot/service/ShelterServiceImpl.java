@@ -32,6 +32,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 @Service
 public class ShelterServiceImpl implements ShelterService {
 
@@ -523,24 +525,20 @@ public class ShelterServiceImpl implements ShelterService {
         // Генерируем уникальное имя файла с сохранением расширения
         namePhotoId = photoSize.fileUniqueId() + "." + "jpg";
         Path targetPath = Path.of("src/main/resources/photos", namePhotoId);
-//        Files.copy(file.filePath(),targetPath, StandardCopyOption.REPLACE_EXISTING)
-//        Path targetPath2 = Path.of("src/main/resources/photos",photosDir, namePhotoId);
-//        Files.createDirectories(targetPath2.getParent());
-//        Files.deleteIfExists(targetPath2);
 
-//        Path targetPath2 = Path.of(photosDir, update.message().from().username() + "." + getExtensions(String.valueOf(targetPath)));
-//        try (InputStream is = new FileInputStream(String.valueOf(targetPath2));
-//             OutputStream os = Files.newOutputStream(targetPath2, CREATE_NEW);
-//             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-//             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-//        ) {
-//            bis.transferTo(bos);
-//        }
+        Path targetPath2 = Path.of(photosDir, update.message().from().username() + "." + getExtensions(String.valueOf(targetPath)));
+        try (InputStream is = new ByteArrayInputStream(fileContent);
+             OutputStream os = Files.newOutputStream(targetPath2, CREATE_NEW);
+             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+
 
         userService.saveUser(update, true);
         reportService.saveReportPhotoId(update, namePhotoId);
 
-        Files.move(downloadedFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);//TODO падает логика
         return targetPath;
     }
 
