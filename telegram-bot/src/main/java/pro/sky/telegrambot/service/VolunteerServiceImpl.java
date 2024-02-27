@@ -10,13 +10,18 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
 import pro.sky.telegrambot.model.Report;
+import pro.sky.telegrambot.model.Animal;
+
+import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
+import pro.sky.telegrambot.repository.ReportAboutAnimalRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -24,22 +29,28 @@ import java.util.regex.Pattern;
 
 @Service
 public class VolunteerServiceImpl implements VolunteerService {
-
-
     private final VolunteerRepository volunteerRepository;
+
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final ReportRepository reportRepository;
     private final ReportService reportService;
     private final ButtonsOfMenu buttons;
     private final TelegramBot telegramBot;
+    private final ReportAboutAnimalRepository animalReportRepository;
+    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository,
+                                ReportService reportService, ButtonsOfMenu buttons, TelegramBot telegramBot) {
 
-    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository, ReportService reportService, ButtonsOfMenu buttons, TelegramBot telegramBot) {
-        this.volunteerRepository = volunteerRepository;
-        this.reportRepository = reportRepository;
-        this.reportService = reportService;
-        this.buttons = buttons;
-        this.telegramBot = telegramBot;
-    }
+            this.volunteerRepository = volunteerRepository;
+            this.reportRepository = reportRepository;
+            this.reportService = reportService;
+            this.buttons = buttons;
+            this.telegramBot = telegramBot;
+
+        this.animalReportRepository = animalReportRepository;
+
+     }
+
+
 
     /**
      * @param volunteer
@@ -193,5 +204,48 @@ public class VolunteerServiceImpl implements VolunteerService {
 
 
 }
+
+
+        @Override
+        public void uploadAnimalReport(
+                String photo
+                , String wellBeing
+                , LocalDateTime dateAdded
+                , Animal animal
+                , User user) {
+            ReportAboutAnimal animalReport = new ReportAboutAnimal();
+            animalReport.setPhoto(photo);
+            animalReport.setWellBeing(wellBeing);
+            animalReport.setDateAdded(dateAdded);
+            animalReport.setAnimal(animal);
+            animalReport.setUser(user);
+            this.animalReportRepository.save(animalReport);
+        }
+        @Override
+        public ReportAboutAnimal findById(Integer id) {
+            return this.animalReportRepository
+                    .findById(id).orElseThrow();
+        }
+
+        @Override
+        public ReportAboutAnimal save(ReportAboutAnimal report) {
+            if (report != null) {
+                this.animalReportRepository.save(report);
+            }
+            return report;
+        }
+
+        @Override
+        public void remove(long id) {
+            Optional<ReportAboutAnimal> byId = animalReportRepository.findById(id);
+            if (byId.isPresent()) {
+                this.animalReportRepository.deleteById(id);
+            }
+        }
+        @Override
+        public List<ReportAboutAnimal> getAll() {
+            return this.animalReportRepository.findAll();
+        }
+    }
 
 
