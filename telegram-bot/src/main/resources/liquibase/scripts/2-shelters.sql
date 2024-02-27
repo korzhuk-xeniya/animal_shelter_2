@@ -57,10 +57,10 @@ VALUES ('Барсик','м', 5, 'щенок', 'https://img-fotki.yandex.ru/get/6
 ('Ева','ж', 25, 'кошка', 'https://1000dosok.ru/s/09-12-1182903.jpg');
 
 
-SELECT report_tg.user_id
-FROM report_tg
-INNER JOIN user_tg ON report_tg.user_id = user_tg.id;
-
-SELECT user_tg.id
-FROM user_tg
-INNER JOIN animals  ON  user_tg.id = animals.user_id;
+--SELECT report_tg.user_id
+--FROM report_tg
+--INNER JOIN user_tg ON report_tg.user_id = user_tg.id;
+--
+--SELECT user_tg.id
+--FROM user_tg
+--INNER JOIN animals  ON  user_tg.id = animals.user_id;
