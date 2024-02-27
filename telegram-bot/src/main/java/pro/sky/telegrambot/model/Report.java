@@ -43,34 +43,9 @@ public class Report {
         private User user;
 
 
-    public Report(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
 
 
 
-    public void setPhoto(String photo) {
-    }
 
-    public void setWellBeing(String wellBeing) {
-    }
-
-
-    public void setAnimal(Animal animal) {
-    }
-
-    public void setDateAdded(LocalDateTime dateAdded) {
-    }
-
-    public void setUser(User user) {
-    }
 }

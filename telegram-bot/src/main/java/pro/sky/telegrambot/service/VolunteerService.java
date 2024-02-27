@@ -60,8 +60,10 @@ public interface VolunteerService {
      * @param animal     животное взятое из приюта
      * @param user   хозяин приютившего животное
      */
+
+
     void uploadAnimalReport(
-            String photo
+            byte[] photo
             , String wellBeing
             , LocalDateTime dateAdded
             , Animal animal
@@ -71,17 +73,17 @@ public interface VolunteerService {
      * Поиск отчета по id.
      *
      * @param id идентификатор
-     * @return {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#findById(Object)}
+     * @return {@link pro.sky.telegrambot.repository.ReportRepository#findById(Object)}
      */
-    ReportAboutAnimal  findById(Integer id);
+    Report  findById(Integer id);
 
     /**
      * Метод для сохранения отчета.
      *
      * @param report отчет
-     * @return {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#save(Object)}
+     * @return {@link pro.sky.telegrambot.repository.ReportRepository#save(Object)}
      */
-    ReportAboutAnimal save(ReportAboutAnimal  report);
+    Report save(Report  report);
 
     /**
      * Метод для удаления отчета по идентификатору.
@@ -93,7 +95,7 @@ public interface VolunteerService {
     /**
      * Метод для получения всех отчетов.
      *
-     * @return {@link pro.sky.telegrambot.repository.ReportAboutAnimalRepository#findAll()}
+     * @return {@link pro.sky.telegrambot.repository.ReportRepository#findAll()}
      */
-    List<ReportAboutAnimal > getAll();
+    List<Report > getAll();
 }

@@ -15,12 +15,8 @@ import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
-import pro.sky.telegrambot.repository.ReportAboutAnimalRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,21 +32,18 @@ public class VolunteerServiceImpl implements VolunteerService {
     private final ReportService reportService;
     private final ButtonsOfMenu buttons;
     private final TelegramBot telegramBot;
-    private final ReportAboutAnimalRepository animalReportRepository;
-    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository,
-                                ReportService reportService, ButtonsOfMenu buttons, TelegramBot telegramBot) {
+    private final ReportRepository animalReportRepository;
 
-            this.volunteerRepository = volunteerRepository;
-            this.reportRepository = reportRepository;
-            this.reportService = reportService;
-            this.buttons = buttons;
-            this.telegramBot = telegramBot;
-
+    public VolunteerServiceImpl(VolunteerRepository volunteerRepository, ReportRepository reportRepository, 
+                                ReportService reportService, ButtonsOfMenu buttons, TelegramBot telegramBot, 
+                                ReportRepository animalReportRepository) {
+        this.volunteerRepository = volunteerRepository;
+        this.reportRepository = reportRepository;
+        this.reportService = reportService;
+        this.buttons = buttons;
+        this.telegramBot = telegramBot;
         this.animalReportRepository = animalReportRepository;
-
-     }
-
-
+    }
 
     /**
      * @param volunteer
@@ -146,7 +139,7 @@ public class VolunteerServiceImpl implements VolunteerService {
      * Обновляем в БД отчет и ставим, что отчет сдан
      */
     public void reportSubmitted(Long idReport) {
-        Report report = reportRepository.findReportById(idReport);
+        Report report = reportRepository.findById(idReport).orElse(null);
         report.setCheckReport(true);
         reportService.updateReport(report);
     }
@@ -203,32 +196,31 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
 
-}
+
 
 
         @Override
         public void uploadAnimalReport(
-                String photo
+                byte[] photo
                 , String wellBeing
                 , LocalDateTime dateAdded
                 , Animal animal
                 , User user) {
-            ReportAboutAnimal animalReport = new ReportAboutAnimal();
+            Report animalReport = new Report();
             animalReport.setPhoto(photo);
-            animalReport.setWellBeing(wellBeing);
+            animalReport.setGeneralWellBeing(wellBeing);
             animalReport.setDateAdded(dateAdded);
-            animalReport.setAnimal(animal);
             animalReport.setUser(user);
             this.animalReportRepository.save(animalReport);
         }
         @Override
-        public ReportAboutAnimal findById(Integer id) {
+        public Report findById(Integer id) {
             return this.animalReportRepository
                     .findById(id).orElseThrow();
         }
 
         @Override
-        public ReportAboutAnimal save(ReportAboutAnimal report) {
+        public Report save(Report report) {
             if (report != null) {
                 this.animalReportRepository.save(report);
             }
@@ -237,13 +229,13 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         @Override
         public void remove(long id) {
-            Optional<ReportAboutAnimal> byId = animalReportRepository.findById(id);
+            Optional<Report> byId = animalReportRepository.findById(id);
             if (byId.isPresent()) {
                 this.animalReportRepository.deleteById(id);
             }
         }
         @Override
-        public List<ReportAboutAnimal> getAll() {
+        public List<Report> getAll() {
             return this.animalReportRepository.findAll();
         }
     }

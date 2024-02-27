@@ -10,7 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pro.sky.telegrambot.model.ReportAboutAnimal;
+
+import pro.sky.telegrambot.model.Report;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.VolunteerService;
 
@@ -97,7 +98,7 @@ public class VolunteerController {
                     description = "Отчет по идентификатору получен!",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ReportAboutAnimal.class))
+                            schema = @Schema(implementation = Report.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -106,7 +107,7 @@ public class VolunteerController {
     }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<ReportAboutAnimal> downloadReport(@Parameter(description = "report id") @PathVariable Integer id) {
+    public ResponseEntity<Report> downloadReport(@Parameter(description = "report id") @PathVariable Integer id) {
         return ResponseEntity.ok(this.volunteerService.findById(id));
     }
 
@@ -117,7 +118,7 @@ public class VolunteerController {
                     description = "Отчет удален!",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ReportAboutAnimal.class))
+                            schema = @Schema(implementation = Report.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -142,7 +143,7 @@ public class VolunteerController {
                     description = "Отчет получен.",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ReportAboutAnimal.class))
+                            schema = @Schema(implementation = Report.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -151,7 +152,7 @@ public class VolunteerController {
     }
     )
     @GetMapping("/")
-    public ResponseEntity<List<ReportAboutAnimal>> getAll() {
+    public ResponseEntity<List<Report>> getAll() {
         return ResponseEntity.ok(this.volunteerService.getAll());
     }
 
