@@ -1,7 +1,7 @@
 package pro.sky.telegrambot.exceptions;
 
 public class VolunteerNotFoundException extends RuntimeException {
-    public VolunteerNotFoundException(String message) {
-        super(message);
+    public VolunteerNotFoundException(long id) {
+        super("Волонтер с id " + id + " не найден в базе данных");
     }
 }
