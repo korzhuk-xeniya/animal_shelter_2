@@ -21,7 +21,7 @@ public enum Button {
     LIST_OF_DOCUMENTS("Список документов"),
     TRANSPORTATION("Рекомендации по транспортировке"),
     ARRANGEMENT_PUPPY("Обустройство щенка/котенка"),
-    ARRANGEMENT_ADULT("Обустройство для взрослой собаки/кошки"),
+    ARRANGEMENT_ADULT("Обустройство собаки/кошки"),
     ARRANGEMENT_DISABLED("Животное с ОВЗ"),
     WHY_REFUSE("Причины отказа"),
     CHOOSE_ANIMAL("Выбрать животное"),
