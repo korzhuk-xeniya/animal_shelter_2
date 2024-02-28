@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.PhotoSize;
+import com.pengrad.telegrambot.model.CallbackQuery;
+import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.EditMessageText;
@@ -29,6 +31,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +41,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class ShelterServiceImpl implements ShelterService {
+
 
     private final TelegramBot telegramBot;
     private final ButtonsOfMenu buttons;
@@ -75,203 +81,146 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public void process(Update update) throws IOException {
-        Map<String, String> infoMap = getInfo();
-        List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add("xeny_sk");
-
-
+    public void process(Update update) {
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
             return;
         }
 
-        if (update.callbackQuery() == null && update.message().photo() == null) {
-            Long chatId = update.message().chat().id();
-            String message = update.message().text();
-            Matcher matcher = MESSAGE_PATTERN.matcher(message);
-            if (update.message() != null && matcher.find()) {
-                userRepository.updateNumber(update.message().chat().id().intValue(), update.message().text());
-                userService.saveUser(update, false);
-                sendMenuButton(chatId, "Номер записан, Вам обязательно позвонят!");
-            }
-            if (update.message().text().equals("/start")) {
-                logger.info("пользователь отправил /start");
-                sendMenuButton(chatId, " Добро пожаловать в PetShelterBot, "
-                        + update.message().from().firstName() + "! Я помогаю взаимодействовать с приютами для животных!");
-                if (adminsVolunteers.contains(update.message().from().username())) {
-                    logger.info("пользователь есть среди администраторов");
-                    volunteerService.saveVolunteer(update);
-                    sendMenuVolunteer(chatId, "Перед Вами меню волонтера");
+        if (update.callbackQuery() != null) {
+            processCallbackQuery(update.callbackQuery());
+        } else if (update.message() != null) {
+            processMessage(update);
+        }
+    }
 
-                } else {
-                    userService.saveUser(update, false);
-                }
-            }
+    private void processMessage(Update update) {
+        Message message = update.message();
+        Long chatId = message.chat().id();
+        String text = message.text();
 
-
-            List<Animal> animalList1 = new ArrayList<Animal>(animalService.allAnimals());
-            for (Animal pet : animalList1) {
-                if (update.message().text().equals(pet.getNameOfAnimal().toString())) {
-                    sendMessage(chatId,
-                            "Волонтер скоро свяжется с Вами, чтобы подтвердить Ваш выбор");
-                    callAVolunteerForConfirmationOfSelection(update, pet);
-                    userService.saveUser(update, true);
-                    animalService.saveUserIdInAnimal(update, pet);
-                }
-            }
+        Matcher matcher = MESSAGE_PATTERN.matcher(text);
+        if (matcher.find()) {
+            userRepository.updateNumber(chatId.intValue(), text);
+            userService.saveUser(update, false);
+            sendMenuButton(chatId, "Номер записан, Вам обязательно позвонят!");
+        } else if (update.message() != null && update.message().text().equals("/start")) {
+            logger.info("пользователь отправил /start");
+            processStartCommand(update);
+        } else if (message.photo() != null && message.caption() != null) {
+            logger.info("пользователь отправил фото с заголовком");
+            // reportAboutAnimalService.savePhoto(update, message); TODO
         } else {
-            if (update.callbackQuery() != null) {
-                logger.info("пользователь нажал на кнопку");
-                Long chatId = update.callbackQuery().message().chat().id();
-                int messageId = update.callbackQuery().message().messageId();
-                String receivedMessage = update.callbackQuery().data();
+            processTextMessage(update);
+        }
+    }
 
-//
-                switch (receivedMessage) {
-                    //Cтартовый блок
-                    case "Меню" -> changeMessage(messageId, chatId, "Выберите запрос, который Вам подходит. " +
-                            "Если ни один из вариантов не подходит, я могу позвать Волонтера!", buttons.buttonsOfStart());
+    private void processCallbackQuery(CallbackQuery callbackQuery) {
+        Map<String, String> infoMap = getInfo();
+        Long chatId = callbackQuery.message().chat().id();
+        int messageId = callbackQuery.message().messageId();
+        String receivedMessage = callbackQuery.data();
 
-                    //  блок определения запроса
-                    case "Информация о приюте" ->
-                            changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!",
-                                    buttons.buttonsInformationAboutShelter());
-                    case "В начало" -> changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
-
-//                    break;
-                    case "Как взять животное из приюта?" ->
-                            changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
-
-                    case "О приюте" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "shelter.info", buttons.buttonsInformationAboutShelter());
-                    case "График работы" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
-                    case "Адрес приюта" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
-                    case "Телефон охраны" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
-                    case "Схема проезда" -> telegramBot.execute(new SendPhoto(chatId, "https://sun9-2.userapi.com/impf/c845217/v845217943/3cb9e/d9ajmIuidXo.jpg?size=604x400&quality=96&sign=11951a8b1961e00d998ade1f656cf655&type=album")); //TODO
-                    case "Список документов" -> sendMessageByKey(chatId, messageId, infoMap, "documents", buttons.takeAnimalButton());
-                    case "Правила посещения приюта" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
-                    case "Правила знакомства" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
-                    case "Причины отказа" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
-                    case "Обустройство щенка/котенка" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
-                    case "Обустройство собаки/кошки" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
-                    case "Рекомендации по транспортировке" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
-                    case "Животное с ОВЗ" ->
-                            sendMessageByKey(chatId, messageId, infoMap, "ovz.animal", buttons.takeAnimalButton());
-
-
-                    case "Позвать волонтера" -> {
-                        callAVolunteer(update);
-                        changeMessage(messageId, chatId, "Волонтер скоро свяжется с Вами", buttons.buttonMenu());
-                    }
-                    case "Оставить телефон для связи" -> changeMessage(messageId, chatId,
-                            "Введите свой номер телефона в формате +71112223344", buttons.buttonMenu());
-                    case "Выбрать животное" -> {
-                        List<Animal> animalList = new ArrayList<Animal>(animalService.allAnimals());
-                        for (Animal animal2 : animalList) {
-                            sendButtonChooseAnimal(chatId, "Кличка животного:" + animal2.getNameOfAnimal() +
-                                    "; Возраст: " + animal2.getAgeMonth() + " месяцев; Тип животного: " +
-                                    animal2.getPetType() + ";Фото:" + animal2.getPhotoLink());
-
-                        }
-                    }
-                    case "Взять животное" ->
-                            changeMessage(messageId, chatId, "Отправьте кличку животного.", buttons.buttonMenu());
-                    //блок “Прислать отчет о питомце”
-                    case "Форма ежедневного отчета" -> {
-                        takeDailyReportFormPhoto(chatId);
-                        photoCheckButton = true; // Устанавливаем флаг в true после нажатия кнопки
-                    }
-                    case "Прислать отчет о питомце" -> petReportSelection(messageId, chatId);
-
-                    //блок Волонтера
-                    case "Отчеты" ->
-                        reviewListOfReports(update.callbackQuery().message().chat().id());
-
-                    case "Отчет сдан" -> {
-                        reportSubmitted(update);
-                        reviewListOfReports(update.callbackQuery().message().chat().id());
-                    }
-                    case "Отчет не сдан" -> {
-                        reportNotSubmitted(update);
-                        reviewListOfReports(update.callbackQuery().message().chat().id());
-                    }
-
-                    case "Испытательный срок пройден" -> {
-                        List<User> users = new ArrayList<User>(userService.getAll());
-                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
-                        for (User user : users) {
-                            if (user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
-                                sendMessage(user.getChatId(), "Поздравляем! Испытательный срок пройден");
-                            }
-                        }
-                    }
-                    case "Продлить на 14 дней" -> {
-                        List<User> users = new ArrayList<User>(userService.getAll());
-                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
-                        for (User user : users) {
-                            if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
-                                sendMessage(user.getChatId(), "Вам назначено дополнительно 14 дней" +
-                                        " испытательного срока. Свяжитесь с волонтером.");
-                            }
-                        }
-                    }
-                    case "Продлить на 30 дней" -> {
-                        List<User> users = new ArrayList<User>(userService.getAll());
-                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
-                        for (User user : users) {
-                            if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
-                                sendMessage(user.getChatId(), "Вам назначено дополнительно 30 дней" +
-                                        " испытательного срока. Свяжитесь с волонтером.");
-                            }
-                        }
-                    }
-                    case "Испытательный срок не пройден" -> {
-                        List<User> users = new ArrayList<User>(userService.getAll());
-                        LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
-                        for (User user : users) {
-                            if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
-                                sendMessage(user.getChatId(), "Испытательный срок не пройден. " +
-                                        "Свяжитесь с волонтером.");
-                            }
-                        }
-                    }
+        switch (receivedMessage) {
+            case "Меню":
+                changeMessage(messageId, chatId, "Выберите запрос, который Вам подходит. " +
+                        "Если ни один из вариантов не подходит, я могу позвать Волонтера!", buttons.buttonsOfStart());
+                break;
+            case "Информация о приюте":
+                changeMessage(messageId, chatId, "Добро пожаловать в наш приют для собак!", buttons.buttonsInformationAboutShelter());
+                break;
+            case "В начало":
+                changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.buttonMenu());
+                break;
+            case "Как взять животное из приюта?":
+                changeMessage(messageId, chatId, "Вы вернулись в начало!", buttons.takeAnimalButton());
+                break;
+            case "О приюте":
+                sendMessageByKey(chatId, messageId, infoMap, "shelter.info", buttons.buttonsInformationAboutShelter());
+                break;
+            case "График работы":
+                sendMessageByKey(chatId, messageId, infoMap, "shelter.work.schedule", buttons.buttonsInformationAboutShelter());
+                break;
+            case "Адрес приюта":
+                sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
+                break;
+            case "Телефон охраны":
+                sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
+                break;
+            case "Схема проезда":
+                new SendPhoto(chatId, "driving.directions"); //TODO
+                break;
+            case "Правила посещения приюта":
+                sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
+                break;
+            case "Правила знакомства":
+                sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
+                break;
+            case "Причины отказа":
+                sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
+                break;
+            case "Обустройство щенка":
+                sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
+                break;
+            case "Обустройство для взрослой собаки":
+                sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
+                break;
+            case "Рекомендации по транспортировке":
+                sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
+            case "Позвать волонтера":
+                changeMessage(messageId, chatId, "Волонтер скоро свяжется с Вами", buttons.buttonMenu());
+                break;
+            case "Оставить телефон для связи":
+                changeMessage(messageId, chatId, "Введите свой номер телефона в формате +71112223344", buttons.buttonMenu());
+                break;
+            case "Выбрать животное":
+                List<Animal> animalList = new ArrayList<Animal>(animalService.allAnimals());
+                for (Animal animal2 : animalList) {
+                    sendButtonChooseAnimal(chatId, "Кличка животного:" + animal2.getNameOfAnimal() +
+                            "; Возраст: " + animal2.getAgeMonth() + " месяцев; Тип животного: " +
+                            animal2.getPetType() + ";Фото:" + animal2.getPhotoLink());
 
                 }
-
-            }
+                break;
+            case "Взять животное":
+                changeMessage(messageId, chatId, "Отправьте кличку животного.", buttons.buttonMenu());
+                break;
         }
-        if (photoCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update) и проверяеем, что пользователь прислал фото
-            if (update.message() != null && !(update.message().photo() == null)) {
-                PhotoSize photoSize = getPhoto(update);
-                File file = downloadPhoto(photoSize.fileId());
+    }
 
-                savePhotoToLocalFolder(file, update);
-                checkDailyReportPhoto(update);
-                photoCheckButton = false;
-                reportCheckButton = true;
-            }
+    private void processStartCommand(Update update) {
+        Long chatId = update.message().chat().id();
+        String userName = update.message().from().firstName();
+        sendMenuButton(chatId, "Добро пожаловать в PetShelterBot, " +
+                userName + "! Я помогаю взаимодействовать с приютами для животных!");
+        if (isAdminOrVolunteer(userName)) {
+            logger.info("пользователь есть среди администраторов");
+            volunteerService.saveVolunteer(update);
+            sendMenuVolunteer(chatId, "Перед Вами меню волонтера");
+        } else {
+            userService.saveUser(update, false);
         }
-        if (reportCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update)
-            // и проверяеем, что пользователь прислал текст отчета
-            if (!(update.message().caption() == null)) {
-                checkDailyReportMessage(update);
-                reportCheckButton = false;
-            } else {
-                sendMessage(update.message().chat().id(), "Вы не прислали текстовую часть отчета!");
+    }
+
+    private void processTextMessage(Update update) {
+        Message message = update.message();
+        Long chatId = message.chat().id();
+        String text = message.text();
+        List<Animal> animalList = new ArrayList<>(animalService.allAnimals());
+        for (Animal pet : animalList) {
+            if (text.equals(pet.getNameOfAnimal().toString())) {
+                sendMessage(chatId, "Волонтер скоро свяжется с Вами, чтобы подтвердить Ваш выбор");
+                callAVolunteerForConfirmationOfSelection(update, pet);
+                userService.saveUser(update, true);
+                animalService.saveUserIdInAnimal(update, pet);
             }
         }
     }
 
+    private boolean isAdminOrVolunteer(String userName) {
+        List<String> adminsVolunteers = Arrays.asList("xeny_sk");
+        return adminsVolunteers.contains(userName);
+    }
 
     @Override
     public void sendMessage(Long chatId, String messageText) {
