@@ -87,9 +87,9 @@ public class ShelterServiceImpl implements ShelterService {
             return;
         }
 
-        if (update.callbackQuery() != null&& update.message().photo() == null) {
+        if (update.callbackQuery() != null) {
             processCallbackQuery(update.callbackQuery());
-        } else if (update.message() != null) {
+        } else if (update.message() != null&& update.message().photo() == null) {
             processMessage(update);
         }
         if (photoCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update) и проверяеем, что пользователь прислал фото
@@ -127,9 +127,6 @@ public class ShelterServiceImpl implements ShelterService {
         } else if (update.message() != null && update.message().text().equals("/start")) {
             logger.info("пользователь отправил /start");
             processStartCommand(update);
-        } else if (message.photo() != null && message.caption() != null) {
-            logger.info("пользователь отправил фото с заголовком");
-            // reportAboutAnimalService.savePhoto(update, message); TODO
         } else {
             processTextMessage(update);
         }
