@@ -18,7 +18,6 @@ import java.util.Objects;
 @Table(name = "animals")
 public class Animal {
 
-    //ID животного
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_animal")
@@ -58,7 +57,6 @@ public class Animal {
         this.gender = gender;
         this.petType = petType;
     }
-
 
 
     public void setId(long id) {

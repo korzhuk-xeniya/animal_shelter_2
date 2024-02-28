@@ -110,7 +110,7 @@ public class ButtonsOfMenu {
                 new InlineKeyboardButton[]{arrangementDisabledButton},
                 new InlineKeyboardButton[]{whyRefuseButton},
                 new InlineKeyboardButton[]{arrangementPuppyButton},
-                new InlineKeyboardButton[]{arrangementAdultButton},
+//                new InlineKeyboardButton[]{arrangementAdultButton},
                 new InlineKeyboardButton[]{transportationButton},
                 new InlineKeyboardButton[]{chooseAnimalButton},
                 new InlineKeyboardButton[]{callVolunteerButton},
