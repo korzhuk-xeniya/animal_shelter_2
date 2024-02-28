@@ -49,37 +49,6 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Report findReport(long userId) {
-        logger.info("Был вызван метод для поиска отчета по id пользователя", userId);
-        return reportRepository.findById(userId)
-                .orElse(new Report());
-    }
-
-
-//        private String getExtensions(String fileName) {
-//            logger.info("Был вызван метод для получения расширения файла фотографии", fileName);
-//            return fileName.substring(fileName.lastIndexOf(".") + 1);
-//        }
-
-
-    @Override
-    public Page<Report> getAllReports(Integer pageNo, Integer pageSize) {
-        logger.info("Был вызван метод для получения всех отчетов");
-        Pageable paging = PageRequest.of(pageNo, pageSize);
-        return reportRepository.findAll(paging);
-    }
-
-    @Override
-    /**
-     * Запрашива у пользователя фото
-     */
-    public SendMessage sendMessageDailyReportPhoto(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Пришлите фото питомца");
-
-        return sendMessage;
-    }
-
-    @Override
     /**
      * Проверяем, что пользователь прислал фото для отчета.
      */
@@ -104,8 +73,6 @@ public class ReportServiceImpl implements ReportService {
         return sendMessage;
     }
 
-//
-
     /**
      * Сохранение текствого отчет о питомце в БД
      */
@@ -129,8 +96,6 @@ public class ReportServiceImpl implements ReportService {
         logger.info("Был вызван метод для получения файла по его id", fileId);
         GetFile getFile = new GetFile(fileId);
         return telegramBot.execute(getFile).file();
-
-
     }
     @Override
     /**

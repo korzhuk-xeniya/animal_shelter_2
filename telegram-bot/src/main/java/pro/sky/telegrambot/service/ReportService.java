@@ -13,15 +13,6 @@ public interface ReportService {
 
     void updateReport(Report report);
 
-    Report findReport(long userId);
-
-    Page<Report> getAllReports(Integer pageNo, Integer pageSize);
-
-    /**
-     * Запрашива у пользователя фото
-     */
-    SendMessage sendMessageDailyReportPhoto(long chatId);
-
     /**
      * Проверяем, что пользователь прислал фото для отчета.
      */
