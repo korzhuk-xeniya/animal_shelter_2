@@ -81,7 +81,7 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public void process(Update update) {
+    public void process(Update update) throws IOException {
         if (update.message() == null && update.callbackQuery() == null) {
             logger.info("пользователь отправил пустое сообщение");
             return;
@@ -91,6 +91,26 @@ public class ShelterServiceImpl implements ShelterService {
             processCallbackQuery(update.callbackQuery());
         } else if (update.message() != null) {
             processMessage(update);
+        }
+        if (photoCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update) и проверяеем, что пользователь прислал фото
+            if (update.message() != null && !(update.message().photo() == null)) {
+                PhotoSize photoSize = getPhoto(update);
+                File file = downloadPhoto(photoSize.fileId());
+
+                savePhotoToLocalFolder(file, update);
+                checkDailyReportPhoto(update);
+                photoCheckButton = false;
+                reportCheckButton = true;
+            }
+        }
+        if (reportCheckButton) { // Проверяем флаг перед выполнением checkDailyReport(update)
+            // и проверяеем, что пользователь прислал текст отчета
+            if (!(update.message().caption() == null)) {
+                checkDailyReportMessage(update);
+                reportCheckButton = false;
+            } else {
+                sendMessage(update.message().chat().id(), "Вы не прислали текстовую часть отчета!");
+            }
         }
     }
 
