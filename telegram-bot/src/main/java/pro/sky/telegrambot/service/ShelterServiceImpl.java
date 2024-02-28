@@ -20,7 +20,7 @@ import pro.sky.telegrambot.model.Animal;
 import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
-import pro.sky.telegrambot.repository.ShelterRepository;
+
 import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
@@ -38,7 +38,6 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 public class ShelterServiceImpl implements ShelterService {
 
     private final TelegramBot telegramBot;
-    private final ShelterRepository repository;
     private final ButtonsOfMenu buttons;
     private final Logger logger = LoggerFactory.getLogger(pro.sky.telegrambot.service.ShelterServiceImpl.class);
     private final VolunteerRepository volunteerRepository;
@@ -56,14 +55,13 @@ public class ShelterServiceImpl implements ShelterService {
     long sendMessageReport;
     private String photosDir;
 
-    public ShelterServiceImpl(TelegramBot telegramBot, ShelterRepository repository, ButtonsOfMenu buttons,
+    public ShelterServiceImpl(TelegramBot telegramBot, ButtonsOfMenu buttons,
                               VolunteerRepository volunteerRepository, UserRepository userRepository,
                               UserService userService, VolunteerService volunteerService, ObjectMapper objectMapper,
                               AnimalService animalService, ReportService reportService,
                               ReportRepository reportRepository,
                               @Value("${path.to.photos.folder}") String photosDir) {
         this.telegramBot = telegramBot;
-        this.repository = repository;
         this.buttons = buttons;
         this.volunteerRepository = volunteerRepository;
         this.userRepository = userRepository;
