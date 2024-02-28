@@ -16,9 +16,6 @@ public interface ShelterService {
 
     void sendMenuVolunteer(Long chatId, String messageText);
 
-    void sendButtonsOfStep0(Long chatId, String messageText);
-
-
 
     /**
      * метод для изменения сообщения
@@ -38,8 +35,6 @@ public interface ShelterService {
 
     Map<String, String> getInfo();
 
-
-
     void callAVolunteerForBadReports(Long chatIdOfUser);
 
     void callAVolunteerForEndPeriod(Long chatIdOfUser);
@@ -47,15 +42,6 @@ public interface ShelterService {
     void sendButtonChooseAnimal(Long chatId, String messageText);
 
     void sendButtonOfVolunteerForEnd30DaysPeriod(Long chatId, String messageText);
-
-//    void sendButtonOfVolunteerForReports(Long chatId, String messageText);
-
-//    /**
-//     * Получаем непроверенный отчет из всех отчетов
-//     *
-//     * @return возвращает первый непроверенный отчет и кнопки действия с отчетом
-//     */
-//    void reviewListOfReports(Long chatIdOfVolunteer);
 
     /**
      * Извлекает из update список объектов PhotoSize, которые представляют разный размер фотографий
