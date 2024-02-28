@@ -114,10 +114,7 @@ public class ShelterServiceImpl implements ShelterService {
                 }
             }
 
-//            if (update.message().photo() != null&& update.message().caption() != null) {
-//                logger.info("пользователь отправил фото с заголовком");
-////                reportService.savePhoto(update, update.message()); TODO
-//            }
+
             List<Animal> animalList1 = new ArrayList<Animal>(animalService.allAnimals());
             for (Animal pet : animalList1) {
                 if (update.message().text().equals(pet.getNameOfAnimal().toString())) {
@@ -162,20 +159,22 @@ public class ShelterServiceImpl implements ShelterService {
                             sendMessageByKey(chatId, messageId, infoMap, "shelter.address", buttons.buttonsInformationAboutShelter());
                     case "Телефон охраны" ->
                             sendMessageByKey(chatId, messageId, infoMap, "security.phone", buttons.buttonsInformationAboutShelter());
-                    case "Схема проезда" -> new SendPhoto(chatId, "driving.directions"); //TODO
-//                    case "Список документа" -> ; //TODO
+                    case "Схема проезда" -> telegramBot.execute(new SendPhoto(chatId, "driving.directions")); //TODO
+                    case "Список документов" -> sendMessageByKey(chatId, messageId, infoMap, "documents", buttons.takeAnimalButton());
                     case "Правила посещения приюта" ->
                             sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
                     case "Правила знакомства" ->
                             sendMessageByKey(chatId, messageId, infoMap, "dating.rules", buttons.takeAnimalButton());
                     case "Причины отказа" ->
                             sendMessageByKey(chatId, messageId, infoMap, "reasons.for.refusal", buttons.takeAnimalButton());
-                    case "Обустройство щенка" ->
+                    case "Обустройство щенка/котенка" ->
                             sendMessageByKey(chatId, messageId, infoMap, "conditions.for.puppy", buttons.takeAnimalButton());
-                    case "Обустройство для взрослой собаки" ->
+                    case "Обустройство собаки/кошки" ->
                             sendMessageByKey(chatId, messageId, infoMap, "conditions.for.adult.dog", buttons.takeAnimalButton());
                     case "Рекомендации по транспортировке" ->
                             sendMessageByKey(chatId, messageId, infoMap, "transportation.recommendations", buttons.takeAnimalButton());
+                    case "Животное с ОВЗ" ->
+                            sendMessageByKey(chatId, messageId, infoMap, "ovz.animal", buttons.takeAnimalButton());
 
 
                     case "Позвать волонтера" -> {
