@@ -7,17 +7,6 @@ import java.util.List;
 
 public interface AnimalService {
 
-    Animal add(Animal animal);
-
-    Object get(long id);
-
-//    Animal update(Long id, Animal animal);
-//
-//    void delete(long id);
-
-    Animal update(Long id, Animal animal);
-
-    void delete(long id);
 
     List<Animal> allAnimals();
 

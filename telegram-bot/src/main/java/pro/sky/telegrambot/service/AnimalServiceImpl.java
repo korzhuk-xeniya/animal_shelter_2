@@ -25,51 +25,7 @@ public class AnimalServiceImpl implements AnimalService {
     private AnimalRepository animalRepository;
     @Autowired
     private UserService userService;
-//        private final User user;
 
-
-    /**
-     * Добавление нового животного.
-     */
-    @Override
-    public Animal add(Animal animal) {
-        return animalRepository.save(animal);
-    }
-
-    /**
-     * Получение информации по животному через ID
-     */
-    @Override
-    public Animal get(long id) {
-        return (Animal) animalRepository.findById(id).orElse(null);
-
-    }
-
-    /**
-     * Метод обновления ифнормации о животном.
-     */
-    @Override
-    public Animal update(Long id, Animal animal) {
-//             создается новый объект животного.
-//             передаётся ему ID существующего животного, которого необходимо отредактировать
-//             передаются новые параметры для животного
-//            Animal savedAnimal = new Animal(id, animal.getAgeMonth(), animal.getNameOfAnimal(), animal.getPhotoLink(),
-        //                        animal.getGender(), animal.getPetType());
-        //            return animalRepository.save(savedAnimal);
-        return animal;
-
-    }
-
-    /**
-     * Метод удаления животного
-     */
-    @Override
-    public void delete(long id) {
-
-        // Удаляем животное по его айди
-        animalRepository.deleteById(id);
-//        return "Животное удалено";
-    }
 
     /**
      * Метод выведения списка всех животных.
