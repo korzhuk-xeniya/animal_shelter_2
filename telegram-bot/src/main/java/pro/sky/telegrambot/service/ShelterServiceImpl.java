@@ -285,9 +285,10 @@ public class ShelterServiceImpl implements ShelterService {
 
     private void processStartCommand(Update update) {
         Long chatId = update.message().chat().id();
-        String userName = update.message().from().firstName();
+        String firstNameOfUser = update.message().from().firstName();
+        String userName = update.message().from().username();
         sendMenuButton(chatId, "Добро пожаловать в PetShelterBot, " +
-                userName + "! Я помогаю взаимодействовать с приютами для животных!");
+                firstNameOfUser + "! Я помогаю взаимодействовать с приютами для животных!");
         if (isAdminOrVolunteer(userName)) {
             logger.info("пользователь есть среди администраторов");
             volunteerService.saveVolunteer(update);
