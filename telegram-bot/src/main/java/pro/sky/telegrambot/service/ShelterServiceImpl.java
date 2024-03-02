@@ -168,6 +168,9 @@ public class ShelterServiceImpl implements ShelterService {
             case "Схема проезда":
                 telegramBot.execute(new SendPhoto(chatId, "https://sun9-2.userapi.com/impf/c845217/v845217943/3cb9e/d9ajmIuidXo.jpg?size=604x400&quality=96&sign=11951a8b1961e00d998ade1f656cf655&type=album")); //TODO
                 break;
+            case "Список документов":
+                sendMessageByKey(chatId, messageId, infoMap, "documents", buttons.takeAnimalButton());
+                break;
             case "Правила посещения приюта":
                 sendMessageByKey(chatId, messageId, infoMap, "visiting.rules", buttons.buttonsInformationAboutShelter());
                 break;
@@ -286,9 +289,10 @@ public class ShelterServiceImpl implements ShelterService {
 
     private void processStartCommand(Update update) {
         Long chatId = update.message().chat().id();
-        String userName = update.message().from().firstName();
+        String firstNameOfUser = update.message().from().firstName();
+        String userName = update.message().from().username();
         sendMenuButton(chatId, "Добро пожаловать в PetShelterBot, " +
-                userName + "! Я помогаю взаимодействовать с приютами для животных!");
+                firstNameOfUser + "! Я помогаю взаимодействовать с приютами для животных!");
         if (isAdminOrVolunteer(userName)) {
             logger.info("пользователь есть среди администраторов");
             volunteerService.saveVolunteer(update);
