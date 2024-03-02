@@ -190,6 +190,7 @@ public class ShelterServiceImpl implements ShelterService {
                 sendMessageByKey(chatId, messageId, infoMap, "ovz.animal", buttons.takeAnimalButton());
                 break;
             case "Позвать волонтера":
+                callAVolunteer(callbackQuery);
                 changeMessage(messageId, chatId, "Волонтер скоро свяжется с Вами", buttons.buttonMenu());
                 break;
             case "Оставить телефон для связи":
@@ -221,7 +222,7 @@ public class ShelterServiceImpl implements ShelterService {
                 reportSubmitted(callbackQuery);
                 break;
             case "Отчет не сдан":
-                reportNotSubmitted(callbackQuery);
+                reportNotSubmitted(callbackQuery); 
                 break;
             case "Испытательный срок пройден":
                 congratulateOnProbationPassed();
@@ -373,10 +374,10 @@ public class ShelterServiceImpl implements ShelterService {
     /**
      * @param update Реализация кнопки "Позвать волонтера"
      */
-    public void callAVolunteer(Update update) {
+    public void callAVolunteer(CallbackQuery callbackQuery) {
         List<Volunteer> volunteerList = volunteerRepository.findAll();
         for (Volunteer volunteer : volunteerList) {
-            String user = update.callbackQuery().from().username();
+            String user = callbackQuery.from().username();
             SendMessage sendMessage = new SendMessage(volunteer.getChatId(),
                     "Пользователь: @" + user + " просит с ним связаться.");
             telegramBot.execute(sendMessage);
