@@ -95,12 +95,12 @@ public class VolunteerServiceImpl implements VolunteerService {
      * <p>
      * ищет всех волонтеров
      */
-    @Override
-
-    public List<Volunteer> findAllVolunteers() {
-        logger.info("Был вызван метод для поиска всех волонтеров");
-        return volunteerRepository.findAll().stream().toList();
-    }
+//    @Override
+//
+//    public List<Volunteer> findAllVolunteers() {
+//        logger.info("Был вызван метод для поиска всех волонтеров");
+//        return volunteerRepository.findAll().stream().toList();
+//    }
 
     /**
      * @param chatId
@@ -144,24 +144,24 @@ public class VolunteerServiceImpl implements VolunteerService {
         reportService.updateReport(report);
     }
 
-    @Override
-    /**
-     * Позволяет распарсить SendMessage из метода reviewListOfReports что-бы достать ID репорта
-     * с которым будем работать.
-     *
-     * @param reportString получаем строку SendMessage
-     * @return вовзращает ID отчета
-     */
-    public int parseReportNumber(String reportString) {
-        Pattern pattern = Pattern.compile("Отчет #(\\d+)");
-        Matcher matcher = pattern.matcher(reportString);
-
-        if (matcher.find()) {
-            String numberStr = matcher.group(1);
-            return Integer.parseInt(numberStr);
-        }
-        return -1; // В случае, если не удалось извлечь номер отчета
-    }
+//    @Override
+//    /**
+//     * Позволяет распарсить SendMessage из метода reviewListOfReports что-бы достать ID репорта
+//     * с которым будем работать.
+//     *
+//     * @param reportString получаем строку SendMessage
+//     * @return вовзращает ID отчета
+//     */
+//    public int parseReportNumber(String reportString) {
+//        Pattern pattern = Pattern.compile("Отчет #(\\d+)");
+//        Matcher matcher = pattern.matcher(reportString);
+//
+//        if (matcher.find()) {
+//            String numberStr = matcher.group(1);
+//            return Integer.parseInt(numberStr);
+//        }
+//        return -1; // В случае, если не удалось извлечь номер отчета
+//    }
 
     @Override
     /**
@@ -199,33 +199,33 @@ public class VolunteerServiceImpl implements VolunteerService {
 
 
 
-        @Override
-        public void uploadAnimalReport(
-                byte[] photo
-                , String wellBeing
-                , LocalDateTime dateAdded
-                , Animal animal
-                , User user) {
-            Report animalReport = new Report();
-            animalReport.setPhoto(photo);
-            animalReport.setGeneralWellBeing(wellBeing);
-            animalReport.setDateAdded(dateAdded);
-            animalReport.setUser(user);
-            this.animalReportRepository.save(animalReport);
-        }
+//        @Override
+//        public void uploadAnimalReport(
+//                byte[] photo
+//                , String wellBeing
+//                , LocalDateTime dateAdded
+//                , Animal animal
+//                , User user) {
+//            Report animalReport = new Report();
+//            animalReport.setPhoto(photo);
+//            animalReport.setGeneralWellBeing(wellBeing);
+//            animalReport.setDateAdded(dateAdded);
+//            animalReport.setUser(user);
+//            this.animalReportRepository.save(animalReport);
+//        }
         @Override
         public Report findById(Integer id) {
             return this.animalReportRepository
                     .findById(id).orElseThrow();
         }
 
-        @Override
-        public Report save(Report report) {
-            if (report != null) {
-                this.animalReportRepository.save(report);
-            }
-            return report;
-        }
+//        @Override
+//        public Report save(Report report) {
+//            if (report != null) {
+//                this.animalReportRepository.save(report);
+//            }
+//            return report;
+//        }
 
         @Override
         public void remove(long id) {

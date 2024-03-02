@@ -50,15 +50,7 @@ public class UserController {
         return userService.getById(userId);
     }
 
-//    @PutMapping
-//    @Operation(summary = "Изменить пользователя")
-//    public User update(@RequestParam @Parameter(description = "Телеграм id пользователя")
-//                       Long chatId,
-//                       @RequestParam(required = false) @Parameter(description = "Имя") String firstName,
-//                       @RequestParam(required = false) @Parameter(description = "Фамилия") String lastName,
-//                       @RequestParam(required = false) @Parameter(description = "Телефон") String phone) {
-//        return userService.update(new User(chatId, firstName, lastName, phone));
-//    }
+
     @Operation(summary = "Обновление иформации о пользователе")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь обновлен",
