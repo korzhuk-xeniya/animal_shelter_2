@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         //Добавить нового пользователя в БД
-        logger.info("Был вызван метод для добавления нового пользователя в базу данных", user);
+        logger.info("Был вызван метод для добавления нового пользователя в базу данных{}", user);
         return userRepository.save(user);
     }
 
@@ -39,16 +39,16 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-    @Override
-    public User update(User user) {
-        User currentUser = getById(user.getId());
-        EntityUtils.copyNonNullFields(user, currentUser);
-        return userRepository.save(currentUser);
-    }
+//    @Override
+//    public User update(User user) {
+//        User currentUser = getById(user.getId());
+//        EntityUtils.copyNonNullFields(user, currentUser);
+//        return userRepository.save(currentUser);
+//    }
     @Override
     //Обновить пользователя в бд
     public User updateUser(User user) {
-        logger.info("Был вызван метод для обновления пользователя в базе данных", user);
+        logger.info("Был вызван метод для обновления пользователя в базе данных{}", user);
         userRepository.save(user);
         return user;
     }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     //Получить юзера из бд
     public Optional<User> getUserByChatId(long chatId) {
-        logger.info("Был вызван метод для получения пользователя из базы данных", chatId);
+        logger.info("Был вызван метод для получения пользователя из базы данных{}", chatId);
         return userRepository.findByChatId(chatId);
     }
     @Override

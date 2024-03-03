@@ -239,6 +239,8 @@ public class ShelterServiceImpl implements ShelterService {
             case "Испытательный срок не пройден":
                 informOnProbationFailed();
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + receivedMessage);
         }
     }
 

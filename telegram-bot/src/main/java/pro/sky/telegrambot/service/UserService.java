@@ -26,7 +26,7 @@ public interface UserService {
 
     User getById(long id);
 
-    User update(User user);
+//    User update(User user);
 
     /**
      * Изменение пользователя
@@ -34,7 +34,7 @@ public interface UserService {
      * @param user пользователь
      * @return Изменённый пользователь
      */
-//    User update(User user);
+
 
     //Обновить пользователя в бд
     User updateUser(User user);

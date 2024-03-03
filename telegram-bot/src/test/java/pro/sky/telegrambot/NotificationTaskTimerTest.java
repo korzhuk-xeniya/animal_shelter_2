@@ -34,10 +34,11 @@ class NotificationTaskTimerTest {
 
 
 
-    LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES);
+    LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1).minusHours(1).truncatedTo(ChronoUnit.MINUTES);
+
 
     private User user1 = new User("Pit", true, 12, LocalDateTime.now().minusDays(2).truncatedTo(ChronoUnit.MINUTES));
-    private User user2 = new User("Pit2", true, 1,LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES) );
+    private User user2 = new User("Pit2", true, 1,LocalDateTime.now().minusDays(1).truncatedTo(ChronoUnit.MINUTES));
     private User user3 = new User("Pit2", true, 13,LocalDateTime.now().minusDays(30).truncatedTo(ChronoUnit.MINUTES) );
     @Test
     void task_test() {

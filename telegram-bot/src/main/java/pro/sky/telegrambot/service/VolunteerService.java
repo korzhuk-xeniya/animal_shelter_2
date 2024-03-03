@@ -20,7 +20,7 @@ public interface VolunteerService {
 
     void deleteById(long id);
 
-//    List<Volunteer> findAllVolunteers();
+
 
     Optional<Volunteer> getVolunteerByChatId(long chatId);
 
@@ -34,14 +34,7 @@ public interface VolunteerService {
      */
     void reportSubmitted(Long idReport);
 
-//    /**
-//     * Позволяет распарсить SendMessage из метода reviewListOfReports что-бы достать ID репорта
-//     * с которым будем работать.
-//     *
-//     * @param reportString получаем строку SendMessage
-//     * @return вовзращает ID отчета
-//     */
-//    int parseReportNumber(String reportString);
+
 
     /**
      * Получаем непроверенный отчет из всех отчетов
@@ -51,23 +44,6 @@ public interface VolunteerService {
     long reviewListOfReports(Long chatIdOfVolunteer);
 
 
-//    /**
-//     * Загрузка отчета по определенным параметрам.
-//     *
-//     * @param photo      фото животного
-//     * @param wellBeing  здоровье
-//     * @param dateAdded дата создания
-//     * @param animal     животное взятое из приюта
-//     * @param user   хозяин приютившего животное
-//     */
-//
-//
-//    void uploadAnimalReport(
-//            byte[] photo
-//            , String wellBeing
-//            , LocalDateTime dateAdded
-//            , Animal animal
-//            , User user);
 
     /**
      * Поиск отчета по id.
@@ -77,13 +53,7 @@ public interface VolunteerService {
      */
     Report  findById(Integer id);
 
-//    /**
-//     * Метод для сохранения отчета.
-//     *
-//     * @param report отчет
-//     * @return {@link pro.sky.telegrambot.repository.ReportRepository#save(Object)}
-//     */
-//    Report save(Report  report);
+
 
     /**
      * Метод для удаления отчета по идентификатору.

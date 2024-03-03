@@ -10,18 +10,15 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.buttons.ButtonsOfMenu;
 import pro.sky.telegrambot.exceptions.VolunteerNotFoundException;
 import pro.sky.telegrambot.model.Report;
-import pro.sky.telegrambot.model.Animal;
 
-import pro.sky.telegrambot.model.User;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 @Service
 public class VolunteerServiceImpl implements VolunteerService {
@@ -53,7 +50,7 @@ public class VolunteerServiceImpl implements VolunteerService {
      */
     @Override
     public Volunteer saveVolunteerInBd(Volunteer volunteer) {
-        logger.info("Был вызван метод для добавления нового волонтера в базу данных", volunteer);
+        logger.info("Был вызван метод для добавления нового волонтера в базу данных{}", volunteer);
 
         return volunteerRepository.save(volunteer);
     }
@@ -64,7 +61,7 @@ public class VolunteerServiceImpl implements VolunteerService {
      */
     @Override
     public Volunteer readVolunteer(long id) {
-        logger.error("Был вызван метод для выбрасывания ошибки если волонтер не найден по id", id);
+        logger.error("Был вызван метод для выбрасывания ошибки если волонтер не найден по id{}", id);
         return (Volunteer) volunteerRepository.findById(id).
                 orElseThrow(() -> new VolunteerNotFoundException(id));
     }
@@ -75,7 +72,7 @@ public class VolunteerServiceImpl implements VolunteerService {
      */
     @Override
     public Volunteer updateVolunteerById(Volunteer volunteer) {
-        logger.info("Был вызван метод для обновления волонтера", volunteer);
+        logger.info("Был вызван метод для обновления волонтера{}", volunteer);
         readVolunteer(volunteer.getId());
         return volunteerRepository.save(volunteer);
     }
@@ -85,31 +82,19 @@ public class VolunteerServiceImpl implements VolunteerService {
      */
     @Override
     public void deleteById(long id) {
-        logger.info("Был вызван метод для удаления волонтера", id);
+        logger.info("Был вызван метод для удаления волонтера{}", id);
         volunteerRepository.deleteById(id);
     }
 
 
-    /**
-     * @return список всех волонтеров
-     * <p>
-     * ищет всех волонтеров
-     */
-//    @Override
-//
-//    public List<Volunteer> findAllVolunteers() {
-//        logger.info("Был вызван метод для поиска всех волонтеров");
-//        return volunteerRepository.findAll().stream().toList();
-//    }
-
-    /**
+       /**
      * @param chatId
      * @return получение волонтера из базы данных
      */
     @Override
 
     public Optional<Volunteer> getVolunteerByChatId(long chatId) {
-        logger.info("Был вызван метод для получения пользователя из базы данных", chatId);
+        logger.info("Был вызван метод для получения пользователя из базы данных{}", chatId);
         return volunteerRepository.findByChatId(chatId);
     }
 
@@ -118,7 +103,7 @@ public class VolunteerServiceImpl implements VolunteerService {
      * Поиск волонтера по chatId, если он есть то обновляем, если нет, создается новый волонтер
      */
     public void saveVolunteer(Update update) {
-        logger.info("Был вызван метод для сохранения волонтера в базу данных", update);
+        logger.info("Был вызван метод для сохранения волонтера в базу данных{}", update);
         int chatId = update.message().chat().id().intValue();
         Optional<Volunteer> volunteerOptional = getVolunteerByChatId(chatId);
 
@@ -144,24 +129,7 @@ public class VolunteerServiceImpl implements VolunteerService {
         reportService.updateReport(report);
     }
 
-//    @Override
-//    /**
-//     * Позволяет распарсить SendMessage из метода reviewListOfReports что-бы достать ID репорта
-//     * с которым будем работать.
-//     *
-//     * @param reportString получаем строку SendMessage
-//     * @return вовзращает ID отчета
-//     */
-//    public int parseReportNumber(String reportString) {
-//        Pattern pattern = Pattern.compile("Отчет #(\\d+)");
-//        Matcher matcher = pattern.matcher(reportString);
-//
-//        if (matcher.find()) {
-//            String numberStr = matcher.group(1);
-//            return Integer.parseInt(numberStr);
-//        }
-//        return -1; // В случае, если не удалось извлечь номер отчета
-//    }
+
 
     @Override
     /**
@@ -196,36 +164,12 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
 
-
-
-
-//        @Override
-//        public void uploadAnimalReport(
-//                byte[] photo
-//                , String wellBeing
-//                , LocalDateTime dateAdded
-//                , Animal animal
-//                , User user) {
-//            Report animalReport = new Report();
-//            animalReport.setPhoto(photo);
-//            animalReport.setGeneralWellBeing(wellBeing);
-//            animalReport.setDateAdded(dateAdded);
-//            animalReport.setUser(user);
-//            this.animalReportRepository.save(animalReport);
-//        }
         @Override
         public Report findById(Integer id) {
             return this.animalReportRepository
                     .findById(id).orElseThrow();
         }
 
-//        @Override
-//        public Report save(Report report) {
-//            if (report != null) {
-//                this.animalReportRepository.save(report);
-//            }
-//            return report;
-//        }
 
         @Override
         public void remove(long id) {

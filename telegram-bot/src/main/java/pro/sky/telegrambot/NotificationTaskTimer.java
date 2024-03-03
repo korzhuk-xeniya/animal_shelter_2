@@ -41,7 +41,7 @@ public class NotificationTaskTimer {
      */
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
     public void task() {
-        LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1);
+        LocalDateTime oneDaysAgo = LocalDateTime.now().minusDays(1).minusHours(1).truncatedTo(ChronoUnit.MINUTES);
         String message = " «Дорогой усыновитель, мы заметили, что ты не отправил ежедневный отчет." +
                 " Пожалуйста, подойди ответственнее" +
                 " к этому занятию. В противном случае волонтеры приюта будут обязаны " +
