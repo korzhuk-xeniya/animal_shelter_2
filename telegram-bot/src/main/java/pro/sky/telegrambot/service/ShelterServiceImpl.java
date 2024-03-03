@@ -79,7 +79,7 @@ public class ShelterServiceImpl implements ShelterService {
     public void process(Update update) throws IOException {
         Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add("xeny_sk");
+//        adminsVolunteers.add("xeny_sk");
 
 
         if (update.message() == null && update.callbackQuery() == null) {
