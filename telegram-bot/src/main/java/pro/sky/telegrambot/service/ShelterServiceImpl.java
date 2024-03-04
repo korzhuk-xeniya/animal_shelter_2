@@ -90,6 +90,8 @@ public class ShelterServiceImpl implements ShelterService {
 
         if (update.callbackQuery() != null) {
             processCallbackQuery(update.callbackQuery());
+            int messageId = update.callbackQuery().message().messageId();
+            String receivedMessage = update.callbackQuery().data();
             case "Испытательный срок пройден" -> {
                 List<User> users = new ArrayList<User>(userService.getAll());
                 LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
