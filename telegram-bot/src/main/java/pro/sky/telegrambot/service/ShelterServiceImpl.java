@@ -90,6 +90,7 @@ public class ShelterServiceImpl implements ShelterService {
 
         if (update.callbackQuery() != null) {
             processCallbackQuery(update.callbackQuery());
+
         } else if (update.message() != null && update.message().photo() == null) {
             processMessage(update);
         }
