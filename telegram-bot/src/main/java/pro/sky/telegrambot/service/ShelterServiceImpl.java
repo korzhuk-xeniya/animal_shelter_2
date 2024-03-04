@@ -592,19 +592,13 @@ public class ShelterServiceImpl implements ShelterService {
     //Если отчет сдан
     private void reportSubmitted(CallbackQuery callbackQuery) {
         logger.info("Был вызван метод для отправки сообщения Отчет сдан{}", callbackQuery);
-        changeMessage(callbackQuery.message().chat().id(), "Отчет сдан");
         volunteerService.reportSubmitted(sendMessageReport);
     }
 
     //Если отчет не сдан
     private void reportNotSubmitted(CallbackQuery callbackQuery) {
         logger.info("Был вызван метод для отправки сообщения Отчет не сдан{}", callbackQuery);
-        changeMessage(callbackQuery.message().chat().id(), "Отчет не сдан. Дорогой усыновитель, " +
-                "мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди" +
-                " ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять" +
-                " условия содержания животного");
-
-        volunteerService.reportSubmitted(sendMessageReport);
+        volunteerService.reporNottSubmitted(sendMessageReport);
     }
 
 }

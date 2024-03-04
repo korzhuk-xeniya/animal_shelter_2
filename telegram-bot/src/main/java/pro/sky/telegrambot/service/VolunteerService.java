@@ -35,6 +35,10 @@ public interface VolunteerService {
     void reportSubmitted(Long idReport);
 
 
+    /**
+     * Обновляем в БД отчет и ставим, что отчет сдан
+     */
+    void reporNottSubmitted(Long idReport);
 
     /**
      * Получаем непроверенный отчет из всех отчетов
