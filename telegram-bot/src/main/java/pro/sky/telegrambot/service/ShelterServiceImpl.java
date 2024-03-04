@@ -90,6 +90,45 @@ public class ShelterServiceImpl implements ShelterService {
 
         if (update.callbackQuery() != null) {
             processCallbackQuery(update.callbackQuery());
+            case "Испытательный срок пройден" -> {
+                List<User> users = new ArrayList<User>(userService.getAll());
+                LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                for (User user : users) {
+                    if (user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
+                        sendMessage(user.getChatId(), "Поздравляем! Испытательный срок пройден");
+                    }
+                }
+            }
+            case "Продлить на 14 дней" -> {
+                List<User> users = new ArrayList<User>(userService.getAll());
+                LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                for (User user : users) {
+                    if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
+                        sendMessage(user.getChatId(), "Вам назначено дополнительно 14 дней" +
+                                " испытательного срока. Свяжитесь с волонтером.");
+                    }
+                }
+            }
+            case "Продлить на 30 дней" -> {
+                List<User> users = new ArrayList<User>(userService.getAll());
+                LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                for (User user : users) {
+                    if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
+                        sendMessage(user.getChatId(), "Вам назначено дополнительно 30 дней" +
+                                " испытательного срока. Свяжитесь с волонтером.");
+                    }
+                }
+            }
+            case "Испытательный срок не пройден" -> {
+                List<User> users = new ArrayList<User>(userService.getAll());
+                LocalDateTime monthAgo = LocalDateTime.now().minusDays(30);
+                for (User user : users) {
+                    if (!user.getTookAPet() && user.getDateTimeToTook().isBefore(monthAgo)) {
+                        sendMessage(user.getChatId(), "Испытательный срок не пройден. " +
+                                "Свяжитесь с волонтером.");
+                    }
+                }
+            }
 
         } else if (update.message() != null && update.message().photo() == null) {
             processMessage(update);
