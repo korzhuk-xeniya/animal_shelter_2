@@ -39,12 +39,6 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-//    @Override
-//    public User update(User user) {
-//        User currentUser = getById(user.getId());
-//        EntityUtils.copyNonNullFields(user, currentUser);
-//        return userRepository.save(currentUser);
-//    }
     @Override
     //Обновить пользователя в бд
     public User updateUser(User user) {
@@ -92,30 +86,5 @@ public class UserServiceImpl implements UserService {
             newUser.setTookAPet(tookAPET);
         }
     }
-    public static class EntityUtils {
-        /**
-         * Метод для копирования из одного объекта в другой
-         * игнорируя поля в которых есть null
-         *
-         * @param fromObj объект от которого копируем
-         * @param toObj   объект в который копируем
-         */
 
-        public static void copyNonNullFields(Object fromObj, Object toObj) {
-            Logger logger = (Logger) LoggerFactory.getLogger(EntityUtils.class);
-            Field[] fields = fromObj.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    field.setAccessible(true);
-                    Object value = field.get(fromObj);
-                    if (value != null) {
-                        field.set(toObj, value);
-                    }
-                } catch (IllegalAccessException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
-        }
-
-    }
 }
