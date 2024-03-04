@@ -364,8 +364,8 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     private boolean isAdminOrVolunteer(String userName) {
-        List<String> adminsVolunteers = Arrays.asList("d_prudnikov");
-//        "xeny_sk"
+        List<String> adminsVolunteers = Arrays.asList("xeny_sk");
+
         return adminsVolunteers.contains(userName);
     }
 
