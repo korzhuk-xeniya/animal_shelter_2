@@ -14,9 +14,6 @@ import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.repository.VolunteerRepository;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -138,6 +135,22 @@ public class VolunteerServiceImpl implements VolunteerService {
         Report report = reportRepository.findReportById(idReport);
         report.setCheckReport(true);
         reportService.updateReport(report);
+        SendMessage sendMessage = new SendMessage(report.getUser().getChatId(),"Отчет сдан");
+        telegramBot.execute(sendMessage);
+    }
+    @Override
+    /**
+     * Обновляем в БД отчет и ставим, что отчет сдан
+     */
+    public void reportNotSubmitted(Long idReport) {
+        Report report = reportRepository.findReportById(idReport);
+        report.setCheckReport(true);
+        reportService.updateReport(report);
+        SendMessage sendMessage = new SendMessage(report.getUser().getChatId(),"Отчет не сдан. Дорогой усыновитель, " +
+                "мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди" +
+                " ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять" +
+                " условия содержания животного");
+        telegramBot.execute(sendMessage);
     }
 
     @Override

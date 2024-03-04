@@ -80,7 +80,8 @@ public class ShelterServiceImpl implements ShelterService {
     public void process(Update update) throws IOException {
         Map<String, String> infoMap = getInfo();
         List<String> adminsVolunteers = new ArrayList<>();
-        adminsVolunteers.add("xeny_sk");
+        adminsVolunteers.add("d_prudnikov");
+//        adminsVolunteers.add("xeny_sk");
 
 
         if (update.message() == null && update.callbackQuery() == null) {
@@ -582,19 +583,19 @@ public class ShelterServiceImpl implements ShelterService {
     //Если отчет сдан
     private void reportSubmitted(Update update) {
         logger.info("Был вызван метод для отправки сообщения Отчет сдан", update);
-        changeMessage(update.callbackQuery().message().chat().id(), "Отчет сдан");
+//        changeMessage(update.callbackQuery().message().chat().id(), "Отчет сдан");
         volunteerService.reportSubmitted(sendMessageReport);
     }
 
     //Если отчет не сдан
     private void reportNotSubmitted(Update update) {
         logger.info("Был вызван метод для отправки сообщения Отчет не сдан", update);
-        changeMessage(update.callbackQuery().message().chat().id(), "Отчет не сдан. Дорогой усыновитель, " +
-                "мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди" +
-                " ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять" +
-                " условия содержания животного");
+//        changeMessage(update.callbackQuery().message().chat().id(), "Отчет не сдан. Дорогой усыновитель, " +
+//                "мы заметили, что ты заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди" +
+//                " ответственнее к этому занятию. В противном случае волонтеры приюта будут обязаны самолично проверять" +
+//                " условия содержания животного");
 
-        volunteerService.reportSubmitted(sendMessageReport);
+        volunteerService.reportNotSubmitted(sendMessageReport);
     }
 
 }

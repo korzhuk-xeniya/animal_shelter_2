@@ -31,6 +31,11 @@ public interface VolunteerService {
     void reportSubmitted(Long idReport);
 
     /**
+     * Обновляем в БД отчет и ставим, что отчет сдан
+     */
+    void reportNotSubmitted(Long idReport);
+
+    /**
      * Позволяет распарсить SendMessage из метода reviewListOfReports что-бы достать ID репорта
      * с которым будем работать.
      *
